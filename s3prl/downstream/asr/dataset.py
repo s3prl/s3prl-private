@@ -13,6 +13,7 @@
 import logging
 import os
 import random
+import numpy as np
 #-------------#
 import pandas as pd
 from tqdm import tqdm
@@ -175,3 +176,74 @@ class SequenceDataset(Dataset):
     def collate_fn(self, items):
         assert len(items) == 1
         return items[0][0], items[0][1] # hack bucketing, return (wavs, labels)
+
+class HiddenDataset(Dataset):
+    def __init__(self, bucket_size, hidden_root, bucket_file, dict_path=None, **kwargs):
+        super().__init__()
+        self.hidden_root = hidden_root
+        self.sample_rate = 44100
+        self.resample = torchaudio.transforms.Resample(self.sample_rate, SAMPLE_RATE)
+
+        # Read table for bucketing
+        assert os.path.isdir(bucket_file), 'Please first run `python3 preprocess/generate_len_for_bucket.py -h` to get bucket file.'
+        table_list = pd.read_csv(os.path.join(hidden_root, "sqa_v5.csv"))
+
+        def process_trans(transcript):
+            transcript = transcript.upper()
+            return " ".join(list("|".join(transcript.split()))) + " |"
+
+        self.X = [os.path.join(hidden_root, f"{idx}.wav") for idx in table_list["utterance_id"].tolist()]
+        self.Y = [process_trans(y) for y in table_list["utterance_text"].tolist()]
+
+        # dictionary, symbol list
+        if dict_path is None:
+            dict_path = os.path.join(bucket_file, 'dict.pt')
+
+        assert os.path.exists(dict_path)
+        self.dictionary = torch.load(
+            dict_path,
+            map_location=lambda storage, loc: storage
+        )
+        self.symbols = self.dictionary.symbols
+        self.Y_encoded = [
+            np.array(
+                [
+                    idx
+                    for idx in self.dictionary.encode_line(
+                        y, line_tokenizer=lambda x: x.split(), add_if_not_exist=False
+                    )
+                    if idx != self.dictionary.unk_index
+                ]
+            )
+            for y in self.Y
+        ]
+
+    def _load_wav(self, wav_path):
+        try:
+            wav, sr = torchaudio.load(wav_path)
+            assert sr == self.sample_rate
+        except RuntimeError:
+            prefix = "".join(wav_path.split(".")[:-1])
+            extention = wav_path.split(".")[-1]
+            file1 = prefix + "_(1)." + extention
+            file2 = prefix + "_(2)." + extention
+            wav1, sr1 = torchaudio.load(file1)
+            wav2, sr2 = torchaudio.load(file2)
+            assert sr1 == self.sample_rate
+            assert sr2 == self.sample_rate
+            wav = torch.cat((wav1, wav2), dim=-1)
+        wav = wav.mean(dim=0, keepdim=True)
+        wav = self.resample(wav)
+        return wav.view(-1).numpy()
+
+    def __len__(self):
+        return len(self.X)
+
+    def __getitem__(self, index):
+        wav = self._load_wav(self.X[index])
+        label = self.Y_encoded[index]
+        return wav, label
+
+    def collate_fn(self, items):
+        wavs, labels = zip(*items)
+        return wavs, labels

@@ -12,7 +12,7 @@ from torch.distributed import is_initialized
 from torch.nn.utils.rnn import pad_sequence
 
 from .model import *
-from .dataset import SequenceDataset
+from .dataset import SequenceDataset, HiddenDataset
 
 
 def token_to_word(text):
@@ -124,7 +124,11 @@ class DownstreamExpert(nn.Module):
             return self._get_train_dataloader(self.train_dataset)
         else:
             if not hasattr(self, f'{split}_dataset'):
-                setattr(self, f'{split}_dataset', SequenceDataset(split, self.datarc['eval_batch_size'], **self.datarc))
+                if split != "hidden":
+                    setattr(self, f'{split}_dataset', SequenceDataset(split, self.datarc['eval_batch_size'], **self.datarc))
+                else:
+                    setattr(self, f'{split}_dataset', HiddenDataset(self.datarc['eval_batch_size'], **self.datarc))
+
             return self._get_eval_dataloader(getattr(self, f'{split}_dataset'))
 
     def _get_train_dataloader(self, dataset):
@@ -333,7 +337,7 @@ class DownstreamExpert(nn.Module):
             self.best_score = torch.ones(1) * wer
             save_names.append(f'{split}-best.ckpt')
 
-        if 'test' in split or 'dev' in split:
+        if 'test' in split or 'dev' in split or 'hidden' in split:
             hyp_ark = open(os.path.join(self.expdir, f'{split}-hyp.ark'), 'w')
             ref_ark = open(os.path.join(self.expdir, f'{split}-ref.ark'), 'w')
             for idx, (hyp, ref) in enumerate(zip(records['pred_words'], records['target_words'])):
