@@ -126,10 +126,12 @@ class DownstreamExpert(nn.Module):
             if not hasattr(self, f'{split}_dataset'):
                 if split != "hidden":
                     setattr(self, f'{split}_dataset', SequenceDataset(split, self.datarc['eval_batch_size'], **self.datarc))
+                    batch_size = 1
                 else:
-                    setattr(self, f'{split}_dataset', HiddenDataset(self.datarc['eval_batch_size'], **self.datarc))
+                    setattr(self, f'{split}_dataset', HiddenDataset(**self.datarc))
+                    batch_size = self.datarc['eval_batch_size']
 
-            return self._get_eval_dataloader(getattr(self, f'{split}_dataset'))
+            return self._get_eval_dataloader(getattr(self, f'{split}_dataset'), batch_size)
 
     def _get_train_dataloader(self, dataset):
         sampler = DistributedSampler(dataset) if is_initialized() else None
@@ -141,9 +143,9 @@ class DownstreamExpert(nn.Module):
             collate_fn=dataset.collate_fn,
         )
 
-    def _get_eval_dataloader(self, dataset):
+    def _get_eval_dataloader(self, dataset, batch_size):
         return DataLoader(
-            dataset, batch_size=1,
+            dataset, batch_size=batch_size,
             shuffle=False, num_workers=self.datarc['num_workers'],
             collate_fn=dataset.collate_fn
         )

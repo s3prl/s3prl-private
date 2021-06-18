@@ -178,7 +178,7 @@ class SequenceDataset(Dataset):
         return items[0][0], items[0][1] # hack bucketing, return (wavs, labels)
 
 class HiddenDataset(Dataset):
-    def __init__(self, bucket_size, hidden_root, bucket_file, dict_path=None, **kwargs):
+    def __init__(self, hidden_root, bucket_file, dict_path=None, **kwargs):
         super().__init__()
         self.hidden_root = hidden_root
         self.sample_rate = 44100
