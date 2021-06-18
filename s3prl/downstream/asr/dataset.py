@@ -183,10 +183,7 @@ class HiddenDataset(Dataset):
         self.hidden_root = hidden_root
         self.sample_rate = 44100
         self.resample = torchaudio.transforms.Resample(self.sample_rate, SAMPLE_RATE)
-
-        # Read table for bucketing
-        assert os.path.isdir(bucket_file), 'Please first run `python3 preprocess/generate_len_for_bucket.py -h` to get bucket file.'
-        table_list = pd.read_csv(os.path.join(hidden_root, "sqa_v5.csv"))
+        table_list = pd.read_csv(os.path.join(hidden_root, "scripta.csv"))
 
         def process_trans(transcript):
             transcript = transcript.upper()
