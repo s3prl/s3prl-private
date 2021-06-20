@@ -14,8 +14,9 @@ from sox import Transformer
 from torchaudio import load
 from librosa.util import find_files
 from torch.utils.data import DataLoader, Dataset
-from torchaudio.sox_effects import apply_effects_file
+from torchaudio.sox_effects import apply_effects_file, apply_effects_tensor
 
+HIDDEN_SAMPLE_RATE = 44100
 
 EFFECTS = [
 ["channels", "1"],
@@ -159,8 +160,24 @@ class SpeakerVerifi_test(Dataset):
     def __getitem__(self, idx):
         y_label, x1_path, x2_path = self.dataset[idx]
 
-        wav1, _ = apply_effects_file(x1_path, EFFECTS)
-        wav2, _ = apply_effects_file(x2_path, EFFECTS)
+        def load_and_apply_effects(wav_path):
+            try:
+                wav, _ = apply_effects_file(wav_path, EFFECTS)
+            except RuntimeError:
+                # This is for the hidden set
+                prefix = "".join(wav_path.split(".")[:-1])
+                extention = wav_path.split(".")[-1]
+                file1 = prefix + "_(1)." + extention
+                file2 = prefix + "_(2)." + extention
+                wav1, sr1 = torchaudio.load(file1)
+                wav2, sr2 = torchaudio.load(file2)
+                assert sr1 == sr2 == HIDDEN_SAMPLE_RATE
+                wav = torch.cat((wav1, wav2), dim=-1)
+                wav, _ = apply_effects_tensor(wav, sr1, EFFECTS)
+            return wav
+
+        wav1 = load_and_apply_effects(x1_path)
+        wav2 = load_and_apply_effects(x2_path)
 
         wav1 = wav1.squeeze(0)
         wav2 = wav2.squeeze(0)

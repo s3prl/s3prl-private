@@ -139,6 +139,17 @@ class DownstreamExpert(nn.Module):
             return self._get_eval_dataloader(self.dev_dataset)
         elif mode == 'test':
             return self._get_eval_dataloader(self.test_dataset)
+        elif mode == 'hidden':
+            if not hasattr(self, "hidden_dataset"):
+                hidden_path = Path(self.datarc['hidden_path'])
+                hidden_config = {
+                    "vad_config": self.datarc['vad_config'],
+                    "file_path": hidden_path, 
+                    "meta_data": hidden_path / "sv_hidden_list.txt",
+                }
+                self.hidden_dataset = SpeakerVerifi_test(**hidden_config)
+            return self._get_eval_dataloader(self.hidden_dataset)
+
 
     def _get_train_dataloader(self, dataset):
         sampler = DistributedSampler(dataset) if is_initialized() else None
@@ -158,19 +169,6 @@ class DownstreamExpert(nn.Module):
             collate_fn=dataset.collate_fn
         )
 
-    # Interface
-    def get_train_dataloader(self):
-        return self._get_train_dataloader(self.train_dataset)
-
-    # Interface
-    def get_dev_dataloader(self):
-        return self._get_eval_dataloader(self.dev_dataset)
-
-    # Interface
-    def get_test_dataloader(self):
-        return self._get_eval_dataloader(self.test_dataset)
-
-    # Interface
     def forward(self, mode, features, utter_idx, labels, records, **kwargs):
         """
         Args:
@@ -218,7 +216,7 @@ class DownstreamExpert(nn.Module):
             records['loss'].append(loss.item())
             return loss
         
-        elif mode in ['dev', 'test']:
+        elif mode in ['dev', 'test', 'hidden']:
             agg_vec = self.model.inference(features_pad, attention_mask_pad.cuda())
             agg_vec = agg_vec / (torch.norm(agg_vec, dim=-1).unsqueeze(-1))
 
@@ -257,7 +255,7 @@ class DownstreamExpert(nn.Module):
             logger.add_scalar(f'sv-voxceleb1/{mode}-loss', loss, global_step=global_step)
             print(f'sv-voxceleb1/{mode}-loss: {loss}')
 
-        elif mode in ['dev', 'test']:
+        elif mode in ['dev', 'test', 'hidden']:
             err, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
             logger.add_scalar(f'sv-voxceleb1/{mode}-EER', err, global_step=global_step)
             print(f'sv-voxceleb1/{mode}-ERR: {err}')
