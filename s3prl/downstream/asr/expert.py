@@ -214,9 +214,13 @@ class DownstreamExpert(nn.Module):
         _, pred_words_batch = self._decode(log_probs.float().contiguous().cpu(), log_probs_len)
         hyps = [' '.join(hyp) for hyp in pred_words_batch]
 
-        with open(Path(self.expdir) / "inference.ark", "w") as file:
+        logpath = Path(self.expdir) / "inference.ark"
+        if logpath.is_file():
+            print(f"[asr] - {str(logpath)} already exists.")
+
+        with open(logpath, "a") as file:
             for hyp, filename in zip(hyps, filenames):
-                file.write(f"{filename} {hyp}\n")
+                print(f"{filename} {hyp}", file=file)
 
         return hyps
 

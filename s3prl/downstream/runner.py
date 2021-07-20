@@ -6,6 +6,7 @@ import shutil
 import random
 import tempfile
 import importlib
+from tqdm import tqdm
 from pathlib import Path
 
 import torch
@@ -395,21 +396,33 @@ class Runner():
 
 
     def inference(self):
-        filepath = Path(self.args.evaluate_split)
-        assert filepath.is_file()
-        filename = filepath.stem
-
-        if hasattr(self.downstream.model, "load_audio"):
-            wav = self.downstream.model.load_audio(filepath)
+        path = Path(self.args.evaluate_split)
+        if path.is_dir():
+            from librosa.util import find_files
+            paths = find_files(str(path))
         else:
-            wav, sr = torchaudio.load(str(filepath))
-            assert sr == SAMPLE_RATE
-        wavs = [wav.view(-1).to(self.args.device)]
+            paths = [str(path)]
 
-        for entry in self.all_entries:
-            entry.model.eval()
+        for filepath in tqdm(paths):
+            try:
+                if hasattr(self.downstream.model, "load_audio"):
+                    wav = self.downstream.model.load_audio(filepath)
+                else:
+                    wav, sr = torchaudio.load(str(filepath))
+                    if sr != SAMPLE_RATE:
+                        resampler = torchaudio.transforms.Resample(sr, SAMPLE_RATE)
+                    wav = resampler(wav)
+                    wav.mean(0).view(-1)
+                wavs = [wav.to(self.args.device)]
 
-        with torch.no_grad():
-            features = self.upstream.model(wavs)
-            features = self.featurizer.model(wavs, features)
-            self.downstream.model.inference(features, [filename])
+                for entry in self.all_entries:
+                    entry.model.eval()
+
+                filename = Path(filepath).stem
+                with torch.no_grad():
+                    features = self.upstream.model(wavs)
+                    features = self.featurizer.model(wavs, features)
+                    self.downstream.model.inference(features, [filename])
+
+            except RuntimeError as e:
+                print(f"{filepath} -> {str(e)}")
