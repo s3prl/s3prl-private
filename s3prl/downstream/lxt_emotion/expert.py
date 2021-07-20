@@ -103,7 +103,7 @@ class DownstreamExpert(nn.Module):
         for key, values in records.items():
             average = torch.FloatTensor(values).mean().item()
             logger.add_scalar(
-                f'emotion-{self.fold}/{mode}-{key}',
+                f'lxt_emotion/{mode}-{key}',
                 average,
                 global_step=global_step
             )
