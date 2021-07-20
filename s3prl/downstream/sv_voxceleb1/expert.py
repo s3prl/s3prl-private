@@ -52,6 +52,7 @@ class DownstreamExpert(nn.Module):
         self.downstream = downstream_expert
         self.datarc = downstream_expert['datarc']
         self.modelrc = downstream_expert['modelrc']
+        self.expdir = expdir
 
         # dataset
         train_file_path = Path(self.datarc['file_path']) / "dev" / "wav"
@@ -141,11 +142,10 @@ class DownstreamExpert(nn.Module):
             return self._get_eval_dataloader(self.test_dataset)
         elif mode == 'hidden':
             if not hasattr(self, "hidden_dataset"):
-                hidden_path = Path(self.datarc['hidden_path'])
                 hidden_config = {
                     "vad_config": self.datarc['vad_config'],
-                    "file_path": hidden_path, 
-                    "meta_data": hidden_path / "sv_hidden_list.txt",
+                    "file_path": self.datarc['hidden_path'], 
+                    "meta_data": self.datarc['hidden_list'],
                 }
                 self.hidden_dataset = SpeakerVerifi_test(**hidden_config)
             return self._get_eval_dataloader(self.hidden_dataset)
@@ -222,10 +222,12 @@ class DownstreamExpert(nn.Module):
 
             # separate batched data to pair data.
             vec1, vec2 = self.separate_data(agg_vec)
+            names1, names2 = self.separate_data(utter_idx)
 
             scores = self.score_fn(vec1, vec2).cpu().detach().tolist()
             records['scores'].extend(scores)
             records['labels'].extend(labels)
+            records['pair_names'].extend(list(zip(names1, names2)))
 
             return torch.tensor(0)
 
@@ -263,6 +265,14 @@ class DownstreamExpert(nn.Module):
             if err < self.best_score and mode == 'dev':
                 self.best_score = torch.ones(1) * err
                 save_names.append(f'{mode}-best.ckpt')
+
+            with open(Path(self.expdir) / f"{mode}_predict.txt", "w") as file:
+                for (name1, name2), score in zip(records["pair_names"], records["scores"]):
+                    print(score, name1, name2, file=file)
+
+            with open(Path(self.expdir) / f"{mode}_truth.txt", "w") as file:
+                for (name1, name2), score in zip(records["pair_names"], records["labels"]):
+                    print(score, name1, name2, file=file)
 
         return save_names
 

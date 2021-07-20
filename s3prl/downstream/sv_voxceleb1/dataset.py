@@ -118,34 +118,22 @@ class SpeakerVerifi_test(Dataset):
     def __getitem__(self, idx):
         y_label, x1_path, x2_path = self.dataset[idx]
 
-        def load_and_apply_effects(wav_path):
-            try:
-                wav, _ = apply_effects_file(wav_path, EFFECTS)
-            except RuntimeError:
-                # This is for the hidden set
-                prefix = "".join(wav_path.split(".")[:-1])
-                extention = wav_path.split(".")[-1]
-                file1 = prefix + "_(1)." + extention
-                file2 = prefix + "_(2)." + extention
-                wav1, sr1 = torchaudio.load(file1)
-                wav2, sr2 = torchaudio.load(file2)
-                assert sr1 == sr2 == HIDDEN_SAMPLE_RATE
-                wav = torch.cat((wav1, wav2), dim=-1)
-                wav, _ = apply_effects_tensor(wav, sr1, EFFECTS)
-            return wav
+        def path2name(path):
+            return str(Path(path).relative_to(self.root))
 
-        wav1 = load_and_apply_effects(x1_path)
-        wav2 = load_and_apply_effects(x2_path)
+        x1_name = path2name(x1_path)
+        x2_name = path2name(x2_path)
+
+        wav1, _ = apply_effects_file(x1_path, EFFECTS)
+        wav2, _ = apply_effects_file(x2_path, EFFECTS)
 
         wav1 = wav1.squeeze(0)
         wav2 = wav2.squeeze(0)
 
-        length1 = wav1.shape[0]
-        length2 = wav2.shape[0]
-
-        return wav1.numpy(), wav2.numpy(), length1, length2, int(y_label[0])
+        return wav1.numpy(), wav2.numpy(), x1_name, x2_name, int(y_label[0])
     
     def collate_fn(self, data_sample):
-        wavs1, wavs2, lengths1, lengths2, ylabels = zip(*data_sample)
+        wavs1, wavs2, x1_names, x2_names, ylabels = zip(*data_sample)
         all_wavs = wavs1 + wavs2
-        return all_wavs, None, ylabels
+        all_names = x1_names + x2_names
+        return all_wavs, all_names, ylabels
