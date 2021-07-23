@@ -30,12 +30,11 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
         self.shuffle = shuffle
         self.seed = seed
         self.drop_last = drop_last
-        self.max_frames = max_frames
-        self.set_epoch(0)
 
         # for constraining max frames in a batch
         assert isinstance(dataset.get_frames(0), int)
         self.max_frames = max_frames
+        self.set_epoch(0)
 
         # If the dataset length is evenly divisible by # of replicas, then there
         # is no need to drop any data, since the dataset will be split equally.

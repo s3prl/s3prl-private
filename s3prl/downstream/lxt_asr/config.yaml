@@ -38,7 +38,7 @@ downstream_expert:
     lxt_audio: ./data/superb_second_batch/1.1_resampled
     lxt_text: result/lxt/asr_task1.1_organized/truth.txt
     split_ratio: [0.5, 0.25, 0.25]
-    max_frames: 1600000
+    max_frames: 800000
     num_workers: 12
 
     zero_infinity: True

@@ -108,7 +108,7 @@ class DownstreamExpert(nn.Module):
         if not hasattr(self, f"{split}_dataset"):
             dataset = LxtAsrDataset(split, self.dictionary, **self.datarc)
             setattr(self, f"{split}_dataset", dataset)
-        dataset = getattr(self, f"{split}_dataset", dataset)
+        dataset = getattr(self, f"{split}_dataset")
 
         if "train" in split:
             batch_sampler = DistributedMaxFramesBatchSampler(
