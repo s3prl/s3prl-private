@@ -36,21 +36,6 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
         self.max_frames = max_frames
         self.set_epoch(0)
 
-        # If the dataset length is evenly divisible by # of replicas, then there
-        # is no need to drop any data, since the dataset will be split equally.
-        if self.drop_last and len(self.batches) % self.num_replicas != 0:  # type: ignore[arg-type]
-            # Split to nearest available length that is evenly divisible.
-            # This is to ensure each rank receives the same amount of data when
-            # using this Sampler.
-            self.num_samples = math.ceil(
-                # `type:ignore` is required because Dataset cannot provide a default __len__
-                # see NOTE in pytorch/torch/utils/data/sampler.py
-                (len(self.batches) - self.num_replicas) / self.num_replicas  # type: ignore[arg-type]
-            )
-        else:
-            self.num_samples = math.ceil(len(self.batches) / self.num_replicas)  # type: ignore[arg-type]
-        self.total_size = self.num_samples * self.num_replicas
-
     def __iter__(self) -> Iterator[T_co]:
         indices = list(range(len(self.batches)))
 
@@ -110,3 +95,19 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
 
         if len(batch) > 0:
             self.batches.append(batch)
+
+        # If the dataset length is evenly divisible by # of replicas, then there
+        # is no need to drop any data, since the dataset will be split equally.
+        if self.drop_last and len(self.batches) % self.num_replicas != 0:  # type: ignore[arg-type]
+            # Split to nearest available length that is evenly divisible.
+            # This is to ensure each rank receives the same amount of data when
+            # using this Sampler.
+            self.num_samples = math.ceil(
+                # `type:ignore` is required because Dataset cannot provide a default __len__
+                # see NOTE in pytorch/torch/utils/data/sampler.py
+                (len(self.batches) - self.num_replicas) / self.num_replicas  # type: ignore[arg-type]
+            )
+        else:
+            self.num_samples = math.ceil(len(self.batches) / self.num_replicas)  # type: ignore[arg-type]
+        self.total_size = self.num_samples * self.num_replicas
+
