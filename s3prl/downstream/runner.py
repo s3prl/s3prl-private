@@ -184,17 +184,12 @@ class Runner():
         if is_leader_process():
             logger = SummaryWriter(self.args.expdir)
 
-        # prepare data
-        dataloader = self.downstream.model.get_dataloader('train')
-
         batch_ids = []
         backward_steps = 0
         records = defaultdict(list)
         epoch = self.init_ckpt.get('Epoch', 0)
         while pbar.n < pbar.total:
-            if is_initialized():
-                dataloader.sampler.set_epoch(epoch)
-
+            dataloader = self.downstream.model.get_dataloader('train', epoch=epoch)
             for batch_id, (wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc='train', file=tqdm_file)):
                 # try/except block for forward/backward
                 try:
