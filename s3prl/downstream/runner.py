@@ -189,7 +189,8 @@ class Runner():
         records = defaultdict(list)
         epoch = self.init_ckpt.get('Epoch', 0)
         while pbar.n < pbar.total:
-            dataloader = self.downstream.model.get_dataloader('train', epoch=epoch)
+            train_dataloader_name = self.config['runner'].get("train_dataloader", "train")
+            dataloader = self.downstream.model.get_dataloader(train_dataloader_name, epoch=epoch)
             for batch_id, (wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc='train', file=tqdm_file)):
                 # try/except block for forward/backward
                 try:

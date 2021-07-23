@@ -2,12 +2,16 @@ runner:
   total_steps: 200000
   gradient_clipping: 1
   gradient_accumulate_steps: 1
-  log_step: 100
-  eval_step: 2000
-  save_step: 500
+  log_step: 10
+  eval_step: 10
+  save_step: 10
   max_keep: 1
+  train_dataloader: lxt_train
   eval_dataloaders:
-    - dev
+    - lxt_dev
+    - lxt_test
+    - libri_test_clean
+    - libri_dev_clean
 
 optimizer:
   name: TorchOptim
@@ -35,9 +39,21 @@ specaug:
 downstream_expert:
   datarc:
     dict_path: ./downstream/asr/char.dict
+    
     lxt_audio: ./data/superb_second_batch/1.1_resampled
     lxt_text: result/lxt/asr_task1.1_organized/truth.txt
-    split_ratio: [0.5, 0.25, 0.25]
+    lxt_split_ratio: [0.5, 0.25, 0.25]
+
+    libri_root: /home/leo/d/datasets/LibriSpeech
+    libri_train_360hr: ["train-clean-360"]
+    libri_train_100hr: ["train-clean-100"]
+    libri_train_10hr: ["1h", "9h"]
+    libri_train_1hr: ["1h"]
+    libri_test_clean: ["test-clean"]
+    libri_test_other: ["test-other"]
+    libri_dev_clean: ["dev-clean"]
+    libri_dev_other: ["dev-other"]
+
     max_frames: 800000
     num_workers: 12
 

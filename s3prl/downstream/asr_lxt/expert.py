@@ -13,7 +13,7 @@ from torch.nn.utils.rnn import pad_sequence
 
 from .model import *
 from .dictionary import Dictionary
-from .dataset import LxtAsrDataset
+from .dataset import LxtAsrDataset, LibriAsrDataset
 from s3prl.utility.data import DistributedMaxFramesBatchSampler
 
 
@@ -106,8 +106,16 @@ class DownstreamExpert(nn.Module):
 
     def get_dataloader(self, split, epoch=0):
         if not hasattr(self, f"{split}_dataset"):
-            dataset = LxtAsrDataset(split, self.dictionary, **self.datarc)
+            if "lxt" in split:
+                dataset_cls = LxtAsrDataset
+            elif "libri" in split:
+                dataset_cls = LibriAsrDataset
+            else:
+                raise ValueError
+
+            dataset = dataset_cls(split, self.dictionary, **self.datarc)
             setattr(self, f"{split}_dataset", dataset)
+
         dataset = getattr(self, f"{split}_dataset")
 
         if "train" in split:
