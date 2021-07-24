@@ -2,7 +2,6 @@ from tqdm import tqdm
 from pathlib import Path
 from librosa.util import find_files
 
-import torch
 import torchaudio
 from torch.utils.data import Dataset
 
@@ -10,31 +9,31 @@ SAMPLE_RATE = 16000
 
 
 class LxtAsrDataset(Dataset):
-    def __init__(self, split, dictionary, lxt_audio, lxt_text, lxt_split_ratio=None, **kwargs):
+    def __init__(self, split, dictionary, lxt_audio, lxt_text, **kwargs):
         super().__init__()
         self.dictionary = dictionary
         self.audio_root = Path(lxt_audio)
         self.text_root = Path(lxt_text)
+        
+        with Path(kwargs[split]).open() as split_file:
+            whitelist = [line.strip() for line in split_file.readlines()]
 
         pairs = []
         with self.text_root.open() as file:
             for line in tqdm(file.readlines()):
                 utterance_id, transcript = line.strip().split(",", maxsplit=1)
+                if utterance_id not in whitelist:
+                    continue
+
                 audio_path = self.audio_root / f"{utterance_id}.wav"
                 if not audio_path.is_file():
                     print(f"[lxt_asr] - {audio_path} not found.")
                     continue
+
                 audio_info = torchaudio.info(audio_path)
                 audio_seconds = audio_info.num_frames / audio_info.sample_rate
                 pairs.append((audio_path, self.encode_transcript(transcript), audio_seconds))
-
-        rand_indices = torch.randperm(len(pairs), generator=torch.Generator().manual_seed(2147483647))
-        pairs = [pairs[index] for index in rand_indices]
-
-        train_end = round(lxt_split_ratio[0] * len(pairs))
-        dev_end = round(lxt_split_ratio[1] * len(pairs)) + train_end
-        lxt_train, lxt_dev, lxt_test = pairs[:train_end], pairs[train_end:dev_end], pairs[dev_end:]
-        self.pairs = eval(split)
+        self.pairs = pairs
 
     def get_frames(self, index):
         return round(self.pairs[index][2] * SAMPLE_RATE)

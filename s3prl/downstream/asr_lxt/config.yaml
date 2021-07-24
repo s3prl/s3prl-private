@@ -6,7 +6,7 @@ runner:
   eval_step: 10
   save_step: 10
   max_keep: 1
-  train_dataloader: lxt_train
+  train_dataloader: lxt_train_5hr
   eval_dataloaders:
     - lxt_dev
     - lxt_test
@@ -42,7 +42,10 @@ downstream_expert:
     
     lxt_audio: ./data/superb_second_batch/1.1_resampled
     lxt_text: result/lxt/asr_task1.1_organized/truth.txt
-    lxt_split_ratio: [0.5, 0.25, 0.25]
+    lxt_train_5hr: ./data/superb_second_batch/1.1_split_5hr/train.txt
+    lxt_train_1hr: ./data/superb_second_batch/1.1_split_1hr/train.txt
+    lxt_dev: ./data/superb_second_batch/1.1_split_5hr/dev.txt
+    lxt_test: ./data/superb_second_batch/1.1_split_5hr/test.txt
 
     libri_root: /home/leo/d/datasets/LibriSpeech
     libri_train_360hr: ["train-clean-360"]
