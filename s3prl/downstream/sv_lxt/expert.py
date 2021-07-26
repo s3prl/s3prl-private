@@ -137,9 +137,6 @@ class DownstreamExpert(nn.Module):
         
         else:
             agg_vec = self.model.inference(features_pad, attention_mask_pad.cuda())
-            logits = self.objective.inference(agg_vec)
-            records["acc"] += (logits.argmax(dim=-1).cpu() == torch.LongTensor(labels)).long().tolist()
-    
             agg_vec = agg_vec / (torch.norm(agg_vec, dim=-1).unsqueeze(-1))
 
             # separate batched data to pair data.
@@ -163,11 +160,6 @@ class DownstreamExpert(nn.Module):
                 print(f"sv_lxt/{split}-{key}: {avg}")
 
         else:
-            for key in ["acc"]:
-                avg = torch.FloatTensor(records[key]).mean().item()
-                logger.add_scalar(f"sv_lxt/{split}-{key}", avg, global_step=global_step)
-                print(f"sv_lxt/{split}-{key}: {avg}")
-
             err, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
             logger.add_scalar(f'sv_lxt/{split}-EER', err, global_step=global_step)
             print(f'sv_lxt/{split}-ERR: {err}')
