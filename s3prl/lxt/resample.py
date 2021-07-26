@@ -5,6 +5,7 @@ import torchaudio
 from tqdm import tqdm
 from pathlib import Path
 from librosa.util import find_files
+torchaudio.set_audio_backend("sox_io")
 
 LXT_SAMPLE_RATE = 44100
 SAMPLE_RATE = 16000
