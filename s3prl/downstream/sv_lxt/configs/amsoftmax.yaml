@@ -3,10 +3,10 @@ runner:
   gradient_clipping: 1.0e+3
   gradient_accumulate_steps: 2
 
-  log_step: 500
-  eval_step: 10
-  save_step: 10000
-  max_keep: 20
+  log_step: 100
+  eval_step: 100
+  save_step: 100
+  max_keep: 1
   eval_dataloaders:
   - lxt_dev
   - lxt_test
