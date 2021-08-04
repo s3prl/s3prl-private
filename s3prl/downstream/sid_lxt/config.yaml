@@ -9,7 +9,6 @@ runner:
   max_keep: 1
   train_dataloader: lxt_train
   eval_dataloaders: 
-    - lxt_dev
     - lxt_test
 
 optimizer:
@@ -28,6 +27,7 @@ downstream_expert:
     lxt_train: ./data/superb_second_batch/1.1_sid_split_train0.5/train.txt
     lxt_dev: ./data/superb_second_batch/1.1_sid_split_train0.5/dev.txt
     lxt_test: ./data/superb_second_batch/1.1_sid_split_train0.5/test.txt
+    lxt_train_1hr: ./data/superb_second_batch/1.1_sid_split_train0.1/train.txt
 
     max_frames: 800000
     num_workers: 12
