@@ -21,6 +21,7 @@ from argparse import Namespace
 import torch
 import numpy as np
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, DistributedSampler
 from torch.distributed import is_initialized, get_rank, get_world_size
@@ -218,7 +219,7 @@ class DownstreamExpert(nn.Module):
         
         elif mode in ['dev', 'test', 'hidden']:
             agg_vec = self.model.inference(features_pad, attention_mask_pad.cuda())
-            agg_vec = agg_vec / (torch.norm(agg_vec, dim=-1).unsqueeze(-1))
+            agg_vec = F.normalize(agg_vec, dim=-1)
 
             # separate batched data to pair data.
             vec1, vec2 = self.separate_data(agg_vec)
