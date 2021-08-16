@@ -273,8 +273,6 @@ class OneHidden(nn.Module):
         self.linear = nn.Linear(input_dim, input_dim)
 
     def forward(self, feature_BxTxH, att_mask_BxTx1x1, **kwargs):
-        from ipdb import set_trace
-        set_trace()
         feature_BxTxH = self.linear(F.relu(feature_BxTxH))
         return feature_BxTxH
 
