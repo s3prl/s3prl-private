@@ -28,10 +28,10 @@ downstream_expert:
     vad_config:
       min_sec: 32000
 
-    lxt_audio: ./data/superb_second_batch/1.1_resampled/
-    lxt_train: ./data/superb_second_batch/1.1_sv_split/train.txt
-    lxt_dev: ./data/superb_second_batch/1.1_sv_split/dev.lst
-    lxt_test: ./data/superb_second_batch/1.1_sv_split/test.lst
+    lxt_audio: ./data/superb_all/1.1_resampled/
+    lxt_train: ./data/superb_all/sv_split_0.5_0.25_0.25/train.txt
+    lxt_dev: ./data/superb_all/sv_split_0.5_0.25_0.25/dev.lst
+    lxt_test: ./data/superb_all/sv_split_0.5_0.25_0.25/test.lst
 
     max_timestep: 128000
     train_batch_size: 20

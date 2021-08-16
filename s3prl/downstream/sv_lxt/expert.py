@@ -137,7 +137,7 @@ class DownstreamExpert(nn.Module):
             return loss
         
         else:
-            agg_vec = self.model.inference(features_pad, attention_mask_pad.cuda())
+            agg_vec = self.model(features_pad, attention_mask_pad.cuda())
             agg_vec = F.normalize(agg_vec, dim=-1)
 
             # separate batched data to pair data.
