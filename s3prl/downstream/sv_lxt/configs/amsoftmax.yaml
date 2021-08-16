@@ -42,7 +42,7 @@ downstream_expert:
   modelrc:
     module:
       XVector  # support to [ XVector, Identity, OneHidden ]
-    input_dim: 256
+    input_dim: 512
     agg_module: SP # support for ASP / SP / AP / MP 
                    # (Attentive Statistic Pooling / Statistic Pooling / Attentive Pooling / Mean Pooling)
     utter_module:
