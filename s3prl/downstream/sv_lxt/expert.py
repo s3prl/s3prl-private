@@ -30,7 +30,7 @@ from torch.distributed import is_initialized, get_rank, get_world_size
 #-------------#
 from utility.helper import is_leader_process
 from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
-from .dataset import LxtSvTrain, LxtSvEval
+from .dataset import LxtSvTrain, LxtSvEval, VoxCeleb1Train
 from .utils import EER
 
 
@@ -44,7 +44,9 @@ class DownstreamExpert(nn.Module):
         self.modelrc = downstream_expert['modelrc']
         self.expdir = expdir
 
-        self.train_dataset = LxtSvTrain(**self.datarc)
+        train_dataset_str = self.datarc.get("train_dataset", "lxt")
+        train_dataset_cls = LxtSvTrain if train_dataset_str == "lxt" else VoxCeleb1Train
+        self.train_dataset = train_dataset_cls(**self.datarc)
 
         # module
         self.connector = nn.Linear(self.upstream_dim, self.modelrc['input_dim'])
