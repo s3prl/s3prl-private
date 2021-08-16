@@ -1,5 +1,5 @@
 runner:
-  total_steps: 200000
+  total_steps: 10000
   gradient_clipping: 1.0e+3
   gradient_accumulate_steps: 2
 
@@ -41,12 +41,12 @@ downstream_expert:
 
   modelrc:
     module:
-      XVector  # support to [ XVector, Identity ]
-    input_dim: 512
+      XVector  # support to [ XVector, Identity, OneHidden ]
+    input_dim: 256
     agg_module: SP # support for ASP / SP / AP / MP 
                    # (Attentive Statistic Pooling / Statistic Pooling / Attentive Pooling / Mean Pooling)
     utter_module:
-      UtteranceExtractor # support to [UtteranceExtractor, UtteranceIdentity]
+      UtteranceExtractor # support to [UtteranceExtractor, UtteranceIdentity, UtteranceLinear]
     
     module_config:
       # You can comment it if you do not use this. To demo the usage, we will show all case.
@@ -57,7 +57,9 @@ downstream_expert:
       
       Identity:
         no_args: True
-        # do nothing    
+        # do nothing 
+      
+      OneHidden: {}
     
     ObjectiveLoss: AMSoftmaxLoss # You can specify config to AMSoftmaxLoss or SoftmaxLoss
     

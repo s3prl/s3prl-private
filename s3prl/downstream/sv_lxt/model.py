@@ -228,6 +228,15 @@ class UtteranceExtractor(nn.Module):
 
         return hid_BxH
 
+class UtteranceLinear(nn.Module):
+    def __init__(self, input_dim, out_dim, **kwargs):
+        super().__init__()
+        self.linear = nn.Linear(input_dim,out_dim)
+
+    def forward(self, x_BxH):
+        hid_BxH = self.linear(x_BxH)
+        return hid_BxH
+
 # General Interface
 class UtteranceIdentity(nn.Module):
     def __init__(self, input_dim, out_dim, **kwargs):
@@ -256,6 +265,17 @@ class Identity(nn.Module):
 
     def forward(self, feature_BxTxH, att_mask_BxTx1x1, **kwargs):
 
+        return feature_BxTxH
+
+class OneHidden(nn.Module):
+    def __init__(self, input_dim, **kwargs):
+        super().__init__()
+        self.linear = nn.Linear(input_dim, input_dim)
+
+    def forward(self, feature_BxTxH, att_mask_BxTx1x1, **kwargs):
+        from ipdb import set_trace
+        set_trace()
+        feature_BxTxH = self.linear(F.relu(feature_BxTxH))
         return feature_BxTxH
 
 class XVector(nn.Module):
