@@ -33,7 +33,8 @@ downstream_expert:
     lxt_dev: ./data/superb_all/sv_split_0.5_0.25_0.25/dev.lst
     lxt_test: ./data/superb_all/sv_split_0.5_0.25_0.25/test.lst
 
-    max_timestep: 128000
+    max_timestep: 64000
+    max_eval_timestep: 64000
     train_batch_size: 20
     eval_batch_size: 1
     num_workers: 8 

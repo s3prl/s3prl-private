@@ -1,5 +1,6 @@
 import os 
 import random
+from hashlib import sha256
 
 import tqdm
 import torch
@@ -34,7 +35,8 @@ class LxtSvTrain(Dataset):
         self.all_speakers = sorted(list(set(spkrs)))
         self.speaker_num = len(self.all_speakers)
 
-        cache_path = Path(os.path.dirname(__file__)) / '.wav_lengths' / f'{hash(utterance_ids)}_length.pt'
+        hashed = sha256(str.encode(" ".join(utterance_ids))).hexdigest()
+        cache_path = Path(os.path.dirname(__file__)) / '.wav_lengths' / f'{hashed}_length.pt'
         cache_path.parent.mkdir(exist_ok=True)
         wav_paths = [Path(lxt_audio) / f"{uid}.wav" for uid in utterance_ids]
 
@@ -82,6 +84,7 @@ class LxtSvEval(Dataset):
     def __init__(self, split, vad_config, lxt_audio, **kwargs):
         self.root = Path(lxt_audio)
         self.meta_data = kwargs[split]
+        self.max_timestep = kwargs.get("max_eval_timestep")
 
         self.pairs = []
         with open(self.meta_data, "r") as f:
@@ -102,8 +105,16 @@ class LxtSvEval(Dataset):
         wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
         wav2, _ = apply_effects_file(str(self.root / f"{uid2}.wav"), EFFECTS)
 
-        wav1 = wav1.squeeze(0).numpy()
-        wav2 = wav2.squeeze(0).numpy()
+        def trim_wav(wav):
+            length = len(wav)
+            if self.max_timestep is not None:
+                if length > self.max_timestep:
+                    start = random.randint(0, int(length - self.max_timestep))
+                    wav = wav[start : start + self.max_timestep]
+            return wav
+
+        wav1 = trim_wav(wav1.squeeze(0).numpy())
+        wav2 = trim_wav(wav2.squeeze(0).numpy())
 
         return wav1, wav2, uid1, uid2, y_label
     
