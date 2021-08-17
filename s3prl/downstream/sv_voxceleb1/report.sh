@@ -7,5 +7,5 @@ if [ ! -d "$expdir" ]; then
     exit 1
 fi
 
-ckpt_num=$(grep test-ERR $expdir/states-*.result | sort -nrk 2 | tee /dev/tty | wc -l)
+ckpt_num=$(grep ERR $expdir/states-*.result | sort -nrk 2 | tee /dev/tty | wc -l)
 echo $ckpt_num checkpoints evaluated.
