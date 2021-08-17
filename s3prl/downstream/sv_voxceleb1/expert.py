@@ -28,7 +28,7 @@ from torch.distributed import is_initialized, get_rank, get_world_size
 #-------------#
 from utility.helper import is_leader_process
 from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
-from .dataset import SpeakerVerifi_train, SpeakerVerifi_test
+from .dataset import SpeakerVerifi_train, SpeakerVerifi_test, LxtSvEval
 from .utils import EER
 
 
@@ -141,15 +141,13 @@ class DownstreamExpert(nn.Module):
             return self._get_eval_dataloader(self.dev_dataset)
         elif mode == 'test':
             return self._get_eval_dataloader(self.test_dataset)
-        elif mode == 'hidden':
-            if not hasattr(self, "hidden_dataset"):
-                hidden_config = {
-                    "vad_config": self.datarc['vad_config'],
-                    "file_path": self.datarc['hidden_path'], 
-                    "meta_data": self.datarc['hidden_list'],
-                }
-                self.hidden_dataset = SpeakerVerifi_test(**hidden_config)
-            return self._get_eval_dataloader(self.hidden_dataset)
+        elif "lxt" in mode:
+            tag = f"{mode}_dataset"
+            if not hasattr(self, tag):
+                dataset = LxtSvEval(mode, **self.datarc)
+                setattr(self, tag, dataset)
+            dataset = getattr(self, tag)
+            return self._get_eval_dataloader(dataset)
 
 
     def _get_train_dataloader(self, dataset):
@@ -210,14 +208,14 @@ class DownstreamExpert(nn.Module):
 
         features_pad = self.connector(features_pad)
 
-        if mode == 'train':
+        if "train" in mode:
             agg_vec = self.model(features_pad, attention_mask_pad.cuda())
             labels = torch.LongTensor(labels).to(features_pad.device)
             loss = self.objective(agg_vec, labels)
             records['loss'].append(loss.item())
             return loss
         
-        elif mode in ['dev', 'test', 'hidden']:
+        else:
             agg_vec = self.model.inference(features_pad, attention_mask_pad.cuda())
             agg_vec = F.normalize(agg_vec, dim=-1)
 
@@ -253,12 +251,12 @@ class DownstreamExpert(nn.Module):
         """
         save_names = []
 
-        if mode == 'train':
+        if "train" in mode:
             loss = torch.FloatTensor(records['loss']).mean().item()
             logger.add_scalar(f'sv-voxceleb1/{mode}-loss', loss, global_step=global_step)
             print(f'sv-voxceleb1/{mode}-loss: {loss}')
 
-        elif mode in ['dev', 'test', 'hidden']:
+        else:
             err, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
             logger.add_scalar(f'sv-voxceleb1/{mode}-EER', err, global_step=global_step)
             print(f'sv-voxceleb1/{mode}-ERR: {err}')
