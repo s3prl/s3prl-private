@@ -13,10 +13,14 @@ def read_file(filepath):
     with open(filepath, "r") as file:
         for line in file.readlines():
             line = line.strip()
-            key, value = line.split(",", maxsplit=1)
-            if len(value) == 0:
+
+            items = line.split(" ", maxsplit=1)
+            if len(items) == 1:
+                key, value = items[0], ""
                 print(f"{filepath}: {key} has no transcription")
-                continue
+            else:
+                key, value = items
+
             record[key] = value
     return record
 

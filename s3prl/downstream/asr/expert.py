@@ -81,7 +81,9 @@ class DownstreamExpert(nn.Module):
         self.datarc = downstream_expert['datarc']
         self.modelrc = downstream_expert['modelrc']
         self.expdir = expdir
-        self.dictionary = Dictionary.load(self.datarc["dict_path"])
+
+        task_folder = Path(__file__).parent
+        self.dictionary = Dictionary.load(self.datarc.get("dict_path", str(task_folder / "char.dict")))
 
         self.projector = nn.Linear(upstream_dim, self.modelrc['project_dim'])
         model_cls = eval(self.modelrc['select'])
@@ -215,9 +217,6 @@ class DownstreamExpert(nn.Module):
         hyps = [' '.join(hyp) for hyp in pred_words_batch]
 
         logpath = Path(self.expdir) / "inference.ark"
-        if logpath.is_file():
-            print(f"[asr] - {str(logpath)} already exists.")
-
         with open(logpath, "a") as file:
             for hyp, filename in zip(hyps, filenames):
                 print(f"{filename} {hyp}", file=file)

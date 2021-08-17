@@ -2,6 +2,7 @@ import re
 import pandas
 import argparse
 from tqdm import tqdm
+from pathlib import Path
 from fairseq.data import Dictionary
 
 parser = argparse.ArgumentParser()
@@ -12,6 +13,8 @@ args = parser.parse_args()
 
 csv = pandas.read_csv(args.csv)
 dictionary = Dictionary.load(args.dict)
+target_dir = Path(args.target_txt).parent
+target_dir.mkdir(exist_ok=True)
 
 with open(args.target_txt, "w") as file:
     for row_id, row in tqdm(csv.iterrows(), total=len(csv)):
@@ -36,4 +39,4 @@ with open(args.target_txt, "w") as file:
                 if idx != dictionary.unk_index
             ]
         ).replace(" ", "").replace("|", " ").strip()
-        file.write(f"{utterance_id},{truth}\n")
+        file.write(f"{utterance_id} {truth}\n")
