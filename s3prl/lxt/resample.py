@@ -21,7 +21,6 @@ if tgt_dir.is_dir():
     shutil.rmtree(tgt_dir)
 tgt_dir.mkdir()
 
-resampler = torchaudio.transforms.Resample(LXT_SAMPLE_RATE, SAMPLE_RATE)
 files = find_files(args.src_dir)
 for file in tqdm(files):
     file = Path(file)
@@ -29,9 +28,11 @@ for file in tqdm(files):
         file = Path(os.readlink(file))
 
     wav, sr = torchaudio.load(str(file))
-    assert sr == LXT_SAMPLE_RATE
+    resampler = torchaudio.transforms.Resample(sr, SAMPLE_RATE)
+    if sr != LXT_SAMPLE_RATE:
+        print(f"{file}: {sr}")
     wav = resampler(wav)
-    wav = wav.mean(dim=0, keepdim=True)
+    wav = wav[0:1]
 
     src_path = Path(file)
     tgt_path = tgt_dir.joinpath(src_path.resolve().relative_to(src_dir.resolve())).resolve()

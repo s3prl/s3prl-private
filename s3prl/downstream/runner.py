@@ -407,8 +407,8 @@ class Runner():
                     wav, sr = torchaudio.load(str(filepath))
                     if sr != SAMPLE_RATE:
                         resampler = torchaudio.transforms.Resample(sr, SAMPLE_RATE)
-                    wav = resampler(wav)
-                    wav.mean(0).view(-1)
+                        wav = resampler(wav)
+                    wav = wav[0]
                 wavs = [wav.to(self.args.device)]
 
                 for entry in self.all_entries:
