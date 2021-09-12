@@ -9,6 +9,7 @@ runner:
   max_keep: 1
   train_dataloader: lxt_train
   eval_dataloaders: 
+    - lxt_dev
     - lxt_test
 
 optimizer:
@@ -23,13 +24,12 @@ optimizer:
 
 downstream_expert: 
   datarc:
-    lxt_audio: ./data/superb_second_batch/1.1_resampled/
-    lxt_train: ./data/superb_second_batch/1.1_sid_split_train0.5/train.txt
-    lxt_dev: ./data/superb_second_batch/1.1_sid_split_train0.5/dev.txt
-    lxt_test: ./data/superb_second_batch/1.1_sid_split_train0.5/test.txt
-    lxt_train_1hr: ./data/superb_second_batch/1.1_sid_split_train0.1/train.txt
+    lxt_audio: data/superb_all/1.1_distributed/audio
+    lxt_train: data/superb_all/sid_split/train.txt
+    lxt_dev: data/superb_all/sid_split/dev.txt
+    lxt_test: data/superb_all/sid_split/test.txt
 
-    max_frames: 800000
+    max_frames: 900000
     num_workers: 12
 
   modelrc:
