@@ -5,13 +5,20 @@ import torch
 import torch.distributed as dist
 from torch.utils.data import Sampler, Dataset
 
-T_co = TypeVar('T_co', covariant=True)
+T_co = TypeVar("T_co", covariant=True)
+
 
 class DistributedMaxFramesBatchSampler(Sampler[T_co]):
-    def __init__(self, dataset: Dataset, num_replicas: Optional[int] = None,
-                 rank: Optional[int] = None, shuffle: bool = True,
-                 seed: int = 2147483647, drop_last: bool = False,
-                 max_frames: int = 16000 * 160) -> None:
+    def __init__(
+        self,
+        dataset: Dataset,
+        num_replicas: Optional[int] = None,
+        rank: Optional[int] = None,
+        shuffle: bool = True,
+        seed: int = 2147483647,
+        drop_last: bool = False,
+        max_frames: int = 16000 * 160,
+    ) -> None:
         if num_replicas is None:
             if not dist.is_available():
                 raise RuntimeError("Requires distributed package to be available")
@@ -23,7 +30,8 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
         if rank >= num_replicas or rank < 0:
             raise ValueError(
                 "Invalid rank {}, rank should be in the interval"
-                " [0, {}]".format(rank, num_replicas - 1))
+                " [0, {}]".format(rank, num_replicas - 1)
+            )
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank
@@ -45,14 +53,16 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
             if padding_size <= len(indices):
                 indices += indices[:padding_size]
             else:
-                indices += (indices * math.ceil(padding_size / len(indices)))[:padding_size]
+                indices += (indices * math.ceil(padding_size / len(indices)))[
+                    :padding_size
+                ]
         else:
             # remove tail of data to make it evenly divisible.
-            indices = indices[:self.total_size]
+            indices = indices[: self.total_size]
         assert len(indices) == self.total_size
 
         # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
+        indices = indices[self.rank : self.total_size : self.num_replicas]
         assert len(indices) == self.num_samples
         return iter([self.batches[index] for index in indices])
 
@@ -69,7 +79,7 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
             epoch (int): Epoch number.
         """
         self.epoch = epoch
-        
+
         if self.shuffle:
             # deterministically shuffle based on epoch and seed
             # or else different nodes might not produce the same shuffled indices
@@ -78,13 +88,15 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
             indices = torch.randperm(len(self.dataset), generator=g).tolist()  # type: ignore[arg-type]
         else:
             indices = list(range(len(self.dataset)))  # type: ignore[arg-type]
-        
+
         self.batches = []
         batch = []
         batch_lengths = []
         for index in indices:
             new_length = self.dataset.get_frames(index)
-            assert new_length <= self.max_frames, new_length
+            assert (
+                new_length <= self.max_frames
+            ), f"A single instacne has length greater than max_frames: {new_length} > {self.max_frames}. Please increase max_frames for DistributedMaxFramesBatchSampler."
 
             if max([new_length, *batch_lengths]) * (len(batch) + 1) > self.max_frames:
                 self.batches.append(batch)
@@ -105,9 +117,9 @@ class DistributedMaxFramesBatchSampler(Sampler[T_co]):
             self.num_samples = math.ceil(
                 # `type:ignore` is required because Dataset cannot provide a default __len__
                 # see NOTE in pytorch/torch/utils/data/sampler.py
-                (len(self.batches) - self.num_replicas) / self.num_replicas  # type: ignore[arg-type]
+                (len(self.batches) - self.num_replicas)
+                / self.num_replicas  # type: ignore[arg-type]
             )
         else:
             self.num_samples = math.ceil(len(self.batches) / self.num_replicas)  # type: ignore[arg-type]
         self.total_size = self.num_samples * self.num_replicas
-
