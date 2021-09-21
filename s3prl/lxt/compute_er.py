@@ -1,12 +1,15 @@
 import argparse
 from tqdm import tqdm
 from s3prl.downstream.ctc.metric import parse, wer, cer
+import pandas as pd
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--truth", required=True)
 parser.add_argument("--inference", required=True)
+parser.add_argument("--csv", required=True)
 parser.add_argument("--output", required=True)
 args = parser.parse_args()
+csv = pd.read_csv(args.csv)
 
 def read_file(filepath):
     record = {}
@@ -39,12 +42,14 @@ statistics = {}
 for key in inference:
     truth_text = truth[key]
     infer_text = inference.get(key)
+    csv_text = csv[csv['utterance_id'] == key]["utterance_text"].values[0]
 
     statistics[key] = {
         "WER": wer([infer_text], [truth_text]),
         "CER": cer([infer_text], [truth_text]),
         "infer": infer_text,
-        "truth": truth_text
+        "truth": truth_text,
+        "csv": csv_text,
     }
 
     truths.append(truth_text)
@@ -64,4 +69,5 @@ with open(args.output, "w") as file:
         print(f"WER: {stat['WER']}", file=file)
         print(f"INFER: {stat['infer']}", file=file)
         print(f"TRUTH: {stat['truth']}", file=file)
+        print(f"CSV: {stat['csv']}", file=file)
         print(file=file)
