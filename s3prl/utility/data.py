@@ -4,8 +4,23 @@ from typing import Optional, Iterator, TypeVar
 import torch
 import torch.distributed as dist
 from torch.utils.data import Sampler, Dataset
+from torch.distributed import is_initialized
+from torch.utils.data import Dataset, DistributedSampler
 
 T_co = TypeVar("T_co", covariant=True)
+
+
+def get_ddp_sampler(dataset: Dataset, epoch: int):
+    """
+    This function will create a DistributedSampler if DDP is initialized,
+    and will just return None if DDP is not initialized.
+    """
+    if is_initialized():
+        sampler = DistributedSampler(dataset)
+        sampler.set_epoch(epoch)
+    else:
+        sampler = None
+    return sampler
 
 
 class DistributedMaxFramesBatchSampler(Sampler[T_co]):

@@ -1,4 +1,5 @@
-import os 
+import os
+import re
 import sys
 import time
 import random
@@ -119,7 +120,7 @@ class SpeakerVerifi_test(Dataset):
         y_label, x1_path, x2_path = self.dataset[idx]
 
         def path2name(path):
-            return str(Path(path).relative_to(self.root))
+            return Path("-".join((Path(path).parts)[-3:])).stem
 
         x1_name = path2name(x1_path)
         x2_name = path2name(x2_path)
@@ -131,7 +132,7 @@ class SpeakerVerifi_test(Dataset):
         wav2 = wav2.squeeze(0)
 
         return wav1.numpy(), wav2.numpy(), x1_name, x2_name, int(y_label[0])
-    
+
     def collate_fn(self, data_sample):
         wavs1, wavs2, x1_names, x2_names, ylabels = zip(*data_sample)
         all_wavs = wavs1 + wavs2
