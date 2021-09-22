@@ -40,12 +40,12 @@ downstream_expert:
   datarc:
     dict_path: ./downstream/asr/char.dict
     
-    lxt_audio: ./data/superb_second_batch/1.1_resampled
-    lxt_text: result/lxt/asr_task1.1_organized/truth.txt
-    lxt_train_5hr: ./data/superb_second_batch/1.1_split_5hr/train.txt
-    lxt_train_1hr: ./data/superb_second_batch/1.1_split_1hr/train.txt
-    lxt_dev: ./data/superb_second_batch/1.1_split_5hr/dev.txt
-    lxt_test: ./data/superb_second_batch/1.1_split_5hr/test.txt
+    lxt_audio: data/superb_all/1.1_distributed/audio
+    lxt_text: data/superb_all/1.1_distributed/normalized_transcription.txt
+    lxt_train_5hr: data/superb_all/1.1_distributed/train_1hr/train.txt
+    lxt_train_1hr: data/superb_all/1.1_distributed/train_2hr/train.txt
+    lxt_dev: data/superb_all/1.1_distributed/train_1hr/dev.txt
+    lxt_test: data/superb_all/1.1_distributed/train_1hr/test.txt
 
     libri_root: /home/leo/d/datasets/LibriSpeech
     libri_train_360hr: ["train-clean-360"]
