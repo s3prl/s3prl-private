@@ -63,7 +63,7 @@ class Runner():
 
     def _init_model(self, model, name, trainable, interfaces=None):
         for interface in interfaces or []:
-            assert hasattr(model, interface)
+            assert hasattr(model, interface), interface
 
         self._load_weight(model, name)
 
@@ -129,7 +129,7 @@ class Runner():
 
 
     def _get_downstream(self):
-        Downstream = getattr(downstream, self.args.downstream)
+        Downstream = getattr(downstream.experts, self.args.downstream)
         model = Downstream(
             upstream_dim = self.featurizer.model.output_dim,
             upstream_rate = self.featurizer.model.downsample_rate,
@@ -212,13 +212,6 @@ class Runner():
                 dataloader = self.downstream.model.get_dataloader(train_split, epoch=epoch)
             except TypeError as e:
                 if "unexpected keyword argument 'epoch'" in str(e):
-                    show("[Runner] - Warning: If you are implementing a new task. This message should not"
-                        " appear. Please accept the epoch argument for your downstream's get_dataloader."
-                        " Also, setting the epoch for DistributedSampler should be already done before returning"
-                        " the dataloader. Please refer to the latest downstream/example/expert.py:get_dataloader."
-                        " This line is for backward compatibility only.",
-                        file=sys.stderr
-                    )
                     dataloader = self.downstream.model.get_dataloader(train_split)
                     if hasattr(dataloader, "sampler") and isinstance(dataloader.sampler, DistributedSampler):
                         dataloader.sampler.set_epoch(epoch)
@@ -429,14 +422,14 @@ class Runner():
 
     def inference(self):
         filepath = Path(self.args.evaluate_split)
-        assert filepath.is_file()
+        assert filepath.is_file(), filepath
         filename = filepath.stem
 
         if hasattr(self.downstream.model, "load_audio"):
             wav = self.downstream.model.load_audio(filepath)
         else:
             wav, sr = torchaudio.load(str(filepath))
-            assert sr == SAMPLE_RATE
+            assert sr == SAMPLE_RATE, sr
         wavs = [wav.view(-1).to(self.args.device)]
 
         for entry in self.all_entries:
