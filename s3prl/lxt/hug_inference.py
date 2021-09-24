@@ -18,6 +18,7 @@ model = Wav2Vec2ForCTC.from_pretrained("facebook/wav2vec2-large-960h-lv60-self")
 model.eval()
 
 audios = find_files(args.audio)
+Path(args.output).parent.mkdir(exist_ok=True)
 with open(args.output, "w") as file:
     for audio in tqdm(audios):
         wav, sr = torchaudio.load(audio)
