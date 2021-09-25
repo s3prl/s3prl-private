@@ -1,17 +1,19 @@
-import torch
+import numpy as np
 import argparse
-from collections import defaultdict
 from pathlib import Path
 
-from traitlets.traitlets import default
-
 parser = argparse.ArgumentParser()
-parser.add_argument("--query", required=True)
-parser.add_argument("--doc", required=True)
+parser.add_argument("--query", default="data/superb_all/queries.txt")
+parser.add_argument("--doc", default="data/superb_all/doc.txt")
+parser.add_argument("--doc_uids", default="data/superb_all/1.1_distributed/utt2spk")
 parser.add_argument("--output_dir", required=True)
+parser.add_argument("--trim_doc", action="store_true")
+parser.add_argument("--trim_query", action="store_true")
+parser.add_argument("--doc_num", type=int, default=2000)
+parser.add_argument("--query_min_doc", type=int, default=2)
 args = parser.parse_args()
 
-def read_file(filepath):
+def read_file(filepath, whitelist=None):
     mapping = {}
     with open(filepath) as file:
         lines = [line.strip() for line in file.readlines()]
@@ -19,11 +21,22 @@ def read_file(filepath):
             uid, text = line.split(" ", maxsplit=1)
             uid = uid.strip()
             text = text.strip()
+            if whitelist is not None and not uid in whitelist:
+                continue
             mapping[uid] = text
     return mapping
 
 queries = read_file(args.query)
-docs = read_file(args.doc)
+query_text2uid = {}
+for uid, text in queries.items():
+    text = tuple(text.split())
+    query_text2uid[text] = uid
+queries = {uid: " ".join(text) for text, uid in query_text2uid.items()}
+
+doc_uids = None
+if args.doc_uids is not None:
+    doc_uids = [line.strip().split()[0] for line in open(args.doc_uids).readlines()]
+docs = read_file(args.doc, doc_uids)
 
 def is_match(query, doc):
     query = query.split()
@@ -33,9 +46,41 @@ def is_match(query, doc):
             return True
     return False
 
+if args.trim_doc:
+    docs_used_by = {doc_id: [] for doc_id in docs.keys()}
+    for query_id, query_text in queries.items():
+        for doc_id, doc_text in docs.items():
+            match = is_match(query_text, doc_text)
+            if match:
+                docs_used_by[doc_id].append(query_id)
+
+    docs_id_sorted = sorted(list(docs.keys()), key=lambda k: len(docs_used_by[k]), reverse=True)
+    sub_docs = {doc_id: docs[doc_id] for doc_id in docs_id_sorted[:args.doc_num]}
+    docs = sub_docs
+
+if args.trim_query:
+    queries_used_by = {query_id: [] for query_id in queries.keys()}
+    for query_id, query_text in queries.items():
+        for doc_id, doc_text in docs.items():
+            match = is_match(query_text, doc_text)
+            if match:
+                queries_used_by[query_id].append(doc_id)
+
+    for query_id in list(queries.keys()):
+        if len(queries_used_by[query_id]) < args.query_min_doc:
+            queries.pop(query_id)
+            queries_used_by.pop(query_id)
+
+    queries_used_by_num = [len(v) for v in queries_used_by.values()]
+    q1, q3 = np.percentile(queries_used_by_num, (25, 75))
+    iqr = q3 - q1
+    minimum = q1 - 1.5 * iqr
+    maximum = q3 + 1.5 * iqr
+    sub_queries = {query_id: queries[query_id] for query_id in queries.keys() if (len(queries_used_by[query_id]) <= maximum and len(queries_used_by[query_id]) >= minimum)}
+    queries = sub_queries
+
 docs_used_by = {doc_id: [] for doc_id in docs.keys()}
 queries_used_by = {query_id: [] for query_id in queries.keys()}
-match_pairs = torch.BoolTensor([len(queries), len(docs)])
 for query_id, query_text in queries.items():
     for doc_id, doc_text in docs.items():
         match = is_match(query_text, doc_text)
