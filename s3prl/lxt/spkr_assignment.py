@@ -15,7 +15,7 @@ torchaudio.set_audio_backend("sox_io")
 parser = argparse.ArgumentParser()
 parser.add_argument("--csv", required=True)
 parser.add_argument("--audio", required=True)
-parser.add_argument("--trials", type=int, default=100)
+parser.add_argument("--trials", type=int, default=10000)
 parser.add_argument("--output", required=True)
 
 args = parser.parse_args()
