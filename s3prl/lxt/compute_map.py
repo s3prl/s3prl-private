@@ -1,5 +1,7 @@
 import torch
 import argparse
+from tqdm import tqdm
+from pathlib import Path
 from collections import defaultdict
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
@@ -24,10 +26,12 @@ def EER(labels, scores):
 parser = argparse.ArgumentParser()
 parser.add_argument("--scores", required=True)
 parser.add_argument("--labels", required=True)
+parser.add_argument("--query", required=True)
+parser.add_argument("--output_dir",required=True)
 args = parser.parse_args()
 
 def read_file(path):
-    records = defaultdict(lambda: defaultdict(lambda: -10))
+    records = defaultdict(lambda: defaultdict(lambda: None))
     with open(path) as file:
         lines = [line.strip().split() for line in file.readlines()]
         for query_id, doc_id, score in lines:
@@ -37,17 +41,30 @@ def read_file(path):
 scores = read_file(args.scores)
 labels = read_file(args.labels)
 
-aps = []
-eers = []
-for query_id in scores.keys():
-    doc_scores = [scores[query_id][doc_id] for doc_id in scores[query_id].keys()]
-    max_score = max([abs(score) for score in doc_scores])
-    doc_scores = [score / max_score for score in doc_scores]
-    doc_labels = [labels[query_id][doc_id] for doc_id in scores[query_id].keys()]
-    eer, threshold = EER(doc_labels, doc_scores)
-    eers.append(eer)
-    ap = average_precision_score(doc_labels, doc_scores)
-    aps.append(ap)
+metrics = []
+for query_id in tqdm(list(scores.keys())):
+    doc_scores = [scores[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
+    doc_labels = [labels[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
+    eer, threshold = EER(doc_labels.copy(), doc_scores.copy())
+    ap = average_precision_score(doc_labels.copy(), doc_scores.copy())
+    metrics.append((query_id, ap, eer))
 
-print("MAP:", torch.Tensor(aps).mean().item())
-print("EER:", torch.Tensor(eers).mean().item())
+    with (Path(args.output_dir) / f"{query_id}.result").open("w") as result:
+        id_with_score = list(zip(sorted(scores[query_id].keys()), doc_scores))
+        id_with_score.sort(key=lambda x: x[1], reverse=True)
+        for qid, score in id_with_score:
+            print(qid, score, file=result)
+
+with open(args.query) as file:
+    queryid2text = {}
+    for line in file.readlines():
+        query_id, text = line.strip().split(maxsplit=1)
+        queryid2text[query_id.strip()] = text.strip()
+
+with (Path(args.output_dir) / "result").open("w") as result:
+    metrics.sort(key=lambda x: x[1])
+    for query_id, ap, eer in metrics:
+        print(query_id, queryid2text[query_id], ap, eer, sep=" ", file=result)
+
+print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
+print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item())
