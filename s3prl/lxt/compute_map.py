@@ -26,8 +26,8 @@ def EER(labels, scores):
 parser = argparse.ArgumentParser()
 parser.add_argument("--scores", required=True)
 parser.add_argument("--labels", required=True)
-parser.add_argument("--query", required=True)
 parser.add_argument("--output_dir",required=True)
+parser.add_argument("--query")
 args = parser.parse_args()
 
 def read_file(path):
@@ -55,16 +55,17 @@ for query_id in tqdm(list(scores.keys())):
         for qid, score in id_with_score:
             print(qid, score, file=result)
 
-with open(args.query) as file:
-    queryid2text = {}
-    for line in file.readlines():
-        query_id, text = line.strip().split(maxsplit=1)
-        queryid2text[query_id.strip()] = text.strip()
+queryid2text = {}
+if args.query is not None:
+    with open(args.query) as file:
+        for line in file.readlines():
+            query_id, text = line.strip().split(maxsplit=1)
+            queryid2text[query_id.strip()] = text.strip()
 
 with (Path(args.output_dir) / "result").open("w") as result:
     metrics.sort(key=lambda x: x[1])
     for query_id, ap, eer in metrics:
-        print(query_id, queryid2text[query_id], ap, eer, sep=" ", file=result)
+        print(query_id, queryid2text.get(query_id, "None"), ap, eer, sep=" ", file=result)
 
 with (Path(args.output_dir) / "metrics").open("w") as output:
     print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
