@@ -9,8 +9,8 @@ parser.add_argument("--doc_uids", default="data/superb_all/1.1_distributed/utt2s
 parser.add_argument("--output_dir", required=True)
 parser.add_argument("--trim_doc", action="store_true")
 parser.add_argument("--trim_query", action="store_true")
-parser.add_argument("--doc_num", type=int, default=2000)
-parser.add_argument("--query_min_doc", type=int, default=2)
+parser.add_argument("--doc_num", type=int, default=500)
+parser.add_argument("--query_min_doc", type=int, default=1)
 args = parser.parse_args()
 
 def read_file(filepath, whitelist=None):
@@ -58,19 +58,19 @@ if args.trim_doc:
     sub_docs = {doc_id: docs[doc_id] for doc_id in docs_id_sorted[:args.doc_num]}
     docs = sub_docs
 
+queries_used_by = {query_id: [] for query_id in queries.keys()}
+for query_id, query_text in queries.items():
+    for doc_id, doc_text in docs.items():
+        match = is_match(query_text, doc_text)
+        if match:
+            queries_used_by[query_id].append(doc_id)
+
+for query_id in list(queries.keys()):
+    if len(queries_used_by[query_id]) < args.query_min_doc:
+        queries.pop(query_id)
+        queries_used_by.pop(query_id)
+
 if args.trim_query:
-    queries_used_by = {query_id: [] for query_id in queries.keys()}
-    for query_id, query_text in queries.items():
-        for doc_id, doc_text in docs.items():
-            match = is_match(query_text, doc_text)
-            if match:
-                queries_used_by[query_id].append(doc_id)
-
-    for query_id in list(queries.keys()):
-        if len(queries_used_by[query_id]) < args.query_min_doc:
-            queries.pop(query_id)
-            queries_used_by.pop(query_id)
-
     queries_used_by_num = [len(v) for v in queries_used_by.values()]
     q1, q3 = np.percentile(queries_used_by_num, (25, 75))
     iqr = q3 - q1
