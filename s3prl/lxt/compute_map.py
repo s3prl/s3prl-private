@@ -66,5 +66,8 @@ with (Path(args.output_dir) / "result").open("w") as result:
     for query_id, ap, eer in metrics:
         print(query_id, queryid2text[query_id], ap, eer, sep=" ", file=result)
 
-print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
-print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item())
+with (Path(args.output_dir) / "metrics").open("w") as output:
+    print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
+    print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item())
+    print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item(), file=output)
+    print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item(), file=output)
