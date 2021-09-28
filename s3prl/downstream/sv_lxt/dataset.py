@@ -127,7 +127,7 @@ class LxtSvEval(Dataset):
 
 
 class VoxCeleb1Train(Dataset):
-    def __init__(self, vad_config, voxceleb1_path, voxceleb1_spkr=30, max_timestep=None, n_jobs=12, **kwargs):
+    def __init__(self, vad_config, voxceleb1_path, voxceleb1_spkr=-1, max_timestep=None, n_jobs=12, **kwargs):
         self.vad_c = vad_config 
         self.max_timestep = max_timestep
         self.dataset = []
@@ -160,7 +160,8 @@ class VoxCeleb1Train(Dataset):
 
         random.seed(0)
         self.all_speakers.sort()
-        self.all_speakers = random.sample(self.all_speakers, k=voxceleb1_spkr)
+        if voxceleb1_spkr >= 0:
+            self.all_speakers = random.sample(self.all_speakers, k=voxceleb1_spkr)
         self.speaker_num = len(self.all_speakers)
         self.dataset = [path for path in self.dataset if self.path2spkr(path) in self.all_speakers]
         print(f"[VoxCeleb1] - {self.speaker_num} speakers with {len(self.dataset)} utterances")

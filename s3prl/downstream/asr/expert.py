@@ -13,6 +13,7 @@ from torch.distributed import is_initialized
 from torch.nn.utils.rnn import pad_sequence
 
 from .model import *
+from ..model import *
 from .dictionary import Dictionary
 from .dataset import SequenceDataset, HiddenDataset
 
@@ -27,12 +28,8 @@ def token_to_word(text):
 def get_decoder(decoder_args_dict, dictionary):
     decoder_args = Namespace(**decoder_args_dict)
 
-    if decoder_args.decoder_type == "viterbi":
-        from examples.speech_recognition.w2l_decoder import W2lViterbiDecoder
-        return W2lViterbiDecoder(decoder_args, dictionary)
-
-    elif decoder_args.decoder_type == "kenlm":
-        from examples.speech_recognition.w2l_decoder import W2lKenLMDecoder
+    if decoder_args.decoder_type == "kenlm":
+        from .w2l_decoder import W2lKenLMDecoder
         decoder_args.beam_size_token = len(dictionary)
         if isinstance(decoder_args.unk_weight, str):
             decoder_args.unk_weight = eval(decoder_args.unk_weight)
@@ -82,9 +79,8 @@ class DownstreamExpert(nn.Module):
         self.modelrc = downstream_expert['modelrc']
         self.expdir = expdir
 
-        task_folder = Path(__file__).parent
-        self.dictionary = Dictionary.load(self.datarc.get("dict_path", str(task_folder / "char.dict")))
-
+        self.dictionary = Dictionary.load(self.datarc.get("dict_path", str(Path(__file__).parent / "char.dict")))
+    
         self.projector = nn.Linear(upstream_dim, self.modelrc['project_dim'])
         model_cls = eval(self.modelrc['select'])
         model_conf = self.modelrc[self.modelrc['select']]
@@ -121,7 +117,7 @@ class DownstreamExpert(nn.Module):
                 2. sample_rate == 16000
                 3. directly loaded by torchaudio
         """
-        batch_size = self.datarc['batch_size'] if split == "train" else self.datarc['eval_batch_size']
+        batch_size = self.datarc['batch_size'] if "train" in split else self.datarc['eval_batch_size']
         if not hasattr(self, f'{split}_dataset'):
             if "hidden" in split:
                 setattr(self, f'{split}_dataset', HiddenDataset(**self.datarc))
@@ -216,15 +212,15 @@ class DownstreamExpert(nn.Module):
         _, pred_words_batch = self._decode(log_probs.float().contiguous().cpu(), log_probs_len)
         hyps = [' '.join(hyp) for hyp in pred_words_batch]
 
-        logpath = Path(self.expdir) / "inference.ark"
-        with open(logpath, "a") as file:
-            for hyp, filename in zip(hyps, filenames):
-                print(f"{filename} {hyp}", file=file)
+        if filenames != []:
+            with open(Path(self.expdir) / "inference.ark", "w") as file:
+                for hyp, filename in zip(hyps, filenames):
+                    file.write(f"{filename} {hyp}\n")
 
         return hyps
 
     # Interface
-    def forward(self, split, features, labels, records, **kwargs):
+    def forward(self, split, features, labels, filenames, records, **kwargs):
         """
         Args:
             split: string
@@ -258,7 +254,6 @@ class DownstreamExpert(nn.Module):
                 a single scalar in torch.FloatTensor
         """
         log_probs, log_probs_len = self._get_log_probs(features)
-
         device = features[0].device
         labels = [torch.IntTensor(l) for l in labels]
         labels_len = torch.IntTensor([len(label) for label in labels]).to(device=device)
@@ -296,6 +291,7 @@ class DownstreamExpert(nn.Module):
         records['target_words'] += target_words_batch
         records['pred_tokens'] += pred_tokens_batch
         records['pred_words'] += pred_words_batch
+        records['filenames'] += filenames
 
         return loss
 
@@ -356,14 +352,15 @@ class DownstreamExpert(nn.Module):
             self.best_score = torch.ones(1) * wer
             save_names.append(f'{split}-best.ckpt')
 
-        if 'test' in split or 'dev' in split or 'hidden' in split:
-            hyp_ark = open(os.path.join(self.expdir, f'{split}-hyp.ark'), 'w')
-            ref_ark = open(os.path.join(self.expdir, f'{split}-ref.ark'), 'w')
-            for idx, (hyp, ref) in enumerate(zip(records['pred_words'], records['target_words'])):
+        if 'test' in split or 'dev' in split:
+            lm = "noLM" if self.decoder is None else "LM"
+            hyp_ark = open(os.path.join(self.expdir, f'{split}-{lm}-hyp.ark'), 'w')
+            ref_ark = open(os.path.join(self.expdir, f'{split}-{lm}-ref.ark'), 'w')
+            for filename, hyp, ref in zip(records['filenames'], records['pred_words'], records['target_words']):
                 hyp = ' '.join(hyp)
                 ref = ' '.join(ref)
-                hyp_ark.write(f'{idx} {hyp}\n')
-                ref_ark.write(f'{idx} {ref}\n')
+                hyp_ark.write(f'{filename} {hyp}\n')
+                ref_ark.write(f'{filename} {ref}\n')
             hyp_ark.close()
             ref_ark.close()
 

@@ -21,7 +21,7 @@ class LxtAsrDataset(Dataset):
         pairs = []
         with self.text_root.open() as file:
             for line in tqdm(file.readlines()):
-                utterance_id, transcript = line.strip().split(",", maxsplit=1)
+                utterance_id, transcript = line.strip().split(" ", maxsplit=1)
                 if utterance_id not in whitelist:
                     continue
 

@@ -2,11 +2,11 @@ import os
 import sys
 import math
 import glob
+import uuid
 import shutil
 import random
 import tempfile
 import importlib
-from tqdm import tqdm
 from pathlib import Path
 
 import torch
@@ -14,6 +14,7 @@ import torchaudio
 import numpy as np
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
+from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import is_initialized, get_rank, get_world_size
 
@@ -23,6 +24,8 @@ from s3prl.optimizers import get_optimizer
 from s3prl.schedulers import get_scheduler
 from s3prl.upstream.interfaces import Featurizer
 from s3prl.utility.helper import is_leader_process, get_model_state, show, defaultdict
+
+from huggingface_hub import HfApi, HfFolder, Repository
 
 SAMPLE_RATE = 16000
 
@@ -60,7 +63,7 @@ class Runner():
 
     def _init_model(self, model, name, trainable, interfaces=None):
         for interface in interfaces or []:
-            assert hasattr(model, interface)
+            assert hasattr(model, interface), interface
 
         self._load_weight(model, name)
 
@@ -73,7 +76,19 @@ class Runner():
 
 
     def _get_upstream(self):
-        Upstream = getattr(hub, self.args.upstream)
+        if "from_hf_hub" in self.args and self.args.from_hf_hub == True:
+            from huggingface_hub import snapshot_download
+
+            print(f'[Runner] - Downloading upstream model {self.args.upstream} from the Hugging Face Hub')
+            filepath = snapshot_download(self.args.upstream, use_auth_token=True)
+            sys.path.append(filepath)
+
+            from expert import UpstreamExpert
+            Upstream = UpstreamExpert
+            ckpt_path = os.path.join(filepath, self.args.upstream_model_name)
+        else:
+            Upstream = getattr(hub, self.args.upstream)
+            ckpt_path = self.args.upstream_ckpt
         upstream_refresh = self.args.upstream_refresh
 
         if is_initialized() and get_rank() > 0:
@@ -81,7 +96,7 @@ class Runner():
             upstream_refresh = False
 
         model = Upstream(
-            ckpt = self.args.upstream_ckpt,
+            ckpt = ckpt_path,
             model_config = self.args.upstream_model_config,
             refresh = upstream_refresh,
         ).to(self.args.device)
@@ -93,13 +108,16 @@ class Runner():
             model = model,
             name = 'Upstream',
             trainable = self.args.upstream_trainable,
+            interfaces = ["get_downsample_rates"]
         )
 
 
     def _get_featurizer(self):
         model = Featurizer(
-            self.upstream.model, self.args.upstream_feature_selection,
-            upstream_device=self.args.device,
+            upstream = self.upstream.model,
+            feature_selection = self.args.upstream_feature_selection,
+            layer_selection = self.args.upstream_layer_selection,
+            upstream_device = self.args.device,
         ).to(self.args.device)
 
         return self._init_model(
@@ -111,7 +129,7 @@ class Runner():
 
 
     def _get_downstream(self):
-        Downstream = getattr(downstream, self.args.downstream)
+        Downstream = getattr(downstream.experts, self.args.downstream)
         model = Downstream(
             upstream_dim = self.featurizer.model.output_dim,
             upstream_rate = self.featurizer.model.downsample_rate,
@@ -190,7 +208,16 @@ class Runner():
         epoch = self.init_ckpt.get('Epoch', 0)
         train_split = self.config['runner'].get("train_dataloader", "train")
         while pbar.n < pbar.total:
-            dataloader = self.downstream.model.get_dataloader(train_split, epoch=epoch)
+            try:
+                dataloader = self.downstream.model.get_dataloader(train_split, epoch=epoch)
+            except TypeError as e:
+                if "unexpected keyword argument 'epoch'" in str(e):
+                    dataloader = self.downstream.model.get_dataloader(train_split)
+                    if hasattr(dataloader, "sampler") and isinstance(dataloader.sampler, DistributedSampler):
+                        dataloader.sampler.set_epoch(epoch)
+                else:
+                    raise
+
             for batch_id, (wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc='train', file=tqdm_file)):
                 # try/except block for forward/backward
                 try:
@@ -317,6 +344,9 @@ class Runner():
             epoch += 1
 
         pbar.close()
+
+        if self.args.push_to_hf_hub:
+            self.push_to_huggingface_hub()
         if is_leader_process():
             logger.close()
 
@@ -390,35 +420,85 @@ class Runner():
 
         return [] if type(save_names) is not list else save_names
 
-
     def inference(self):
-        path = Path(self.args.evaluate_split)
-        if path.is_dir():
-            from librosa.util import find_files
-            paths = find_files(str(path))
+        filepath = Path(self.args.evaluate_split)
+        assert filepath.is_file(), filepath
+        filename = filepath.stem
+
+        if hasattr(self.downstream.model, "load_audio"):
+            wav = self.downstream.model.load_audio(filepath)
         else:
-            paths = [str(path)]
+            wav, sr = torchaudio.load(str(filepath))
+            assert sr == SAMPLE_RATE, sr
+        wavs = [wav.view(-1).to(self.args.device)]
 
-        for filepath in tqdm(paths):
-            try:
-                if hasattr(self.downstream.model, "load_audio"):
-                    wav = self.downstream.model.load_audio(filepath)
-                else:
-                    wav, sr = torchaudio.load(str(filepath))
-                    if sr != SAMPLE_RATE:
-                        resampler = torchaudio.transforms.Resample(sr, SAMPLE_RATE)
-                        wav = resampler(wav)
-                    wav = wav[0]
-                wavs = [wav.to(self.args.device)]
+        for entry in self.all_entries:
+            entry.model.eval()
 
-                for entry in self.all_entries:
-                    entry.model.eval()
+        with torch.no_grad():
+            features = self.upstream.model(wavs)
+            features = self.featurizer.model(wavs, features)
+            self.downstream.model.inference(features, [filename])
 
-                filename = Path(filepath).stem
-                with torch.no_grad():
-                    features = self.upstream.model(wavs)
-                    features = self.featurizer.model(wavs, features)
-                    self.downstream.model.inference(features, [filename])
+    def push_to_huggingface_hub(self):
+        if self.args.hf_hub_org.lower() != "none":
+            organization = self.args.hf_hub_org
+        else:
+            organization = os.environ.get("HF_USERNAME")
+        huggingface_token = HfFolder.get_token()
+        print(f"[Runner] - Organisation to push fine-tuned model to: {organization}")
+        
+        # Create repo on the Hub
+        upstream_model = self.args.upstream.replace("/", "__")
+        repo_name = f"superb-s3prl-{upstream_model}-{self.args.downstream}-{str(uuid.uuid4())[:8]}"
+        repo_url = HfApi().create_repo(
+            token=huggingface_token,
+            name=repo_name,
+            organization=organization,
+            exist_ok=True,
+            private=True,
+        )
+        print(f"[Runner] - Created Hub repo: {repo_url}")
 
-            except RuntimeError as e:
-                print(f"{filepath} -> {str(e)}")
+        # Download repo and copy templates
+        HF_HUB_DIR = "hf_hub"
+        REPO_PATH = os.path.join(self.args.expdir, HF_HUB_DIR, repo_name)
+        model_repo = Repository(
+            local_dir=REPO_PATH, clone_from=repo_url, use_auth_token=huggingface_token
+        )
+        TEMPLATES_PATH = Path(f"./downstream/{self.args.downstream}/hf_hub_templates/")
+        if TEMPLATES_PATH.exists():
+            shutil.copytree(TEMPLATES_PATH, REPO_PATH, dirs_exist_ok=True)
+        else:
+            print(f"[Runner] - No Hugging Face Hub template found for downstream task! Experiment files will still be pushed to the Hub in raw form")
+
+        # Copy checkpoints, tensorboard logs, and args / configs
+        shutil.copytree(self.args.expdir, REPO_PATH, dirs_exist_ok=True, ignore=shutil.ignore_patterns(HF_HUB_DIR))
+
+        # Inject upstream model name into model card
+        with open(os.path.join(REPO_PATH, "README.md"), "r+") as f:
+            readme = f.read()
+            readme = readme.replace("${upstream_model}", self.args.upstream)
+            f.seek(0)
+            f.write(readme)
+            f.truncate()
+
+        # By default we use model.ckpt in the PreTrainedModel interface, so
+        # rename the best checkpoint to match this convention
+        checkpoints = list(Path(REPO_PATH).glob("*best*.ckpt"))
+        if len(checkpoints) == 0:
+            print("[Runner] - Did not find a best checkpoint! Using the final checkpoint instead ...")
+            CKPT_PATH = (
+                os.path.join(REPO_PATH, f"states-{self.config['runner']['total_steps']}.ckpt")
+                )
+        elif len(checkpoints) > 1:
+            print(f"[Runner] - More than one best checkpoint found! Using {checkpoints[0]} as default ...")
+            CKPT_PATH = checkpoints[0]
+        else:
+            print(f"[Runner] - Found best checkpoint {checkpoints[0]}!")
+            CKPT_PATH = checkpoints[0]
+        shutil.move(CKPT_PATH, os.path.join(REPO_PATH, "model.ckpt"))
+        model_repo.lfs_track("*.ckpt")
+        print("[Runner] - Pushing model files to the Hub ...")
+        model_repo.push_to_hub()
+        print("T[Runner] - raining run complete!")

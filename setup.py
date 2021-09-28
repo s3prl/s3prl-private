@@ -26,7 +26,7 @@ requirements = [
     "gdown>=3.12.2",
     "cython>=0.29.21",
     "packaging>=20.9",
-    "transformers>=4.6.1",
+    "transformers>=4.10.0,<5.0",
     "dtw-python==1.1.6",
     "asteroid==0.4.4",
     "kaldi_io",
@@ -42,6 +42,8 @@ requirements = [
     "editdistance",
     "easydict",
     "catalyst",
+    "sentencepiece",
+    "huggingface_hub @ git+https://github.com/huggingface/huggingface_hub.git#egg=huggingface_hub" # TODO: Replace with v0.0.17 when it is released
 ]
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
