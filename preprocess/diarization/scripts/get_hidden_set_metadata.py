@@ -34,18 +34,18 @@ def create_hidden_set_metadata(hidden_set_dir, md_dir):
     # Go through each directory and create associated metadata
     for ldir in ["split_train_1hr", "split_train_5hr"]:
         # Generate the dataframe relative to the directory
-        dir_metadata = create_hidden_set_dataframe(hidden_set_dir, ldir,
+        dir_md_tr, dir_md_cv, dir_md_tt = create_hidden_set_dataframe(hidden_set_dir, ldir,
                                                     speakers_metadata)
-        # Filter out files that are shorter than 3s
-        num_samples = NUMBER_OF_SECONDS * RATE
-        dir_metadata = dir_metadata[
-            dir_metadata['length'] >= num_samples]
-        # Sort the dataframe according to ascending Length
-        dir_metadata = dir_metadata.sort_values('length')
-        # Write the dataframe in a .csv in the metadata directory
-        save_path = os.path.join(md_dir, ldir + '.csv')
-        dir_metadata.to_csv(save_path, index=False)
-
+        for dir_metadata, label in zip([dir_md_tr, dir_md_cv, dir_md_tt], ["tr", "cv", "tt"]):
+            # Filter out files that are shorter than 3s
+            num_samples = NUMBER_OF_SECONDS * RATE
+            dir_metadata = dir_metadata[
+                dir_metadata['length'] >= num_samples]
+            # Sort the dataframe according to ascending Length
+            dir_metadata = dir_metadata.sort_values('length')
+            # Write the dataframe in a .csv in the metadata directory
+            save_path = os.path.join(md_dir, "{}-".format(label) + ldir + '.csv')
+            dir_metadata.to_csv(save_path, index=False)
 
 def create_speakers_dataframe(hidden_set_dir):
     """ Read metadata from the hidden_set dataset and collect infos
@@ -78,9 +78,9 @@ def get_split_metadata(subdir):
     for tr_utt in train_file.read().split("\n"):
         split_meta[tr_utt] = "tr"
     for dev_utt in dev_file.read().split("\n"):
-        split_meta[dev_utt] = "dev"
+        split_meta[dev_utt] = "cv"
     for test_utt in test_file.read().split("\n"):
-        split_meta[test_utt] = "test"
+        split_meta[test_utt] = "tt"
 
     train_file.close(), dev_file.close(), test_file.close()
     return split_meta
@@ -101,7 +101,11 @@ def create_hidden_set_dataframe(hidden_set_dir, subdir, speakers_md):
     split_md = get_split_metadata(dir_path)
 
     # Create the dataframe corresponding to this directory
-    dir_md = pd.DataFrame(columns=['speaker_ID', 'sex', 'subset',
+    dir_md_tr = pd.DataFrame(columns=['speaker_ID', 'sex', 'subset',
+                                   'length', 'origin_path'])
+    dir_md_cv = pd.DataFrame(columns=['speaker_ID', 'sex', 'subset',
+                                   'length', 'origin_path'])
+    dir_md_tt = pd.DataFrame(columns=['speaker_ID', 'sex', 'subset',
                                    'length', 'origin_path'])
 
     # Go through the sound file list
@@ -119,8 +123,13 @@ def create_hidden_set_dataframe(hidden_set_dir, subdir, speakers_md):
         # Get the sound file relative path
         rel_path = os.path.relpath(abs_path, hidden_set_dir)
         # Add information to the dataframe
-        dir_md.loc[len(dir_md)] = [spk_id, sex, subset, length, rel_path]
-    return dir_md
+        if subset == "tr":
+            dir_md_tr.loc[len(dir_md_tr)] = [spk_id, sex, subset, length, rel_path]
+        elif subset == "cv":
+            dir_md_cv.loc[len(dir_md_cv)] = [spk_id, sex, subset, length, rel_path]
+        else:
+            dir_md_tt.loc[len(dir_md_tt)] = [spk_id, sex, subset, length, rel_path]
+    return dir_md_tr, dir_md_cv, dir_md_tt
 
 
 if __name__ == "__main__":
