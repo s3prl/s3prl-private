@@ -1,5 +1,4 @@
 import argparse
-from collections import defaultdict
 import torchaudio
 from tqdm import tqdm
 from pathlib import Path
@@ -73,13 +72,18 @@ print("train", train_secs / args.train, train_secs/60/60, len(train_spkrs), np.m
 
 Path(args.output_dir).mkdir(exist_ok=True)
 def output_split(split):
+    split_dir = Path(args.output_dir) / split
+    split_dir.mkdir(exist_ok=True)
+    spk2utt = (split_dir / "spk2utt").open("w")
+    utt2spk = (split_dir / "utt2spk").open("w")
+
     spkrs = eval(f"{split}_spkrs")
     uids = []
     for spkr in spkrs:
-        uids += spkr_uids[spkr]
-    with open(Path(args.output_dir) / f"{split}.txt", "w") as file:
-        for uid in uids:
-            print(uid, file=file)
+        single_spkr_uids = spkr_uids[spkr]
+        print(spkr, " ".join(single_spkr_uids), file=spk2utt)
+        for uid in single_spkr_uids:
+            print(uid, spkr, file=utt2spk)
 
 output_split("dev")
 output_split("test")
