@@ -76,6 +76,7 @@ def output_split(split):
     split_dir.mkdir(exist_ok=True)
     spk2utt = (split_dir / "spk2utt").open("w")
     utt2spk = (split_dir / "utt2spk").open("w")
+    utt = (split_dir / "utt").open("w")
 
     spkrs = eval(f"{split}_spkrs")
     uids = []
@@ -84,6 +85,7 @@ def output_split(split):
         print(spkr, " ".join(single_spkr_uids), file=spk2utt)
         for uid in single_spkr_uids:
             print(uid, spkr, file=utt2spk)
+            print(uid, file=utt)
 
 output_split("dev")
 output_split("test")
