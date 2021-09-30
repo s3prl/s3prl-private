@@ -11,6 +11,11 @@ import argparse
 import webrtcvad
 
 
+def pad_zero(number, size=6):
+    number = str(number)
+    return (size - len(number)) * "0" + number
+
+
 def read_wave(path):
     """Reads a .wav file.
     Takes the path, and returns (PCM audio data, sample rate).
@@ -89,37 +94,39 @@ def process_metadata(metadata, target_dir):
     reco2dur = open(os.path.join(target_dir, "reco2dur"), "w", encoding="utf-8")
 
     spk2utt_cache = {}
-
+    mix_id_count, spk_id_count, reco_id_count = 0, 0, 0
     with open(metadata, "r", encoding="utf-8") as f:
         header = f.readline().split(",")
         assert len(header) == 6
         for linenum, line in enumerate(f, 1):
             mix_id, mix_path, source1_wav, source2_wav, _, length = line.strip().split(",")
+            new_mix_id = pad_zero(mix_id_count)
+            mix_id_count += 1
 
-            split_id = mix_id.find(".wav_") + 4
-            source1_id, source2_id = mix_id[:split_id], mix_id[split_id + 1:]
-            spk1, spk2 = source1_id.split("-")[1], source2_id.split("-")[1]
-            reco1, reco2 = source1_id, source2_id
-            wavscp.write("{} {}\n".format(mix_id, mix_path))
+            reco1, reco2 = pad_zero(reco_id_count), pad_zero(reco_id_count + 1)
+            reco_id_count += 2
+            spk1, spk2 = pad_zero(spk_id_count), pad_zero(spk_id_count + 1)
+            spk_id_count += 2
+            wavscp.write("{} {}\n".format(new_mix_id, mix_path))
             spk1_segs, spk2_segs = get_start_end(source1_wav), get_start_end(source2_wav)
 
             # spk1_segs
             start, end = spk1_segs
-            seg_id = "{}_{}_{}".format(mix_id, float2str(start), float2str(end))
-            segments.write("{} {} {} {}\n".format(seg_id, mix_id, start, end))
+            seg_id = "{}_{}_{}_{}".format(new_mix_id, float2str(start), float2str(end), spk1)
+            segments.write("{} {} {} {}\n".format(seg_id, new_mix_id, start, end))
             utt2spk.write("{} {}\n".format(seg_id, spk1))
-            rttm.write("SPEAKER\t{}\t1\t{}\t{}\t<NA>\t<NA>\t{}\t<NA>\n".format(mix_id, start, end-start, spk1))
-            spk2utt_cache[spk1] = spk2utt_cache.get(spk1, []) + [mix_id]
+            rttm.write("SPEAKER\t{}\t1\t{}\t{}\t<NA>\t<NA>\t{}\t<NA>\n".format(new_mix_id, start, end-start, spk1))
+            spk2utt_cache[spk1] = spk2utt_cache.get(spk1, []) + [new_mix_id]
 
             # spk2_segs
             start, end = spk2_segs
-            seg_id = "{}_{}_{}".format(mix_id, float2str(start), float2str(end))
-            segments.write("{} {} {} {}\n".format(seg_id, mix_id, start, end))
+            seg_id = "{}_{}_{}_{}".format(new_mix_id, float2str(start), float2str(end), spk2)
+            segments.write("{} {} {} {}\n".format(seg_id, new_mix_id, start, end))
             utt2spk.write("{} {}\n".format(seg_id, spk2))
-            rttm.write("SPEAKER\t{}\t1\t{}\t{}\t<NA>\t<NA>\t{}\t<NA>\n".format(mix_id, start, end-start, spk2))
-            spk2utt_cache[spk2] = spk2utt_cache.get(spk2, []) + [mix_id]
+            rttm.write("SPEAKER\t{}\t1\t{}\t{}\t<NA>\t<NA>\t{}\t<NA>\n".format(new_mix_id, start, end-start, spk2))
+            spk2utt_cache[spk2] = spk2utt_cache.get(spk2, []) + [new_mix_id]
 
-            reco2dur.write("{} {}\n".format(mix_id, float(length) / 16000))
+            reco2dur.write("{} {}\n".format(new_mix_id, float(length) / 16000))
 
     for spk_id in spk2utt_cache.keys():
         spk2utt.write("{} {}\n".format(spk_id, " ".join(spk2utt_cache[spk_id])))
