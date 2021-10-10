@@ -72,6 +72,9 @@ for (spkr1, spkr2) in diff_spkr_pairs:
     sampled_pairs = random.sample(uttr_pairs, k=uttr_pair_per_spkr_pair)
     final_diff_pairs += sampled_pairs
 
+print("same spk pairs: ", len(final_same_pairs))
+print("diff spk pairs: ", len(final_diff_pairs))
+
 final_pairs = []
 pivots = [final_same_pairs, final_diff_pairs] * 1000000
 while len(final_same_pairs) > 0 or len(final_diff_pairs) > 0:
