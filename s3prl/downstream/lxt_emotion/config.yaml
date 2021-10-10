@@ -1,7 +1,7 @@
 runner:
   total_steps: 30000
   gradient_clipping: 1
-  gradient_accumulate_steps: 8
+  gradient_accumulate_steps: 4
 
   log_step: 500
   eval_step: 1000
@@ -24,11 +24,12 @@ optimizer:
 
 downstream_expert:
   datarc:
-    root: ./data/superb_second_batch/1.2_organized/
-    csv: ./data/superb_second_batch/emotion_v4_second.csv
-    split_ratio: [0.5, 0.25, 0.25]
-    train_batch_size: 32
-    eval_batch_size: 32
+    root: ./data/superb_all/1.2_resampled/
+    train: ./data/superb_all/er_train_0.1/train.txt
+    dev: ./data/superb_all/er_train_0.1/dev.txt
+    test: ./data/superb_all/er_train_0.1/test.txt
+    train_batch_size: 8
+    eval_batch_size: 8
     num_workers: 8
 
   modelrc:

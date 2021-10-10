@@ -10,42 +10,31 @@ import torchaudio
 from pathlib import Path
 from torch.utils.data import Dataset
 
-SAMPLE_RATE = 16000
-LXT_SAMPLE_RATE = 44100
 ALL_LABELS = ["neutral", "joy", "anger", "sadness"]
 
 
 class LxtEmotionDataset(Dataset):
-    def __init__(self, root, csv, **kwargs):
-        data_dir = Path(root)
-        assert data_dir.is_dir()
+    def __init__(self, split, root, **kwargs):
+        self.data_dir = Path(root)
+        assert self.data_dir.is_dir()
 
-        self.resampler = torchaudio.transforms.Resample(LXT_SAMPLE_RATE, SAMPLE_RATE)
-        self.audio_paths = []
-        self.labels = []
-
-        table = pandas.read_csv(csv)
-        for _, row in table.iterrows():
-            emotion = row["emotion"]
-            if emotion not in ALL_LABELS:
-                continue
-            
-            audio_path = data_dir / (row["utterance_id"] + ".wav")
-            if not audio_path.is_file():
-                print(f"[lxt_emotion] - {audio_path} not exists.")
-                continue
-            
-            self.audio_paths.append(str(audio_path))
-            self.labels.append(ALL_LABELS.index(emotion))
+        split_file = kwargs[split]
+        self.pairs = []
+        with open(split_file, "r") as file:
+            for line in file.readlines():
+                uid, emotion = line.split(maxsplit=1)
+                uid, emotion = uid.strip(), emotion.strip()
+                if emotion not in ALL_LABELS:
+                    continue
+                self.pairs.append((uid, ALL_LABELS.index(emotion)))
 
     def __len__(self):
-        return len(self.audio_paths)
+        return len(self.pairs)
 
     def __getitem__(self, index):
-        wav, sr = torchaudio.load(self.audio_paths[index])
-        assert sr == LXT_SAMPLE_RATE
-        wav = self.resampler(wav).mean(dim=0)
-        return wav, self.labels[index]
+        uid, emotion = self.pairs[index]
+        wav, sr = torchaudio.load(str(self.data_dir / f"{uid}.wav"))
+        return wav.view(-1), emotion
 
     @staticmethod
     def collate_fn(samples):

@@ -55,30 +55,18 @@ class DownstreamExpert(nn.Module):
             shuffle=False, num_workers=self.datarc['num_workers'],
             collate_fn=LxtEmotionDataset.collate_fn,
         )
-
-    def get_train_dataloader(self):
-        return self._get_train_dataloader(self.train_dataset)
-
-    def get_dev_dataloader(self):
-        return self._get_eval_dataloader(self.dev_dataset)
-
-    def get_test_dataloader(self):
-        return self._get_eval_dataloader(self.test_dataset)
     
     # Interface
     def get_dataloader(self, mode):
-        if getattr(self, f"{mode}_dataset", None) is None:
-            dataset = LxtEmotionDataset(**self.datarc)
-            split_ratio = self.datarc["split_ratio"]
-            train_num = round(len(dataset) * split_ratio[0])
-            dev_num = round(len(dataset) * split_ratio[1])
-            test_num = len(dataset) - train_num - dev_num
-            self.train_dataset, self.dev_dataset, self.test_dataset = random_split(
-                dataset,
-                [train_num, dev_num, test_num],
-                generator=torch.Generator().manual_seed(0),
-            )
-        return eval(f'self.get_{mode}_dataloader')()
+        pattern = f"{mode}_dataset"
+        if getattr(self, pattern, None) is None:
+            dataset = LxtEmotionDataset(mode, **self.datarc)
+            setattr(self, pattern, dataset)
+        dataset = getattr(self, pattern)
+        if "train" in mode:
+            return self._get_train_dataloader(dataset)
+        else:
+            return self._get_eval_dataloader(dataset)
 
     # Interface
     def forward(self, mode, features, labels, records, **kwargs):
