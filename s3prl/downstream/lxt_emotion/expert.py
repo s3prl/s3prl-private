@@ -7,7 +7,7 @@ import random
 import torch
 import torch.nn as nn
 from torch.utils import data
-from torch.utils.data import DataLoader, random_split, DistributedSampler
+from torch.utils.data import DataLoader, WeightedRandomSampler
 from torch.distributed import is_initialized
 from torch.nn.utils.rnn import pad_sequence
 
@@ -41,10 +41,10 @@ class DownstreamExpert(nn.Module):
         self.register_buffer('best_score', torch.zeros(1))
 
     def _get_train_dataloader(self, dataset):
-        sampler = DistributedSampler(dataset) if is_initialized() else None
+        sampler = WeightedRandomSampler(dataset.weights, len(dataset))
         return DataLoader(
             dataset, batch_size=self.datarc['train_batch_size'],
-            shuffle=(sampler is None), sampler=sampler,
+            sampler=sampler,
             num_workers=self.datarc['num_workers'],
             collate_fn=LxtEmotionDataset.collate_fn
         )
