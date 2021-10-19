@@ -37,9 +37,17 @@ class DownstreamExpert(nn.Module):
         
         model_cls = eval(self.modelrc['select'])
         model_conf = self.modelrc.get(self.modelrc['select'], {})
-        self.projector = nn.Linear(upstream_dim, self.modelrc['projector_dim'])
+
+        projector_dim = self.modelrc['projector_dim']
+        if projector_dim <= 0:
+            self.projector = lambda x: x
+            latest_dim = upstream_dim
+        else:
+            self.projector = nn.Linear(upstream_dim, self.modelrc['projector_dim'])
+            latest_dim = projector_dim
+
         self.model = model_cls(
-            input_dim = self.modelrc['projector_dim'],
+            input_dim = latest_dim,
             output_dim = LXT_SPEAKER_NUM,
             **model_conf,
         )
