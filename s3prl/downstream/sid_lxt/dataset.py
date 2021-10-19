@@ -6,10 +6,10 @@ from torch.utils.data import Dataset
 SAMPLE_RATE = 16000
 
 class LxtSid(Dataset):
-    def __init__(self, split, lxt_audio, **kwargs) -> None:
+    def __init__(self, split, lxt_audio, split_dir, **kwargs) -> None:
         super().__init__()
         self.lxt_audio = Path(lxt_audio)
-        split_path = kwargs[split]
+        split_path = Path(split_dir) / f"{split}.txt"
         with Path(split_path).open() as split_file:
             def process_line(line):
                 uid, spkr = line.strip().split(maxsplit=1)
