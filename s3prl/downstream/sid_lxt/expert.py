@@ -15,7 +15,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torch.distributed import is_initialized
 from torch.nn.utils.rnn import pad_sequence
-from s3prl.utility.data import DistributedMaxFramesBatchSampler
+from torch.utils.data import DistributedSampler
 
 from ..model import *
 from .dataset import LxtSid
@@ -50,15 +50,12 @@ class DownstreamExpert(nn.Module):
         self.register_buffer('best_score', torch.zeros(1))
 
     def _get_train_dataloader(self, dataset, epoch):
-        batch_sampler = DistributedMaxFramesBatchSampler(
-            dataset, max_frames=self.datarc["max_frames"]
-        )
-        batch_sampler.set_epoch(epoch)
+        sampler = DistributedSampler(dataset) if is_initialized() else None
         return DataLoader(
-            dataset,
-            batch_sampler=batch_sampler,
-            num_workers=self.datarc["num_workers"],
-            collate_fn=dataset.collate_fn,
+            dataset, batch_size=self.datarc['train_batch_size'], 
+            shuffle=(sampler is None), sampler=sampler,
+            num_workers=self.datarc['num_workers'],
+            collate_fn=dataset.collate_fn
         )
 
     def _get_eval_dataloader(self, dataset):
