@@ -19,7 +19,7 @@ class LxtSid(Dataset):
                 frames = torchaudio.info(str(path)).num_frames
                 start = 0
                 while (frames - start) / SAMPLE_RATE > min_secs:
-                    interval = random.randint(min_secs * SAMPLE_RATE, min_secs * SAMPLE_RATE)
+                    interval = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
                     end = start + interval
                     yield uid.strip(), spkr.strip(), start, end
                     start = end
