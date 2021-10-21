@@ -26,6 +26,9 @@ downstream_expert:
   datarc:
     lxt_audio: data/superb_all/1.1_distributed/audio
     split_dir: data/superb_all/sid_train_1_seed0
+    min_secs: 1 
+    max_secs: 2
+    vad: true
 
     train_batch_size: 32
     num_workers: 12
