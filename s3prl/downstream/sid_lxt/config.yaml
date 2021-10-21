@@ -31,7 +31,7 @@ downstream_expert:
     num_workers: 12
 
   modelrc:
-    projector_dim: 256
+    projector_dim: 0
     select: UtteranceLevel
     UtteranceLevel:
       pooling: MeanPooling
