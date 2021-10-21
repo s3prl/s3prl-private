@@ -1,5 +1,5 @@
 runner:
-  total_steps: 300
+  total_steps: 1000
   gradient_clipping: 1
   gradient_accumulate_steps: 1
 
@@ -25,7 +25,8 @@ optimizer:
 downstream_expert: 
   datarc:
     lxt_audio: data/superb_all/1.1_distributed/audio
-    split_dir: data/superb_all/sid_train_1_seed0
+    split_dir: data/superb_all/sid_train_5
+    vad: true
 
     train_batch_size: 32
     num_workers: 12
