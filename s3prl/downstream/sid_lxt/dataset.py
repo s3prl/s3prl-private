@@ -7,7 +7,7 @@ from torch.utils.data import Dataset
 SAMPLE_RATE = 16000
 
 class LxtSid(Dataset):
-    def __init__(self, split, lxt_audio, split_dir, min_secs=2, max_secs=4, seed=0, **kwargs) -> None:
+    def __init__(self, split, lxt_audio, split_dir, min_secs=1, max_secs=2, seed=0, **kwargs) -> None:
         super().__init__()
         random.seed(seed)
         self.lxt_audio = Path(lxt_audio)

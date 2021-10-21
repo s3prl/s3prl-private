@@ -51,7 +51,7 @@ class LxtSid(Dataset):
     def __getitem__(self, index):
         wav, spkr, uids = self.pairs[index]
         label = self.spkrs.index(spkr)
-        return wav, label, uids
+        return wav.numpy(), label, uids
 
     @property
     def speaker_num(self):
