@@ -1,6 +1,7 @@
 import random
 import argparse
 from pathlib import Path
+from collections import defaultdict
 
 import pandas
 import torchaudio
@@ -9,42 +10,38 @@ torchaudio.set_audio_backend("sox_io")
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--lxt", required=True)
-parser.add_argument("--csv", required=True)
-parser.add_argument("--dev", type=float, default=0.25)
-parser.add_argument("--test", type=float, default=0.25)
+parser.add_argument("--utt2spk", required=True)
+parser.add_argument("--train", type=int, default=5)
 parser.add_argument("--output_dir", required=True)
 parser.add_argument("--seed", type=int, default=0)
 args = parser.parse_args()
 random.seed(args.seed)
 
 lxt = Path(args.lxt)
-csv = pandas.read_csv(args.csv)
 output_dir = Path(args.output_dir)
 output_dir.mkdir(exist_ok=True)
 
-spkrs = sorted(list(set(csv["speaker (gender/id)"].tolist())))
-spkrs = [SpkrInfo(spkr, csv, lxt) for spkr in spkrs]
-
-def random_split(items, ratios):
-    assert sum(ratios) == 1
-    items = random.sample(items, k=len(items))
-    start = 0
-    for ratio in ratios:
-        length = round(len(items) * ratio)
-        yield items[start : start + length]
-        start = start + length
+spk2utt = defaultdict(list)
+with open(args.utt2spk, "r") as file:
+    for line in file.readlines():
+        utt, spk = line.split(" ", maxsplit=1)
+        spk2utt[spk.strip()].append(utt.strip())
 
 train, dev, test = [], [], []
-ratios = [args.test, args.dev, 1 - args.test - args.dev]
-for spkr in spkrs:
-    uttr_with_spkr = list(zip(spkr.uttrs, [spkr] * len(spkr.uttrs)))
-    test_1spkr, dev_1spkr, train_1spkr = random_split(uttr_with_spkr, ratios)
-    train.extend(train_1spkr)
-    dev.extend(dev_1spkr)
-    test.extend(test_1spkr)
+for spk in spk2utt.keys():
+    utts = spk2utt[spk]
+    random.shuffle(utts)
+    eval_num = len(utts) - args.train
+
+    def wrap_with_spk(utts: list):
+        return [(utt, spk) for utt in utts]
+
+    train.extend(wrap_with_spk(utts[ : args.train]))
+    dev.extend(wrap_with_spk(utts[ : args.train + eval_num // 2]))
+    test.extend(wrap_with_spk(utts[args.train + eval_num // 2 : ]))
 
 for split in ["train", "dev", "test"]:
     uttr_with_spkrs = eval(split)
     with (output_dir / f"{split}.txt").open("w") as split_file:
         for uttr, spkr in uttr_with_spkrs:
-            print(f"{uttr.id} {spkr.name}", file=split_file)
+            print(f"{uttr} {spkr}", file=split_file)
