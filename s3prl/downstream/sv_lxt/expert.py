@@ -179,6 +179,9 @@ class DownstreamExpert(nn.Module):
                 for (name1, name2), score in zip(records["pair_names"], records["labels"]):
                     print(score, name1, name2, file=file)
 
+            with open(Path(self.expdir) / "log.log", 'a') as f:
+                f.write(f'{split} at step {global_step}: {err}\n')
+
         return save_names
 
     def separate_data(self, agg_vec):
