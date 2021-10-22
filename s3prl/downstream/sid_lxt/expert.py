@@ -93,10 +93,17 @@ class DownstreamExpert(nn.Module):
         features = pad_sequence(features, batch_first=True)
         features = self.projector(features)
         predicted, _ = self.model(features, features_len)
-
         labels = torch.LongTensor(labels).to(features.device)
-        loss = self.objective(predicted, labels)
 
+        if predicted.dim() == 3:
+            frames, frame_labels = [], []
+            for p, l, label in zip(predicted, features_len, labels):
+                frames.append(p[:l])
+                frame_labels.append(label.expand(l))
+            predicted = torch.cat(frames, dim=0)
+            labels = torch.cat(frame_labels, dim=0)
+
+        loss = self.objective(predicted, labels)
         predicted_classid = predicted.max(dim=-1).indices
         records['acc'] += (predicted_classid == labels).view(-1).cpu().float().tolist()
         records['loss'].append(loss.item())

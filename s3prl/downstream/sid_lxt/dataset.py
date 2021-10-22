@@ -30,17 +30,20 @@ class LxtSid(Dataset):
                 wav = wav.squeeze(0)
                 assert sr == SAMPLE_RATE
 
-                frames = len(wav)
-                start = 0
-                while (frames - start) / SAMPLE_RATE > min_secs:
-                    interval = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
-                    end = start + interval
-                    yield wav[start : end], spkr.strip(), f"{uid.strip()}_{start}_{end}"
-                    start = end
+                if min_secs < 0 or max_secs < 0:
+                    yield wav, spkr.strip(), uid.strip()
+                else:
+                    frames = len(wav)
+                    start = 0
+                    while (frames - start) / SAMPLE_RATE > min_secs:
+                        interval = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
+                        end = start + interval
+                        yield wav[start : end], spkr.strip(), f"{uid.strip()}_{start}_{end}"
+                        start = end
 
             self.pairs = []
             for line in tqdm(split_file.readlines()):
-                pairs = list(iter(process_line(line)))
+                pairs = list(process_line(line))
                 self.pairs.extend(pairs)
 
         self.spkrs = sorted(list(set(list(zip(*self.pairs))[1])))
