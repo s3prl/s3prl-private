@@ -102,6 +102,56 @@ class LxtSvEval(Dataset):
         return all_wavs, all_names, y_labels
 
 
+class LxtSvSegEval(Dataset):
+    def __init__(self, split, lxt_audio, seed=0, **kwargs):
+        random.seed(seed)
+
+        self.root = Path(lxt_audio)
+        self.meta_data = kwargs[split]
+
+        self.pairs = []
+        with open(self.meta_data, "r") as f:
+            usage_list = f.readlines()
+            for pair in tqdm.tqdm(usage_list, desc=f"Initializing {split}"):
+                match, uid1, uid2 = pair.split()
+                uid1 = uid1.strip()
+                uid2 = uid2.strip()
+
+                one_pair = [uid1, uid2, int(match)]
+                self.pairs.append(one_pair)
+
+    def __len__(self):
+        return len(self.pairs)
+
+    def __getitem__(self, idx):
+        uid1, uid2, match = self.pairs[idx]
+
+        def parse_segment(uid):
+            fields = uid.split("_")
+            start = fields[-2]
+            end = fields[-1]
+            uid = "_".join(fields[:-2])
+            return uid, start, end
+
+        def get_segment(uid):
+            uid, start, end = parse_segment(uid)
+            wav, _ = apply_effects_file(str(self.root / f"{uid}.wav"), EFFECTS)
+            wav = wav.squeeze(0).numpy()
+            wav_segment = wav[int(start) : int(end)]
+            return wav_segment
+
+        seg1 = get_segment(uid1)
+        seg2 = get_segment(uid2)
+
+        return seg1, seg2, uid1, uid2, match
+
+    def collate_fn(self, data_sample):
+        wav1s, wav2s, uid1s, uid2s, y_labels = zip(*data_sample)
+        all_wavs = wav1s + wav2s
+        all_names = uid1s + uid2s
+        return all_wavs, all_names, y_labels
+
+
 class VoxCeleb1Train(Dataset):
     def __init__(self, vad_config, voxceleb1_path, voxceleb1_spkr=-1, max_timestep=None, n_jobs=12, **kwargs):
         self.vad_c = vad_config 

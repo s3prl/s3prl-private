@@ -30,7 +30,7 @@ from torch.distributed import is_initialized, get_rank, get_world_size
 #-------------#
 from utility.helper import is_leader_process
 from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
-from .dataset import LxtSvTrain, LxtSvEval, VoxCeleb1Train
+from .dataset import LxtSvTrain, LxtSvEval, VoxCeleb1Train, LxtSvSegEval
 from .utils import EER
 
 
@@ -87,13 +87,19 @@ class DownstreamExpert(nn.Module):
     def get_dataloader(self, split, epoch=0):
         if "train" in split:
             return self._get_train_dataloader(self.train_dataset, epoch)
+        elif "seg" in split:
+            dataset_name = f"{split}_dataset"
+            if not hasattr(self, dataset_name):
+                dataset = LxtSvSegEval(split, **self.datarc)
+                setattr(self, dataset_name, dataset)
+            dataset = getattr(self, dataset_name)
         else:
             dataset_name = f"{split}_dataset"
             if not hasattr(self, dataset_name):
                 dataset = LxtSvEval(split, **self.datarc)
                 setattr(self, dataset_name, dataset)
             dataset = getattr(self, dataset_name)
-            return self._get_eval_dataloader(dataset)
+        return self._get_eval_dataloader(dataset)
 
     def _get_train_dataloader(self, dataset, epoch):
         sampler = DistributedSampler(dataset) if is_initialized() else None
