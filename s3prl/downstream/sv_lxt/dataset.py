@@ -82,7 +82,9 @@ class LxtSvTrain(Dataset):
 
 
 class LxtSvEval(Dataset):
-    def __init__(self, split, vad_config, lxt_audio, **kwargs):
+    def __init__(self, split, lxt_audio, seed=0, **kwargs):
+        random.seed(seed)
+
         self.root = Path(lxt_audio)
         self.meta_data = kwargs[split]
         self.max_timestep = kwargs.get("max_eval_timestep")
@@ -92,32 +94,29 @@ class LxtSvEval(Dataset):
             usage_list = f.readlines()
             for pair in usage_list:
                 match, uid1, uid2 = pair.split()
-                one_pair = [int(match), uid1.strip(), uid2.strip()]
-                self.pairs.append(one_pair)
 
-        self.vad_c = vad_config 
+                wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
+                wav2, _ = apply_effects_file(str(self.root / f"{uid2}.wav"), EFFECTS)
+
+                def trim_wav(wav):
+                    length = len(wav)
+                    if self.max_timestep is not None:
+                        if length > self.max_timestep:
+                            start = random.randint(0, int(length - self.max_timestep))
+                            wav = wav[start : start + self.max_timestep]
+                    return wav
+
+                wav1 = trim_wav(wav1.squeeze(0).numpy())
+                wav2 = trim_wav(wav2.squeeze(0).numpy())
+
+                one_pair = [wav1, wav2, uid1.strip(), uid2.strip(), int(match)]
+                self.pairs.append(one_pair)
 
     def __len__(self):
         return len(self.pairs)
 
     def __getitem__(self, idx):
-        y_label, uid1, uid2 = self.pairs[idx]
-
-        wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
-        wav2, _ = apply_effects_file(str(self.root / f"{uid2}.wav"), EFFECTS)
-
-        def trim_wav(wav):
-            length = len(wav)
-            if self.max_timestep is not None:
-                if length > self.max_timestep:
-                    start = random.randint(0, int(length - self.max_timestep))
-                    wav = wav[start : start + self.max_timestep]
-            return wav
-
-        wav1 = trim_wav(wav1.squeeze(0).numpy())
-        wav2 = trim_wav(wav2.squeeze(0).numpy())
-
-        return wav1, wav2, uid1, uid2, y_label
+        return self.pairs[idx]
     
     def collate_fn(self, data_sample):
         wav1s, wav2s, uid1s, uid2s, y_labels = zip(*data_sample)
