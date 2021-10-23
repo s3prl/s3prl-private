@@ -11,6 +11,7 @@ from joblib.parallel import Parallel, delayed
 from torchaudio.sox_effects import apply_effects_file
 
 HIDDEN_SAMPLE_RATE = 44100
+SAMPLE_RATE = 16000
 
 EFFECTS = [
 ["channels", "1"],
@@ -20,9 +21,7 @@ EFFECTS = [
 ]
 
 class LxtSvTrain(Dataset):
-    def __init__(self, vad_config, lxt_audio, lxt_train, max_timestep=None, n_jobs=12, **kwargs):
-        self.max_timestep = max_timestep
-        self.vad_c = vad_config
+    def __init__(self, lxt_audio, lxt_train, min_secs=1, max_secs=2, **kwargs):
 
         with Path(lxt_train).open() as train_file:
             def extract_uttr_spkr(line):
@@ -36,53 +35,31 @@ class LxtSvTrain(Dataset):
         self.all_speakers = sorted(list(set(spkrs)))
         self.speaker_num = len(self.all_speakers)
 
-        hashed = sha256(str.encode(" ".join(utterance_ids))).hexdigest()
-        cache_path = Path(os.path.dirname(__file__)) / '.wav_lengths' / f'{hashed}_length.pt'
-        cache_path.parent.mkdir(exist_ok=True)
-        wav_paths = [Path(lxt_audio) / f"{uid}.wav" for uid in utterance_ids]
-
-        if not cache_path.is_file():
-            def trimmed_length(path):
-                wav_sample, _ = apply_effects_file(str(path), EFFECTS)
-                wav_sample = wav_sample.squeeze(0)
-                length = wav_sample.shape[0]
-                return length
-
-            wav_lengths = Parallel(n_jobs=n_jobs)(delayed(trimmed_length)(path) for path in tqdm.tqdm(wav_paths, desc="Preprocessing"))
-            wav_tags = utterance_ids
-            torch.save([wav_tags, wav_lengths], str(cache_path))
-        else:
-            wav_tags, wav_lengths = torch.load(str(cache_path))
-            assert wav_tags == utterance_ids
-
-        for path, length, spkr in zip(wav_paths, wav_lengths, spkrs):
-            if length > self.vad_c['min_sec']:
-                self.dataset.append((path, spkr))
+        for uid, spkr in tqdm.tqdm(zip(utterance_ids, spkrs), desc="Loading wavs", total=len(spkrs)):
+            path = Path(lxt_audio) / f"{uid}.wav"
+            wav, _ = apply_effects_file(str(path), EFFECTS)
+            wav = wav.squeeze(0)
+            start = 0
+            while (len(wav) - start) / SAMPLE_RATE > min_secs:
+                samples = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
+                end = start + samples
+                self.dataset.append((wav[start : end], spkr, f"{uid}_{start}_{end}"))
+                start = end
 
     def __len__(self):
         return len(self.dataset)
     
     def __getitem__(self, idx):
-        path, spkr = self.dataset[idx]
-        wav, _ = apply_effects_file(str(path), EFFECTS)
-        wav = wav.squeeze(0)
-        length = wav.shape[0]
-        
-        if self.max_timestep != None:
-            if length > self.max_timestep:
-                start = random.randint(0, int(length - self.max_timestep))
-                wav = wav[start : start + self.max_timestep]
-
-        utterance_id = Path(path).stem
+        wav, spkr, uid = self.dataset[idx]
         label = self.all_speakers.index(spkr)
-        return wav.numpy(), utterance_id, label
-        
+        return wav.numpy(), uid, label
+
     def collate_fn(self, samples):
         return zip(*samples)
 
 
 class LxtSvEval(Dataset):
-    def __init__(self, split, lxt_audio, seed=0, **kwargs):
+    def __init__(self, split, lxt_audio, min_secs=1, max_secs=2, seed=0, **kwargs):
         random.seed(seed)
 
         self.root = Path(lxt_audio)
@@ -92,22 +69,22 @@ class LxtSvEval(Dataset):
         self.pairs = []
         with open(self.meta_data, "r") as f:
             usage_list = f.readlines()
-            for pair in tqdm.tqdm(usage_list, desc=split):
+            for pair in tqdm.tqdm(usage_list, desc=f"Initializing {split}"):
                 match, uid1, uid2 = pair.split()
 
                 wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
                 wav2, _ = apply_effects_file(str(self.root / f"{uid2}.wav"), EFFECTS)
 
-                def trim_wav(wav):
-                    length = len(wav)
-                    if self.max_timestep is not None:
-                        if length > self.max_timestep:
-                            start = random.randint(0, int(length - self.max_timestep))
-                            wav = wav[start : start + self.max_timestep]
-                    return wav
+                if wav1.size(1) < min_secs * SAMPLE_RATE or wav2.size(1) < min_secs * SAMPLE_RATE:
+                    continue
 
-                wav1 = trim_wav(wav1.squeeze(0).numpy())
-                wav2 = trim_wav(wav2.squeeze(0).numpy())
+                def sample_interval(wav):
+                    samples = random.randint(min_secs * SAMPLE_RATE, min(max_secs * SAMPLE_RATE, len(wav)))
+                    start = random.randint(0, len(wav) - samples)
+                    return wav[start : start + samples]
+
+                wav1 = sample_interval(wav1.squeeze(0).numpy())
+                wav2 = sample_interval(wav2.squeeze(0).numpy())
 
                 one_pair = [wav1, wav2, uid1.strip(), uid2.strip(), int(match)]
                 self.pairs.append(one_pair)

@@ -1,11 +1,11 @@
 runner:
-  total_steps: 1000
+  total_steps: 2000
   gradient_clipping: 1.0e+3
-  gradient_accumulate_steps: 2
+  gradient_accumulate_steps: 1
 
-  log_step: 100
-  eval_step: 100
-  save_step: 100
+  log_step: 200
+  eval_step: 200
+  save_step: 200
   max_keep: 1
   eval_dataloaders:
   - lxt_dev
@@ -25,23 +25,21 @@ downstream_expert:
   save_best_on: lxt_dev
 
   datarc:
-    vad_config:
-      min_sec: 32000
-
     train_dataset: lxt  # lxt / voxceleb1
 
     lxt_audio: ./data/superb_all/1.1_resampled/
-    lxt_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv_5000.lst
-    lxt_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv_5000.lst
+    lxt_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv.lst
+    lxt_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv.lst
     lxt_train: ./data/superb_all/1.1_distributed/train_5hr/train/utt2spk
 
     voxceleb1_path: /path/to/VoxCeleb1
     voxceleb1_spkr: 30
 
-    max_timestep: 64000
-    max_eval_timestep: 64000
-    train_batch_size: 20
-    eval_batch_size: 1
+    min_secs: 1
+    max_secs: 2
+
+    train_batch_size: 32
+    eval_batch_size: 32
     num_workers: 8 
 
   modelrc:
