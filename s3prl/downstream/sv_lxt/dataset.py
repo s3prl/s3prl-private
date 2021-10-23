@@ -92,7 +92,7 @@ class LxtSvEval(Dataset):
         self.pairs = []
         with open(self.meta_data, "r") as f:
             usage_list = f.readlines()
-            for pair in usage_list:
+            for pair in tqdm.tqdm(usage_list, desc=split):
                 match, uid1, uid2 = pair.split()
 
                 wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
