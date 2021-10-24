@@ -30,8 +30,8 @@ downstream_expert:
     lxt_audio: ./data/superb_all/1.1_resampled/
     lxt_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv.lst
     lxt_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv.lst
-    lxt_seg_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv_seg_10000.lst
-    lxt_seg_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv_seg_10000.lst
+    lxt_seg_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv_seg_2000.lst
+    lxt_seg_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv_seg_2000.lst
     lxt_train: ./data/superb_all/1.1_distributed/train_5hr/train/utt2spk
 
     voxceleb1_path: /path/to/VoxCeleb1
