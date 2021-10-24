@@ -14,6 +14,6 @@ with open(args.log) as file:
         elif "test" in line:
             tests.append(float(line.split()[-1]))
 
-assert len(devs) == 6
-assert len(tests) == 6
+assert len(devs) == 20
+assert len(tests) == 20
 print(tests[devs.index(max(devs))])
