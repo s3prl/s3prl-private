@@ -16,4 +16,7 @@ with open(args.log) as file:
 
 assert len(devs) == 10
 assert len(tests) == 10
-print(tests[devs.index(min(devs))])
+
+best_dev = min(devs)
+print("dev", best_dev)
+print("test", tests[devs.index(best_dev)])
