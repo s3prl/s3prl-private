@@ -36,18 +36,18 @@ optimizer:
 downstream_expert:
   corpus:
     name: 'lxtphone'                   # Specify corpus
-    path: '/path/to/hidden/set/1.1_distributed'          # Path to raw LibriSpeech dataset
+    path: './data/superb_all/1.1_distributed'          # Path to raw LibriSpeech dataset
     lexicon:
-      - downstream/ctc_lxt/lexicon/lxt_lexicon_g2p.txt
+      - downstream/lxt_pr/lexicon/lxt_lexicon_g2p.txt
 
-    train: ['downstream/ctc_lxt/data/train.txt']                # Name of data splits to be used as training set
-    dev: ['downstream/ctc_lxt/data/dev.txt']                    # Name of data splits to be used as validation set
-    test: ['downstream/ctc_lxt/data/test.txt']
+    train: ['downstream/lxt_pr/data/train.txt']                # Name of data splits to be used as training set
+    dev: ['downstream/lxt_pr/data/dev.txt']                    # Name of data splits to be used as validation set
+    test: ['downstream/lxt_pr/data/test.txt']
 
     transcriptions:
-      train: ['downstream/ctc_lxt/data/train_transcriptions.txt']                # Name of data splits to be used as training set
-      dev: ['downstream/ctc_lxt/data/dev_transcriptions.txt']                    # Name of data splits to be used as validation set
-      test: ['downstream/ctc_lxt/data/test_transcriptions.txt']
+      train: ['downstream/lxt_pr/data/train_transcriptions.txt']                # Name of data splits to be used as training set
+      dev: ['downstream/lxt_pr/data/dev_transcriptions.txt']                    # Name of data splits to be used as validation set
+      test: ['downstream/lxt_pr/data/test_transcriptions.txt']
 
     bucketing: False                       # Enable/Disable bucketing 
     batch_size: 16
@@ -55,10 +55,10 @@ downstream_expert:
 
   text:
     mode: 'word'                       # 'character'/'word'/'subword'
-    vocab_file: 'downstream/ctc_lxt/vocab/phoneme.txt'
+    vocab_file: 'downstream/lxt_pr/vocab/phoneme.txt'
 
   model:
-    project_dim: 256
+    project_dim: 0
     zero_infinity: True
 
     select: FrameLevel

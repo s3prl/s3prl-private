@@ -102,7 +102,7 @@ class DownstreamExpert(nn.Module):
         )
         decoder_args = self.datarc.get("decoder_args")
         self.decoder = get_decoder(decoder_args, self.dictionary)
-        self.register_buffer("best_score", torch.ones(1) * 100)
+        self.register_buffer("best_score", torch.ones(1) * 1<<31)
 
     def get_dataloader(self, split, epoch=0):
         if not hasattr(self, f"{split}_dataset"):

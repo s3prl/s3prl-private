@@ -54,8 +54,8 @@ class DownstreamExpert(nn.Module):
         self.objective = nn.CrossEntropyLoss()
         
         self.expdir = Path(expdir)
-        self.save_best_on = self.datarc.get("save_best_on", "lxt_dev")
-        self.register_buffer('best_score', torch.zeros(1))
+        self.save_best_on = self.datarc.get("save_best_on", "dev")
+        self.register_buffer('best_score', torch.ones(1) * -1<<31)
 
     def _get_train_dataloader(self, dataset, epoch):
         sampler = DistributedSampler(dataset) if is_initialized() else None
@@ -121,6 +121,7 @@ class DownstreamExpert(nn.Module):
             )
             with open(self.expdir / "log.log", 'a') as f:
                 if key == 'acc':
+                    print(f"{split} {key}: {average}")
                     f.write(f'{split} at step {global_step}: {average}\n')
                     if split == self.save_best_on and average > self.best_score:
                         self.best_score = torch.ones(1) * average

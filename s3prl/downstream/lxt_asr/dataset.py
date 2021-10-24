@@ -16,7 +16,7 @@ class LxtAsrDataset(Dataset):
         self.text_root = Path(lxt_text)
         
         with Path(kwargs[split]).open() as split_file:
-            whitelist = [line.strip() for line in split_file.readlines()]
+            whitelist = [line.split(maxsplit=1)[0].strip() for line in split_file.readlines()]
 
         pairs = []
         with self.text_root.open() as file:

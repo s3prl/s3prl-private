@@ -33,11 +33,17 @@ class DownstreamExpert(nn.Module):
         self.tokenizer = load_text_encoder(**downstream_expert["text"])
 
         modelrc = downstream_expert["model"]
-        self.projector = nn.Linear(upstream_dim, modelrc["project_dim"])
+
+        project_dim = modelrc["project_dim"]
+        if project_dim > 0:
+            self.projector = nn.Linear(upstream_dim, project_dim)
+        else:
+            self.projector = lambda x: x
+            project_dim = upstream_dim
 
         model_select = downstream_expert["model"]["select"]
         self.model = eval(model_select)(
-            modelrc["project_dim"],
+            project_dim,
             self.tokenizer.vocab_size,
             upstream_rate=upstream_rate,
             **modelrc.get(model_select, {}),
@@ -50,7 +56,7 @@ class DownstreamExpert(nn.Module):
         self.metrics = downstream_expert["metric"]
         self.metric_higher_better = downstream_expert["metric_higher_better"]
         self.register_buffer(
-            "best_score", torch.ones(1) * (0 if self.metric_higher_better else 1 << 31)
+            "best_score", torch.ones(1) * (-1 << 31 if self.metric_higher_better else 1 << 31)
         )
 
     def _get_task_name(self):

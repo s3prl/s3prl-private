@@ -10,7 +10,6 @@ runner:
   train_dataloader: train
   eval_dataloaders:
     - dev
-    - test
 
 optimizer:
   name: TorchOptim

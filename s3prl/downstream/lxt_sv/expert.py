@@ -29,8 +29,8 @@ from torch.utils.data import DataLoader, DistributedSampler
 from torch.distributed import is_initialized, get_rank, get_world_size
 #-------------#
 from utility.helper import is_leader_process
-from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor, Ge2eLoss
-from .dataset import LxtSvTrain, LxtSvEval
+from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
+from .dataset import LxtSvTrain, LxtSvEval, VoxCeleb1Train, LxtSvSegEval
 from .utils import EER
 
 
@@ -44,19 +44,28 @@ class DownstreamExpert(nn.Module):
         self.modelrc = downstream_expert['modelrc']
         self.expdir = expdir
 
-        self.train_dataset = LxtSvTrain(**self.datarc)
+        train_dataset_str = self.datarc.get("train_dataset", "lxt")
+        train_dataset_cls = LxtSvTrain if train_dataset_str == "lxt" else VoxCeleb1Train
+        self.train_dataset = train_dataset_cls(**self.datarc)
 
         # module
-        self.connector = nn.Linear(self.upstream_dim, self.modelrc['input_dim'])
+
+        input_dim = self.modelrc.get("input_dim")
+        if input_dim > 0:
+            self.connector = nn.Linear(self.upstream_dim, input_dim)
+            latest_dim = input_dim
+        else:
+            self.connector = lambda x: x
+            latest_dim = upstream_dim
 
         # downstream model
         agg_dim = self.modelrc["module_config"][self.modelrc['module']].get(
             "agg_dim",
-            self.modelrc['input_dim']
+            latest_dim
         )
         
         ModelConfig = {
-            "input_dim": self.modelrc['input_dim'],
+            "input_dim": latest_dim,
             "agg_dim": agg_dim,
             "agg_module_name": self.modelrc['agg_module'],
             "module_name": self.modelrc['module'], 
@@ -66,29 +75,38 @@ class DownstreamExpert(nn.Module):
         # downstream model extractor include aggregation module
         self.model = Model(**ModelConfig)
 
+
+        # SoftmaxLoss or AMSoftmaxLoss
         objective_config = {
-            "n_uttr": self.datarc.get("n_uttr", 5),
-            "n_spkr": self.datarc.get("n_spkr", 10),
+            "speaker_num": self.train_dataset.speaker_num, 
+            "hidden_dim": latest_dim, 
             **self.modelrc['LossConfig'][self.modelrc['ObjectiveLoss']]
         }
 
         self.objective = eval(self.modelrc['ObjectiveLoss'])(**objective_config)
+        # utils
         self.score_fn  = nn.CosineSimilarity(dim=-1)
         self.eval_metric = EER
 
-        self.save_best_on = self.datarc.get("save_best_on", "lxt_dev")
-        self.register_buffer('best_score', torch.ones(1) * 100)
+        self.save_best_on = self.downstream.get("save_best_on", "lxt_dev")
+        self.register_buffer('best_score', torch.ones(1) * 1<<31)
 
     def get_dataloader(self, split, epoch=0):
         if "train" in split:
             return self._get_train_dataloader(self.train_dataset, epoch)
+        elif "seg" in split:
+            dataset_name = f"{split}_dataset"
+            if not hasattr(self, dataset_name):
+                dataset = LxtSvSegEval(split, **self.datarc)
+                setattr(self, dataset_name, dataset)
+            dataset = getattr(self, dataset_name)
         else:
             dataset_name = f"{split}_dataset"
             if not hasattr(self, dataset_name):
                 dataset = LxtSvEval(split, **self.datarc)
                 setattr(self, dataset_name, dataset)
             dataset = getattr(self, dataset_name)
-            return self._get_eval_dataloader(dataset)
+        return self._get_eval_dataloader(dataset)
 
     def _get_train_dataloader(self, dataset, epoch):
         sampler = DistributedSampler(dataset) if is_initialized() else None
@@ -111,7 +129,7 @@ class DownstreamExpert(nn.Module):
             collate_fn=dataset.collate_fn
         )
 
-    def forward(self, split, features, *others, records, **kwargs):
+    def forward(self, split, features, utter_idx, labels, records, **kwargs):
         features_pad = pad_sequence(features, batch_first=True)
         
         if self.modelrc['module'] == "XVector":
@@ -126,15 +144,14 @@ class DownstreamExpert(nn.Module):
         features_pad = self.connector(features_pad)
 
         if "train" in split:
-            paths = others[0]
             agg_vec = self.model(features_pad, attention_mask_pad.cuda())
-            loss, prec = self.objective(agg_vec)
+            labels = torch.LongTensor(labels).to(features_pad.device)
+            loss, logits = self.objective(agg_vec, labels)
             records['loss'].append(loss.item())
-            records["acc"].append(prec.item())
+            records["acc"] += (logits.argmax(dim=-1) == labels).cpu().long().tolist()
             return loss
         
         else:
-            utter_idx, labels = others
             agg_vec = self.model(features_pad, attention_mask_pad.cuda())
             agg_vec = F.normalize(agg_vec, dim=-1)
 
@@ -151,18 +168,17 @@ class DownstreamExpert(nn.Module):
 
     def log_records(self, split, records, logger, global_step, **kwargs):
         save_names = []
-        task_name = "sv_lxt_ge2e"
 
         if "train" in split:
             for key in ["loss", "acc"]:
                 avg = torch.FloatTensor(records[key]).mean().item()
-                logger.add_scalar(f"{task_name}/{split}-{key}", avg, global_step=global_step)
-                print(f"{task_name}/{split}-{key}: {avg}")
+                logger.add_scalar(f"sv_lxt/{split}-{key}", avg, global_step=global_step)
+                print(f"sv_lxt/{split}-{key}: {avg}")
 
         else:
             err, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
-            logger.add_scalar(f'{task_name}/{split}-EER', err, global_step=global_step)
-            print(f'{task_name}/{split}-ERR: {err}')
+            logger.add_scalar(f'sv_lxt/{split}-EER', err, global_step=global_step)
+            print(f'sv_lxt/{split}-ERR: {err}')
 
             if err < self.best_score and split == self.save_best_on:
                 self.best_score = torch.ones(1) * err
@@ -175,6 +191,9 @@ class DownstreamExpert(nn.Module):
             with open(Path(self.expdir) / f"{split}_truth.txt", "w") as file:
                 for (name1, name2), score in zip(records["pair_names"], records["labels"]):
                     print(score, name1, name2, file=file)
+
+            with open(Path(self.expdir) / "log.log", 'a') as f:
+                f.write(f'{split} at step {global_step}: {err}\n')
 
         return save_names
 

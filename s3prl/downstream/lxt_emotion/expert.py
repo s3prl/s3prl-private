@@ -29,16 +29,23 @@ class DownstreamExpert(nn.Module):
 
         model_cls = eval(self.modelrc['select'])
         model_conf = self.modelrc.get(self.modelrc['select'], {})
-        self.projector = nn.Linear(upstream_dim, self.modelrc['projector_dim'])
+
+        projector_dim = self.modelrc['projector_dim']
+        if projector_dim > 0:
+            self.projector = nn.Linear(upstream_dim, projector_dim)
+        else:
+            self.projector = lambda x: x
+            projector_dim = upstream_dim
+
         self.model = model_cls(
-            input_dim = self.modelrc['projector_dim'],
+            input_dim = projector_dim,
             output_dim = LxtEmotionDataset.get_class_num(),
             **model_conf,
         )
         self.objective = nn.CrossEntropyLoss()
 
         self.logging = os.path.join(expdir, 'log.log')
-        self.register_buffer('best_score', torch.zeros(1))
+        self.register_buffer('best_score', torch.ones(1) * -1<<31)
 
     def _get_train_dataloader(self, dataset):
         sampler = WeightedRandomSampler(dataset.weights, len(dataset))

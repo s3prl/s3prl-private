@@ -10,9 +10,15 @@ import pandas
 import torchaudio
 from pathlib import Path
 from torch.utils.data import Dataset
+from torchaudio.sox_effects import apply_effects_file
 
 ALL_LABELS = ["neutral", "joy", "anger", "sadness"]
-
+EFFECTS = [
+["channels", "1"],
+["rate", "16000"],
+["gain", "-3.0"],
+["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"],
+]
 
 class LxtEmotionDataset(Dataset):
     def __init__(self, split, root, **kwargs):
@@ -49,7 +55,7 @@ class LxtEmotionDataset(Dataset):
     def __getitem__(self, index):
         uid = self.utt_ids[index]
         emotion = self.labels[index]
-        wav, sr = torchaudio.load(str(self.data_dir / f"{uid}.wav"))
+        wav, sr = apply_effects_file(str(self.data_dir / f"{uid}.wav"), EFFECTS)
         return wav.view(-1), emotion
 
     @staticmethod

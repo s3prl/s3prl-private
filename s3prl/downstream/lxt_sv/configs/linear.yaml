@@ -9,8 +9,7 @@ runner:
   max_keep: 1
   eval_dataloaders:
   - lxt_seg_dev
-  - lxt_seg_test
-  
+
 optimizer: 
   name: TorchOptim
   torch_optim_name: AdamW
