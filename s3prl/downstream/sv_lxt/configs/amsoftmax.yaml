@@ -21,8 +21,8 @@ optimizer:
 #   name: linear_schedule_with_warmup
 #   num_warmup_steps: 6000
 
-downstream_expert: 
-  save_best_on: lxt_dev
+downstream_expert:
+  save_best_on: lxt_seg_dev
 
   datarc:
     train_dataset: lxt  # lxt / voxceleb1

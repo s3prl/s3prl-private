@@ -49,16 +49,23 @@ class DownstreamExpert(nn.Module):
         self.train_dataset = train_dataset_cls(**self.datarc)
 
         # module
-        self.connector = nn.Linear(self.upstream_dim, self.modelrc['input_dim'])
+
+        input_dim = self.modelrc.get("input_dim")
+        if input_dim > 0:
+            self.connector = nn.Linear(self.upstream_dim, input_dim)
+            latest_dim = input_dim
+        else:
+            self.connector = lambda x: x
+            latest_dim = upstream_dim
 
         # downstream model
         agg_dim = self.modelrc["module_config"][self.modelrc['module']].get(
             "agg_dim",
-            self.modelrc['input_dim']
+            latest_dim
         )
         
         ModelConfig = {
-            "input_dim": self.modelrc['input_dim'],
+            "input_dim": latest_dim,
             "agg_dim": agg_dim,
             "agg_module_name": self.modelrc['agg_module'],
             "module_name": self.modelrc['module'], 
@@ -72,7 +79,7 @@ class DownstreamExpert(nn.Module):
         # SoftmaxLoss or AMSoftmaxLoss
         objective_config = {
             "speaker_num": self.train_dataset.speaker_num, 
-            "hidden_dim": self.modelrc['input_dim'], 
+            "hidden_dim": latest_dim, 
             **self.modelrc['LossConfig'][self.modelrc['ObjectiveLoss']]
         }
 
