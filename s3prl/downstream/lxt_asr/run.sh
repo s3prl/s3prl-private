@@ -14,7 +14,7 @@ expdir_root=$1
 shift
 
 if [ -z "$*" ]; then
-    lrs=("1.0e-2" "1.0e-3" "1.0e-4" "1.0e-5")
+    lrs=("1.0e-3" "1.0e-4" "1.0e-5")
 else
     lrs=($*)
 fi
