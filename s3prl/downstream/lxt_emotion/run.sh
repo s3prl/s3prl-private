@@ -3,15 +3,23 @@
 set -x
 set -e
 
-if [ $# != "2" ]; then
+if [ $# -lt "2" ]; then
     echo $0 [upstream] [expdir_root]
     exit 1
 fi
 
 upstream=$1
-expdir_root=$2
+shift
+expdir_root=$1
+shift
 
-for lr in "1.0e-2" "1.0e-3" "1.0e-4" "1.0e-5";
+if [ -z "$*" ]; then
+    lrs=("1.0e-2" "1.0e-3" "1.0e-4" "1.0e-5")
+else
+    lrs=($*)
+fi
+
+for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/$upstream/lr$lr
     python3 run_downstream.py -a -m train -u $upstream -d lxt_emotion -o config.optimizer.lr=$lr \
