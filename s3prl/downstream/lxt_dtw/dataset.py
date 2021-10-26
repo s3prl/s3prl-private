@@ -26,6 +26,7 @@ class QUESST14Dataset(Dataset):
                 ["channels", "1"],
                 ["rate", "16000"],
                 ["gain", "-3.0"],
+                ["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"],
             ],
         )
         wav = wav.squeeze(0)
