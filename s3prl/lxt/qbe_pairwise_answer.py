@@ -11,6 +11,7 @@ parser.add_argument("--trim_doc", action="store_true")
 parser.add_argument("--trim_query", action="store_true")
 parser.add_argument("--doc_num", type=int, default=500)
 parser.add_argument("--query_min_doc", type=int, default=1)
+parser.add_argument("--top_query", type=int, default=200)
 args = parser.parse_args()
 
 def read_file(filepath, whitelist=None):
@@ -90,6 +91,9 @@ for query_id, query_text in queries.items():
 
 queries_id_sorted = sorted(list(queries.keys()), key=lambda k: len(queries_used_by[k]), reverse=True)
 docs_id_sorted = sorted(list(docs.keys()), key=lambda k: len(docs_used_by[k]), reverse=True)
+
+if args.top_query:
+    queries_id_sorted = queries_id_sorted[:args.top_query]
 
 output_dir = Path(args.output_dir)
 output_dir.mkdir(exist_ok=True)
