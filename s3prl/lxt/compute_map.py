@@ -25,9 +25,10 @@ def EER(labels, scores):
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--scores", required=True)
-parser.add_argument("--labels", required=True)
 parser.add_argument("--output_dir",required=True)
-parser.add_argument("--query")
+parser.add_argument("--labels", default="data/superb_all/qbe_nonoverlap_above0/answer.txt")
+parser.add_argument("--queries", default="data/superb_all/qbe_nonoverlap_above0/queries.txt")
+parser.add_argument("--query_text", default="data/superb_all/queries.txt")
 args = parser.parse_args()
 Path(args.output_dir).mkdir(exist_ok=True)
 
@@ -42,34 +43,47 @@ def read_file(path):
 scores = read_file(args.scores)
 labels = read_file(args.labels)
 
-metrics = []
-for query_id in tqdm(list(scores.keys())):
-    doc_scores = [scores[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
-    doc_labels = [labels[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
-    eer, threshold = EER(doc_labels.copy(), doc_scores.copy())
-    ap = average_precision_score(doc_labels.copy(), doc_scores.copy())
-    metrics.append((query_id, ap, eer))
-
-    with (Path(args.output_dir) / f"{query_id}.result").open("w") as result:
-        id_with_score = list(zip(sorted(scores[query_id].keys()), doc_scores))
-        id_with_score.sort(key=lambda x: x[1], reverse=True)
-        for qid, score in id_with_score:
-            print(qid, score, file=result)
-
 queryid2text = {}
-if args.query is not None:
-    with open(args.query) as file:
-        for line in file.readlines():
-            query_id, text = line.strip().split(maxsplit=1)
-            queryid2text[query_id.strip()] = text.strip()
+with open(args.query_text) as file:
+    for line_idx, line in enumerate(file.readlines()):
+        query_id, text = line.strip().split(maxsplit=1)
+        queryid2text[query_id.strip()] = text.strip()
 
-with (Path(args.output_dir) / "result").open("w") as result:
-    metrics.sort(key=lambda x: x[1])
-    for query_id, ap, eer in metrics:
-        print(query_id, queryid2text.get(query_id, "None"), ap, eer, sep=" ", file=result)
+def compute_metrics(split, query_list):
+    metrics = []
+    for query_id in tqdm(query_list):
+        doc_scores = [scores[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
+        doc_labels = [labels[query_id][doc_id] for doc_id in sorted(scores[query_id].keys())]
+        eer, threshold = EER(doc_labels.copy(), doc_scores.copy())
+        ap = average_precision_score(doc_labels.copy(), doc_scores.copy())
+        metrics.append((query_id, ap, eer))
 
-with (Path(args.output_dir) / "metrics").open("w") as output:
-    print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
-    print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item())
-    print("MAP:", torch.Tensor([item[1] for item in metrics]).mean().item(), file=output)
-    print("EER:", torch.Tensor([item[2] for item in metrics]).mean().item(), file=output)
+        with (Path(args.output_dir) / f"{query_id}.result").open("w") as result:
+            id_with_score = list(zip(sorted(scores[query_id].keys()), doc_scores))
+            id_with_score.sort(key=lambda x: x[1], reverse=True)
+            for qid, score in id_with_score:
+                print(qid, score, file=result)
+
+    with (Path(args.output_dir) / "result").open("w") as result:
+        metrics.sort(key=lambda x: x[1])
+        for query_id, ap, eer in metrics:
+            print(query_id, queryid2text.get(query_id, "None"), ap, eer, sep=" ", file=result)
+
+    with (Path(args.output_dir) / f"{split}.result").open("w") as output:
+        print(f"{split} MAP:", torch.Tensor([item[1] for item in metrics]).mean().item())
+        print(f"{split} EER:", torch.Tensor([item[2] for item in metrics]).mean().item())
+        print(f"{split} MAP:", torch.Tensor([item[1] for item in metrics]).mean().item(), file=output)
+        print(f"{split} EER:", torch.Tensor([item[2] for item in metrics]).mean().item(), file=output)
+
+dev_ids = []
+test_ids = []
+with open(args.queries) as file:
+    for idx, line in enumerate(file.readlines()):
+        query_id = line.strip()
+        if idx % 2 == 0:
+            dev_ids.append(query_id)
+        else:
+            test_ids.append(query_id)
+
+compute_metrics("dev", dev_ids)
+compute_metrics("test", test_ids)
