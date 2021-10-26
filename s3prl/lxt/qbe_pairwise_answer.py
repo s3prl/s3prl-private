@@ -9,7 +9,7 @@ parser.add_argument("--doc_uids", default="data/superb_all/1.1_distributed/utt2s
 parser.add_argument("--output_dir", required=True)
 parser.add_argument("--trim_doc", action="store_true")
 parser.add_argument("--trim_query", action="store_true")
-parser.add_argument("--doc_num", type=int, default=100)
+parser.add_argument("--doc_num", type=int, default=500)
 parser.add_argument("--query_min_doc", type=int, default=1)
 args = parser.parse_args()
 
