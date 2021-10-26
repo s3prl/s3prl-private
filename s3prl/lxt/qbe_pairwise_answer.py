@@ -11,7 +11,7 @@ parser.add_argument("--trim_doc", action="store_true")
 parser.add_argument("--trim_query", action="store_true")
 parser.add_argument("--doc_num", type=int, default=500)
 parser.add_argument("--query_min_doc", type=int, default=1)
-parser.add_argument("--top_query", type=int, default=200)
+parser.add_argument("--top_query", type=int)
 args = parser.parse_args()
 
 def read_file(filepath, whitelist=None):
