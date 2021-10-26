@@ -29,6 +29,7 @@ parser.add_argument("--labels", required=True)
 parser.add_argument("--output_dir",required=True)
 parser.add_argument("--query")
 args = parser.parse_args()
+Path(args.output_dir).mkdir(exist_ok=True)
 
 def read_file(path):
     records = defaultdict(lambda: defaultdict(lambda: None))
