@@ -111,14 +111,20 @@ class Runner():
         if n_epochs > 0: 
             total_steps = int(n_epochs * len(dataloader.dataset) / gradient_accumulate_steps)
             self.config['runner']['total_steps'] = total_steps
-            print(f'[Runner] - Training for {n_epochs} epochs, whichi is equivalent to {total_steps} steps')
+            print(f'[Runner] - Training for {n_epochs} epochs, which is equivalent to {total_steps} steps')
         else:
             total_steps = self.config['runner']['total_steps']
             n_epochs = int(total_steps * gradient_accumulate_steps / len(dataloader.dataset))
-            print(f'[Runner] - Training for {total_steps} steps, whichi is approximately {n_epochs} epochs')
+            print(f'[Runner] - Training for {total_steps} steps, which is approximately {n_epochs} epochs')
 
         assert self.config['runner']['total_steps'] > self.config['runner']['log_step']
         assert self.config['runner']['total_steps'] > self.config['runner']['save_step']
+
+        # set amp
+        amp = self.config['runner'].get('fp16', False)
+        if amp:
+            print('[Runner] - Enabled fp16 training')
+            scaler = torch.cuda.amp.GradScaler()
 
         # set optimizer
         model_params = [self.upstream]
@@ -148,15 +154,22 @@ class Runner():
                         break
                     global_step = pbar.n + 1
 
-                    loss, records = self.upstream(data,
-                                                  records=records,
-                                                  global_step=global_step,
-                                                  log_step=self.config['runner']['log_step'])
+                    with torch.cuda.amp.autocast(enabled=amp):
+                        loss, records = self.upstream(
+                            data,
+                            records=records,
+                            global_step=global_step,
+                            log_step=self.config['runner']['log_step'],
+                        )
+
                     if gradient_accumulate_steps > 1:
                         loss = loss / gradient_accumulate_steps
                     if self.args.multi_gpu:
                         loss = loss.sum()
-                    loss.backward()
+                    if amp:
+                        scaler.scale(loss).backward()
+                    else:
+                        loss.backward()
 
                 except RuntimeError as e:
                     if 'CUDA out of memory' in str(e):
@@ -175,16 +188,23 @@ class Runner():
                 backward_steps += 1
                 if backward_steps % gradient_accumulate_steps > 0:
                     continue
+                    
+                # unscale
+                if amp:
+                    scaler.unscale_(optimizer)
 
                 # gradient clipping
                 grad_norm = torch.nn.utils.clip_grad_norm_(self.upstream.model.parameters(), self.config['runner']['gradient_clipping'])
+                if math.isnan(grad_norm):
+                    print(f'[Runner] - Error : grad norm is NaN at global step {global_step}')
 
                 # optimize
-                if math.isnan(grad_norm):
-                    print(f'[Runner] - Error : grad norm is NaN at step {global_step}')
-                else:
+                if amp:
+                    scaler.step(optimizer)
+                    scaler.update()
+                elif not math.isnan(grad_norm):
                     optimizer.step()
-                    
+
                 self.upstream.on_before_zero_grad()
                 optimizer.zero_grad()
 
