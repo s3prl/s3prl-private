@@ -1,6 +1,15 @@
 #!/bin/bash
 
+if [ $# != "1" ]; then
+    echo $0 [upstream_dir]
+    exit 1
+fi
+
 upstream_dir=$1
+if [ ! -d $upstream_dir ]; then
+    echo $upstream_dir is not a directory
+    exit 1
+fi
 
 # MAP
 best_dev_line=$(grep "MAP" $upstream_dir/*/scoring/dev.result | sort -nk 3 | tail -n 1)
