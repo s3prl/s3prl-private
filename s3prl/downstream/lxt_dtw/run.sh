@@ -3,21 +3,30 @@
 set -e
 set -x
 
-if [ $# != "2" ]; then
-    echo $0 [upstream] [expdir_root]
+if [ $# -lt "2" ]; then
+    echo $0 [upstream] [expdir_root] [layer1] [layer2] ...
     exit 1
 fi
 
 upstream=$1
 expdir_root=$2
+shift 2
 
-layer_info=$(mktemp)
-python3 downstream/lxt_dtw/get_layer_num.py --upstream $upstream --key QbE --output $layer_info
-layer_num=$(cat $layer_info)
-rm $layer_info
+if [ -z "$*" ]; then
+    layer_info=$(mktemp)
 
-echo [LAYER INFO] $upstream has $layer_num layers.
-for layer in $(seq 0 $(($layer_num-1)));
+    python3 downstream/lxt_dtw/get_layer_num.py --upstream $upstream --key QbE --output $layer_info
+    layer_num=$(cat $layer_info)
+    echo [LAYER INFO] $upstream has $layer_num layers.
+
+    rm $layer_info
+
+    layers=$(seq 0 $(($layer_num-1)))
+else
+    layers=("$*")
+fi
+
+for layer in ${layers[@]};
 do
     expdir=$expdir_root/$upstream/layer$layer
     python3 run_downstream.py -m evaluate -u $upstream -s QbE -l $layer -d lxt_dtw -p $expdir
