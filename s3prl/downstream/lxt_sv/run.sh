@@ -24,7 +24,7 @@ do
     for seed in 1 2 3;
     do
         expdir=$expdir_root/$upstream/lr$lr/seed${seed}
-        python3 run_downstream.py -a -m train -u $upstream -d lxt_sv -o config.optimizer.lr=$lr \
+        python3 run_downstream.py -a -m train -u $upstream -s ASV -d lxt_sv -o config.optimizer.lr=$lr \
             -p $expdir --seed $seed
 
         dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev

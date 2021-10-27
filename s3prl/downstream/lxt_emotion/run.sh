@@ -22,7 +22,7 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/$upstream/lr$lr
-    python3 run_downstream.py -a -m train -u $upstream -d lxt_emotion -o config.optimizer.lr=$lr \
+    python3 run_downstream.py -a -m train -u $upstream -s ER -d lxt_emotion -o config.optimizer.lr=$lr \
         -p $expdir
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev

@@ -5,7 +5,7 @@ import s3prl.hub as hub
 parser = argparse.ArgumentParser()
 parser.add_argument("--upstream", required=True)
 parser.add_argument("--output", required=True)
-parser.add_argument("--key", default="qbe")
+parser.add_argument("--key", default="QbE")
 parser.add_argument("--device", default="cuda")
 args = parser.parse_args()
 
