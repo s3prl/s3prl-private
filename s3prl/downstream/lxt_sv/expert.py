@@ -176,12 +176,12 @@ class DownstreamExpert(nn.Module):
                 print(f"sv_lxt/{split}-{key}: {avg}")
 
         else:
-            err, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
-            logger.add_scalar(f'sv_lxt/{split}-EER', err, global_step=global_step)
-            print(f'sv_lxt/{split}-ERR: {err}')
+            eer, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
+            logger.add_scalar(f'sv_lxt/{split}-EER', eer, global_step=global_step)
+            print(f'sv_lxt/{split}-EER: {eer}')
 
-            if err < self.best_score and split == self.save_best_on:
-                self.best_score = torch.ones(1) * err
+            if eer < self.best_score and split == self.save_best_on:
+                self.best_score = torch.ones(1) * eer
                 save_names.append(f'{split}-best.ckpt')
 
             with open(Path(self.expdir) / f"{split}_predict.txt", "w") as file:
@@ -193,7 +193,7 @@ class DownstreamExpert(nn.Module):
                     print(score, name1, name2, file=file)
 
             with open(Path(self.expdir) / "log.log", 'a') as f:
-                f.write(f'{split} at step {global_step}: {err}\n')
+                f.write(f'{split} at step {global_step}: {eer}\n')
 
         return save_names
 
