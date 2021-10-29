@@ -264,7 +264,7 @@ class DownstreamExpert(nn.Module):
             if mode == 'dev':
                 COMPUTE_METRICS = ["si_sdr"]
             elif mode == 'test':
-                COMPUTE_METRICS = ["si_sdr", "stoi", "pesq"]
+                COMPUTE_METRICS = ["si_sdr"]
             predict_stfts = [torch.squeeze(m * source_attr['stft'].to(device)) for m in mask_list]
             predict_stfts_np = [np.transpose(s.data.cpu().numpy()) for s in predict_stfts]
 
@@ -289,18 +289,22 @@ class DownstreamExpert(nn.Module):
                 compute_permutation=True,
             )
 
-            for metric in COMPUTE_METRICS:
-                input_metric = "input_" + metric
-                assert metric in utt_metrics and input_metric in utt_metrics
-                imp = utt_metrics[metric] - utt_metrics[input_metric]
-                if metric not in records:
-                    records[metric] = []
-                if metric == "si_sdr":
-                    records[metric].append(imp)
-                elif metric == "stoi" or metric == "pesq":
-                    records[metric].append(utt_metrics[metric])
-                else:
-                    raise ValueError("Metric type not defined.")
+            try:
+                for metric in COMPUTE_METRICS:
+                    input_metric = "input_" + metric
+                    assert metric in utt_metrics and input_metric in utt_metrics
+                    imp = utt_metrics[metric] - utt_metrics[input_metric]
+                    if metric not in records:
+                        records[metric] = []
+                    if metric == "si_sdr":
+                        records[metric].append(imp)
+                    elif metric == "stoi" or metric == "pesq":
+                        records[metric].append(utt_metrics[metric])
+                    else:
+                        raise ValueError("Metric type not defined.")
+            except:
+                from ipdb import set_trace
+                set_trace()
 
             assert 'batch_id' in kwargs
             if kwargs['batch_id'] % 1000 == 0: # Save the prediction every 1000 examples
@@ -366,7 +370,7 @@ class DownstreamExpert(nn.Module):
             if mode == 'dev':
                 COMPUTE_METRICS = ["si_sdr"]
             elif mode == 'test':
-                COMPUTE_METRICS = ["si_sdr", "stoi", "pesq"]
+                COMPUTE_METRICS = ["si_sdr"]
             avg_loss = np.mean(records["loss"])
             logger.add_scalar(
                 f"separation_stft/{mode}-loss", avg_loss, global_step=global_step

@@ -36,7 +36,7 @@ def main(args):
         os.makedirs(meta_dir)
 
     for dset in ["train", "dev", "test"]:
-        with open("{}/train_{}hr/{}.txt".format(args.lxt_dir, args.num_hours, dset), 'r') as fh:
+        with open("{}/train_{}hr/{}/utt".format(args.lxt_dir, args.num_hours, dset), 'r') as fh:
             content = fh.readlines()
         uttlist = []
         for line in content:

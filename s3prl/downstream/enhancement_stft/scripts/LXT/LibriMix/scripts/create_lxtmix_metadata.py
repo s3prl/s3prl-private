@@ -62,8 +62,10 @@ def create_librimix_metadata(lxt_dir, lxt_md_dir, wham_dir,
     dataset = f'LXT{n_src}mix'
     # List metadata files in LibriSpeech
     lxt_md_files = os.listdir(lxt_md_dir)
+    lxt_md_files.sort()
     # List metadata files in wham_noise
     wham_md_files = os.listdir(wham_md_dir)
+    lxt_md_files.sort()
     # If you wish to ignore some metadata files add their name here
     # Example : to_be_ignored = ['dev-other.csv']
     to_be_ignored = []
@@ -116,6 +118,7 @@ def check_already_generated(md_dir, dataset, to_be_ignored,
                             librispeech_md_files):
     # Check if the metadata files in LibriSpeech already have been used
     already_generated = os.listdir(md_dir)
+    already_generated.sort()
     for generated in already_generated:
         if generated.startswith(f"{dataset}") and 'info' not in generated:
             if 'train-100' in generated:

@@ -91,7 +91,7 @@ class SeparationDataset(Dataset):
         reco2path = {}
         for cond in src + tgt:
             assert cond in cond_list
-            assert os.path.exists("{}/{}/wav.scp".format(self.data_dir, cond))
+            assert os.path.exists("{}/{}/wav.scp".format(self.data_dir, cond)), f"{self.data_dir}/{cond}/wav.scp"
             with open("{}/{}/wav.scp".format(self.data_dir, cond), 'r') as fh:
                 content = fh.readlines()
             for line in content:
