@@ -55,10 +55,15 @@ def match_length(feat_list, length_list):
 # This function is used to suppress the impluse.
 def postprocess(x, pad_zeros=True):
     y = np.copy(x)
-    p = int(np.max(np.nonzero(y))) + 1 # y[p:] = 0
+    nonzeros = np.nonzero(y)[0]
+    if len(nonzeros) == 0:
+        return x
+
+    p = int(np.max(nonzeros)) + 1 # y[p:] = 0
     if p < x.shape[0] - 2048:
         print("Warning: the predicted signal is 0 from sample {} to {}".format(p, x.shape[0]))
         return x
+
     window_size = 512
     start_p = p - window_size
     if start_p <= 0: # the wav length too short
