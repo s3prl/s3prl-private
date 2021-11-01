@@ -26,6 +26,11 @@ do
         -p $expdir -c downstream/enhancement_stft/configs/cfg_LXT1mix.yaml
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev
-    python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t dev
-    python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t test
+
+    if [ ! -f "$expdir/dev.result" ] || [ "$(cat $expdir/dev.result | grep "pesq" | wc -l)" -lt 1 ]; then
+        python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t dev > $expdir/dev.result
+    fi
+    if [ ! -f "$expdir/test.result" ] || [ "$(cat $expdir/test.result | grep "pesq" | wc -l)" -lt 1 ]; then
+        python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t test > $expdir/test.result
+    fi
 done
