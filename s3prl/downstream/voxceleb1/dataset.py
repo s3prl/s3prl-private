@@ -1,4 +1,5 @@
 import torch
+from torch._C import set_anomaly_enabled
 from torch.utils.data import DataLoader, Dataset
 import numpy as np 
 from librosa.util import find_files
@@ -47,6 +48,16 @@ class SpeakerClassifiDataset(Dataset):
 
         self.dataset = dataset
         self.label = self.build_label(self.dataset)
+
+        random.seed(0)
+        chosen_spks = random.sample(sorted(list(set(self.label))), k=60)
+        print(f"Chosen speakers: {chosen_spks}")
+        self.dataset = [path for path in self.dataset if self.path2spk(path) in chosen_spks]
+        self.label = self.build_label(self.dataset)
+
+    def path2spk(self, path):
+        id_string = path.split("/")[-3]
+        return int(id_string[2:]) - 10001
 
     # file_path/id0001/asfsafs/xxx.wav
     def build_label(self, train_path_list):
