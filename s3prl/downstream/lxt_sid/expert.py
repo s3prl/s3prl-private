@@ -108,11 +108,16 @@ class DownstreamExpert(nn.Module):
         records['acc'] += (predicted_classid == labels).view(-1).cpu().float().tolist()
         records['loss'].append(loss.item())
 
+        records["filename"] += uids
+        records["predict_speaker"] += list(predicted_classid)
+        records["truth_speaker"] += list(labels)
+
         return loss
 
     def log_records(self, split, records, logger, global_step, **kwargs):
         save_names = []
-        for key, values in records.items():
+        for key in ["acc", "loss"]:
+            values = records[key]
             average = torch.FloatTensor(values).mean().item()
             logger.add_scalar(
                 f'sid_lxt/{split}-{key}',
@@ -127,4 +132,14 @@ class DownstreamExpert(nn.Module):
                         self.best_score = torch.ones(1) * average
                         f.write(f'New best on {split} at step {global_step}: {average}\n')
                         save_names.append(f'{split}-best.ckpt')
+
+        if split in ["dev", "test"]:
+            with open(Path(self.expdir) / f"{split}_predict.txt", "w") as file:
+                lines = [f"{f} {getattr(self, f'{split}_dataset').spkrs[p]}\n" for f, p in zip(records["filename"], records["predict_speaker"])]
+                file.writelines(lines)
+
+            with open(Path(self.expdir) / f"{split}_truth.txt", "w") as file:
+                lines = [f"{f} {getattr(self, f'{split}_dataset').spkrs[l]}\n" for f, l in zip(records["filename"], records["truth_speaker"])]
+                file.writelines(lines)
+
         return save_names
