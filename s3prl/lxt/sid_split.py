@@ -43,7 +43,7 @@ for spk in spk2utt.keys():
         return [(utt, spk) for utt in utts]
 
     train.extend(wrap_with_spk(utts[ : args.train]))
-    dev.extend(wrap_with_spk(utts[ : args.train + eval_num // 2]))
+    dev.extend(wrap_with_spk(utts[args.train : args.train + eval_num // 2]))
     test.extend(wrap_with_spk(utts[args.train + eval_num // 2 : ]))
 
 for split in ["train", "dev", "test"]:
