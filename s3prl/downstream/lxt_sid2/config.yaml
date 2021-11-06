@@ -29,6 +29,7 @@ downstream_expert:
     max_secs: 2
     vad: true
     n_seg: 5
+    seed: 0
 
     train_batch_size: 16
     num_workers: 12
