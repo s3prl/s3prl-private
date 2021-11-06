@@ -29,7 +29,7 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/${n_seg}seg/${min}_${max}secs/projector${projector_dim}/${granularity}/${upstream}/lr${lr}/${seed}seed/
-    python3 run_downstream.py -a -m train -u $upstream -s SID -d lxt_sid2 -o config.optimizer.lr=$lr,,config.downstream_expert.modelrc.projector_dim=$projector_dim,,config.downstream_expert.modelrc.select=$granularity,,config.runner.total_steps=$total_steps,,config.downstream_expert.datarc.min_secs=$min,,config.downstream_expert.datarc.max_secs=$max,,config.downstream_expert.datarc.n_seg=$n_seg,,config.downstream_expert.seed=$seed \
+    python3 run_downstream.py -a -m train -u $upstream -s SID -d lxt_sid2 -o config.optimizer.lr=$lr,,config.downstream_expert.modelrc.projector_dim=$projector_dim,,config.downstream_expert.modelrc.select=$granularity,,config.runner.total_steps=$total_steps,,config.downstream_expert.datarc.min_secs=$min,,config.downstream_expert.datarc.max_secs=$max,,config.downstream_expert.datarc.n_seg=$n_seg,,config.downstream_expert.datarc.seed=$seed \
         -p $expdir
 
     last_ckpt=$(ls -t $expdir | grep -P ".*states.*\.ckpt" | head -n 1) # take the last checkpoint for train acc
