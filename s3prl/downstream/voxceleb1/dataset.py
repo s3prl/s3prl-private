@@ -19,12 +19,11 @@ from torchaudio.sox_effects import apply_effects_file
 from collections import defaultdict
 
 CACHE_PATH = os.path.join(os.path.dirname(__file__), '.cache/')
-TRAIN_UTT = 5
 
 
 # Voxceleb 1 Speaker Identification
 class SpeakerClassifiDataset(Dataset):
-    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=5):
+    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1):
 
         self.mode = mode
         self.root = file_path
