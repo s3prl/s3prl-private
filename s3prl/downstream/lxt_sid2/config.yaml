@@ -26,8 +26,8 @@ downstream_expert:
     lxt_audio: data/superb_all/1.1_normalized
     utts: data/superb_all/1.1_distributed/utt_with_valid_spk
     min_secs: 1
-    max_secs: 2
-    n_train: 10
+    max_secs: 1
+    n_train: 5
     n_eval: 40  # dev + test, split evenly
     seed: 0
     # dump_dir: result/dump_sid2
@@ -37,4 +37,4 @@ downstream_expert:
 
   modelrc:
     projector_dim: 0
-    select: UtteranceLevel
+    select: FrameLevel
