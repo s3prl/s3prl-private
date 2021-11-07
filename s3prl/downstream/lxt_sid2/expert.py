@@ -100,7 +100,7 @@ class DownstreamExpert(nn.Module):
             for p, l, label, uid in zip(predicted, features_len, labels, uids):
                 frames.append(p[:l])
                 frame_labels.append(label.expand(l))
-                frame_uids.extend([uid] * l)
+                frame_uids.append([f"{uid}#{t}" for t in range(l)])
             predicted = torch.cat(frames, dim=0)
             labels = torch.cat(frame_labels, dim=0)
             uids = frame_uids
