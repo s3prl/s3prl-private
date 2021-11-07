@@ -52,7 +52,7 @@ class DownstreamExpert(nn.Module):
             **model_conf,
         )
         self.objective = nn.CrossEntropyLoss()
-        
+
         self.expdir = Path(expdir)
         self.save_best_on = self.datarc.get("save_best_on", "dev")
         self.register_buffer('best_score', torch.ones(1) * -1<<31)
@@ -100,7 +100,7 @@ class DownstreamExpert(nn.Module):
             for p, l, label, uid in zip(predicted, features_len, labels, uids):
                 frames.append(p[:l])
                 frame_labels.append(label.expand(l))
-                frame_uids.append([f"{uid}#{t}" for t in range(l)])
+                frame_uids.extend([f"{uid}#{t}" for t in range(l)])
             predicted = torch.cat(frames, dim=0)
             labels = torch.cat(frame_labels, dim=0)
             uids = frame_uids
