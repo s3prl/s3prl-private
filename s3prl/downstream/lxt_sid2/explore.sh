@@ -17,7 +17,7 @@ shift 5
 
 min=1
 max=2
-granularity=FrameLevel
+granularity=UtteranceLevel
 projector_dim=0
 
 if [ -z "$*" ]; then
