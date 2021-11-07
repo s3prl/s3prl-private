@@ -96,12 +96,14 @@ class DownstreamExpert(nn.Module):
         labels = torch.LongTensor(labels).to(features.device)
 
         if predicted.dim() == 3:
-            frames, frame_labels = [], []
-            for p, l, label in zip(predicted, features_len, labels):
+            frames, frame_labels, frame_uids = [], [], []
+            for p, l, label, uid in zip(predicted, features_len, labels, uids):
                 frames.append(p[:l])
                 frame_labels.append(label.expand(l))
+                frame_uids.extend([uid] * l)
             predicted = torch.cat(frames, dim=0)
             labels = torch.cat(frame_labels, dim=0)
+            uids = frame_uids
 
         loss = self.objective(predicted, labels)
         predicted_classid = predicted.max(dim=-1).indices
