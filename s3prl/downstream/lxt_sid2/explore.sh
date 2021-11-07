@@ -3,7 +3,7 @@
 set -x
 set -e
 
-if [ $# != "6" ]; then
+if [ $# -lt "6" ]; then
     echo $0 [upstream] [n_train] [seed] [total steps] [expdir_root]
     exit 1
 fi
