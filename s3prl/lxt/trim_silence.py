@@ -27,7 +27,7 @@ for file in tqdm(files):
     effects = [
         ["channels", "1"],
         ["gain", "-3.0"],
-        ["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"],
+        ["silence", "1", "0.1", "0.2%", "-1", "0.1", "0.2%"],
     ]
 
     wav, sr = torchaudio.sox_effects.apply_effects_file(str(file), effects)
