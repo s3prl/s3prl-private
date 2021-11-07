@@ -1,11 +1,11 @@
 runner:
-  total_steps: 2000
+  total_steps: 1000
   gradient_clipping: 1
-  gradient_accumulate_steps: 2
+  gradient_accumulate_steps: 1
 
-  log_step: 100
-  eval_step: 100
-  save_step: 100
+  log_step: 200
+  eval_step: 200
+  save_step: 200
   max_keep: 1
   train_dataloader: train
   eval_dataloaders:
@@ -23,17 +23,18 @@ optimizer:
 
 downstream_expert: 
   datarc:
-    lxt_audio: data/superb_all/1.1_distributed/audio
+    lxt_audio: data/superb_all/1.1_normalized
     utts: data/superb_all/1.1_distributed/utt_with_valid_spk
     min_secs: 1
     max_secs: 2
-    vad: true
-    n_seg: 5
+    n_train: 10
+    n_eval: 40  # dev + test, split evenly
     seed: 0
+    # dump_dir: result/dump_sid2
 
-    train_batch_size: 16
+    train_batch_size: 32
     num_workers: 12
 
   modelrc:
     projector_dim: 0
-    select: FrameLevel
+    select: UtteranceLevel

@@ -1,3 +1,4 @@
+import os
 import random
 import torchaudio
 from tqdm import tqdm
@@ -7,64 +8,88 @@ from torchaudio.sox_effects import apply_effects_file
 from collections import defaultdict
 
 SAMPLE_RATE = 16000
+LONG_ENOUGH_SECS = 4
+TRIM_START_SECS = 2
 
 class LxtSid(Dataset):
-    def __init__(self, split, lxt_audio, utts, min_secs=2, max_secs=4, vad=True, seed=0, n_seg=5, **kwargs) -> None:
+    def __init__(self, split, lxt_audio, utts, min_secs=2, max_secs=4, seed=0, n_train=10, n_eval=40, dump_dir=None, **kwargs) -> None:
         super().__init__()
         random.seed(seed)
 
         self.lxt_audio = Path(lxt_audio)
         with open(utts) as file:
-            def process_line(line):
-                uid, spkr = line.strip().split(maxsplit=1)
+            def process_line(uid):
                 path = self.lxt_audio / f"{uid.strip()}.wav"
-
-                effects = [
-                    ["channels", "1"],
-                    ["gain", "-3.0"],
-                ]
-                if vad:
-                    effects.append(["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"])
-
-                wav, sr = apply_effects_file(str(path), effects)
+                wav, sr = torchaudio.load(str(path))
                 wav = wav.squeeze(0)
                 assert sr == SAMPLE_RATE
 
                 if min_secs < 0 or max_secs < 0:
-                    yield wav, spkr.strip(), uid.strip()
+                    yield wav, 0, -1
                 else:
+                    if (len(wav) / SAMPLE_RATE) > LONG_ENOUGH_SECS:
+                        # prevent microphone noises
+                        wav = wav[TRIM_START_SECS * SAMPLE_RATE:]
                     frames = len(wav)
                     start = 0
                     while (frames - start) / SAMPLE_RATE > min_secs:
                         interval = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
                         end = start + interval
-                        yield wav[start : end], spkr.strip(), f"{uid.strip()}_{start}_{end}"
+                        yield wav[start:end], start, end
                         start = end
 
-            spk2utt = defaultdict(list)
-            wavs = {}
+            spk2utt = defaultdict(lambda: defaultdict(list))
+            seg2wavs = {}
             for line in tqdm(file.readlines()):
-                for wav, spk, uid in list(process_line(line)):
-                    spk2utt[spk].append(uid)
-                    wavs[uid] = wav
+                uid, spk = line.strip().split(maxsplit=1)
+                for seg_wav, start, end in list(process_line(uid)):
+                    seg_id = f"{uid}_{start}_{end}"
+                    spk2utt[spk][uid].append(seg_id)
+                    seg2wavs[seg_id] = seg_wav
 
-            self.pairs = []
-            for spk in spk2utt.keys():
-                utts = spk2utt[spk]
-                random.shuffle(utts)
-                eval_num = len(utts) - n_seg
+            segs_with_spk = []
+            for spk, utt2segs in spk2utt.items():
+                utts = utt2segs.keys()
+
+                train_utts = random.sample(utts, k=n_train)
+                eval_utts = [utt for utt in utts if utt not in train_utts]
+                random.shuffle(eval_utts)
+                dev_utts = eval_utts[:len(eval_utts) // 2]
+                test_utts = eval_utts[len(eval_utts) // 2:]
+
+                train_segs = []
+                for utt in train_utts:
+                    train_segs.extend(random.sample(utt2segs[utt], k=1))
+
+                all_dev_segs = []
+                for utt in dev_utts:
+                    all_dev_segs.extend(utt2segs[utt])
+                dev_segs = random.sample(all_dev_segs, k=n_eval // 2)
+
+                all_test_segs = []
+                for utt in test_utts:
+                    all_test_segs.extend(utt2segs[utt])
+                test_segs = random.sample(all_test_segs, k=n_eval // 2)
+
                 if split == "train":
-                    chosen_utts = utts[:n_seg]
+                    segs_with_spk.extend([(seg_id, spk) for seg_id in train_segs])
                 elif split == "dev":
-                    chosen_utts = utts[n_seg:n_seg + eval_num // 2]
+                    segs_with_spk.extend([(seg_id, spk) for seg_id in dev_segs])
                 elif split == "test":
-                    chosen_utts = utts[n_seg + eval_num // 2:]
+                    segs_with_spk.extend([(seg_id, spk) for seg_id in test_segs])
                 else:
                     raise ValueError
-                chosen_wavs = [wavs[utt] for utt in chosen_utts]
-                self.pairs.extend(list(zip(chosen_wavs, [spk] * len(chosen_wavs), chosen_utts)))
+
+            self.pairs = []
+            for seg, spk in segs_with_spk:
+                self.pairs.append([seg2wavs[seg], spk, seg])
 
         self.spkrs = sorted(list(spk2utt.keys()))
+        if dump_dir is not None:
+            tgt_dir = Path(dump_dir) / split
+            os.makedirs(tgt_dir, exist_ok=True)
+            for wav, spk, seg_id in self.pairs:
+                torchaudio.save(str(tgt_dir / f"{spk.replace(' ', '_')}:{seg_id}.wav"), wav.view(1, -1), SAMPLE_RATE)
 
 
     def __len__(self):
