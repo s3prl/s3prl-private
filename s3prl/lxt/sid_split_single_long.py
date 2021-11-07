@@ -1,6 +1,5 @@
 import random
 import argparse
-import pandas as pd
 from pathlib import Path
 from collections import defaultdict
 
@@ -10,14 +9,13 @@ torchaudio.set_audio_backend("sox_io")
 parser = argparse.ArgumentParser()
 parser.add_argument("--lxt", required=True)
 parser.add_argument("--utt2spk", required=True)
-parser.add_argument("--csv", required=True)
+parser.add_argument("--blacklist", required=True)
 parser.add_argument("--argmax", type=int, default=0)
 parser.add_argument("--output_dir", required=True)
 parser.add_argument("--seed", type=int, default=0)
 args = parser.parse_args()
 random.seed(args.seed)
-csv = pd.read_csv(args.csv)
-whitelist = csv["utterance_id"].tolist()
+blacklist = [line.split(maxsplit=1)[0].strip() for line in open(args.blacklist).readlines()]
 
 lxt = Path(args.lxt)
 output_dir = Path(args.output_dir)
@@ -27,7 +25,7 @@ spk2utt = defaultdict(list)
 with open(args.utt2spk, "r") as file:
     for line in file.readlines():
         utt, spk = line.split(" ", maxsplit=1)
-        if utt not in whitelist:
+        if utt in blacklist:
             continue
         spk2utt[spk.strip()].append(utt.strip())
 
