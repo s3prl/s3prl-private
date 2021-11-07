@@ -3,16 +3,17 @@
 set -x
 set -e
 
-if [ $# -lt "4" ]; then
-    echo $0 [upstream] [n_train] [total steps] [expdir_root]
+if [ $# != "5" ]; then
+    echo $0 [upstream] [n_train] [seed] [total steps] [expdir_root]
     exit 1
 fi
 
 upstream=$1
 n_train=$2
-total_steps=$3
-expdir_root=$4
-shift 4
+seed=$3
+total_steps=$4
+expdir_root=$5
+shift 5
 
 min=1
 max=2
@@ -27,7 +28,7 @@ fi
 
 for lr in "${lrs[@]}";
 do
-    expdir=$expdir_root/${n_seg}seg/${min}_${max}secs/projector${projector_dim}/${granularity}/${upstream}/lr${lr}/${seed}seed/
+    expdir=$expdir_root/${min}_${max}secs/projector${projector_dim}/${granularity}/train_seg${n_train}/${upstream}/lr${lr}/${seed}seed/
     python3 run_downstream.py -a -m train -u $upstream -s SID -d lxt_sid2 -o config.optimizer.lr=$lr,,config.downstream_expert.modelrc.projector_dim=$projector_dim,,config.downstream_expert.modelrc.select=$granularity,,config.runner.total_steps=$total_steps,,config.downstream_expert.datarc.min_secs=$min,,config.downstream_expert.datarc.max_secs=$max,,config.downstream_expert.datarc.seed=$seed,,config.downstream_expert.datarc.n_train=$n_train \
         -p $expdir
 
