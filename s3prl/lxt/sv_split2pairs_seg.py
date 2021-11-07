@@ -3,6 +3,7 @@ import torch
 import random
 import argparse
 import torchaudio
+import pandas as pd
 from tqdm import tqdm
 from pathlib import Path
 from itertools import product
@@ -23,21 +24,25 @@ EFFECTS = [
 parser = argparse.ArgumentParser()
 parser.add_argument("--lxt", required=True)
 parser.add_argument("--split_file", required=True)
+parser.add_argument("--blacklist", required=True)
 parser.add_argument("--output_list", required=True)
-parser.add_argument("--pair_num", type=int, default=10000)
+parser.add_argument("--pair_num", type=int, default=5000)
 parser.add_argument("--min_secs", type=float, default=1)
 parser.add_argument("--max_secs", type=float, default=2)
 parser.add_argument("--seed", type=int, default=0)
 args = parser.parse_args()
 random.seed(args.seed)
-
+blacklist = [line.split(maxsplit=1)[0].strip() for line in open(args.blacklist).readlines()]
 lxt = Path(args.lxt)
 with Path(args.split_file).open() as split_file:
     def extract_uttr_spkr(line):
         uttr, spkr = line.strip().split(maxsplit=1)
+        if uttr in blacklist:
+            return None
         return uttr.strip(), spkr.strip()
 
     uttr_spkrs = [extract_uttr_spkr(line) for line in split_file.readlines()]
+    uttr_spkrs = [item for item in uttr_spkrs if item is not None]
     new_uttr_spkrs = []
     for uttr, spkr in tqdm(uttr_spkrs):
         path = lxt / f"{uttr}.wav"
