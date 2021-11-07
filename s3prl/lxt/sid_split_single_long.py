@@ -44,6 +44,7 @@ for spk in spk2utt.keys():
         return [(utt, spk) for utt in utts]
 
     train.extend(wrap_with_spk([train_utt]))
+    random.shuffle(utts)
     dev.extend(wrap_with_spk(utts[: eval_num // 2]))
     test.extend(wrap_with_spk(utts[eval_num // 2 : ]))
 
