@@ -113,8 +113,8 @@ class DownstreamExpert(nn.Module):
         records['acc'] += (predicted_classid == labels).view(-1).cpu().float().tolist()
         records['loss'].append(loss.item())
         if frame_level:
-            utt_predicteds = predicted.split(features_len)
-            utt_labels = labels.split(features_len)
+            utt_predicteds = predicted.split(features_len.cpu().tolist())
+            utt_labels = labels.split(features_len.cpu().tolist())
             def split_uids(uids, features_len):
                 start = 0
                 for length in features_len:
