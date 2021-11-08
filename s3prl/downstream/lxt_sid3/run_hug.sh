@@ -23,7 +23,7 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/${org}__${repo}__${revision}/lr$lr
-    python3 run_downstream.py -a -m train -u $org/$repo --upstream_revision $revision -s SID -d lxt_sid2 -o config.optimizer.lr=$lr \
+    python3 run_downstream.py -a -m train -u $org/$repo --upstream_revision $revision -s SID -d lxt_sid3 -o config.optimizer.lr=$lr \
         -p $expdir --hub huggingface
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev
