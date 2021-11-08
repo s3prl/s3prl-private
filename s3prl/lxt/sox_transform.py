@@ -26,11 +26,15 @@ for file in tqdm(files):
 
     effects = [
         ["channels", "1"],
-        ["gain", "-3.0"],
-        ["silence", "1", "0.1", "0.2%", "-1", "0.1", "0.2%"],
+        ["gain", "-n", "-3.0"],
+        ["silence", "-l", "1", "0.2", "0.5%", "-1", "0.5", "0.5%"],
+        ["gain", "-n", "-3.0"],
     ]
 
     wav, sr = torchaudio.sox_effects.apply_effects_file(str(file), effects)
+    if wav.size(-1) < 16000 * 0.5:
+        print(f"{file} is pass, length {wav.size(-1)}")
+        continue
     src_path = Path(file)
     tgt_path = tgt_dir.joinpath(src_path.resolve().relative_to(src_dir.resolve())).resolve()
     torchaudio.save(str(tgt_path), wav, sr)
