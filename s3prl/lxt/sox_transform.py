@@ -10,6 +10,7 @@ torchaudio.set_audio_backend("sox_io")
 parser = argparse.ArgumentParser()
 parser.add_argument("--src_dir", required=True)
 parser.add_argument("--tgt_dir", required=True)
+parser.add_argument("--length", required=True)
 args = parser.parse_args()
 
 src_dir = Path(args.src_dir)
@@ -19,6 +20,8 @@ if tgt_dir.is_dir():
 tgt_dir.mkdir()
 
 files = find_files(args.src_dir)
+length_file = open(args.length, "w")
+paths_lens = []
 for file in tqdm(files):
     file = Path(file)
     if file.is_symlink():
@@ -27,7 +30,7 @@ for file in tqdm(files):
     effects = [
         ["channels", "1"],
         ["gain", "-n", "-3.0"],
-        ["silence", "-l", "1", "0.2", "0.5%", "-1", "0.5", "0.5%"],
+        ["silence", "-l", "1", "0.2", "0.7%", "-1", "0.3", "0.2%"],
         ["gain", "-n", "-3.0"],
     ]
 
@@ -38,3 +41,8 @@ for file in tqdm(files):
     src_path = Path(file)
     tgt_path = tgt_dir.joinpath(src_path.resolve().relative_to(src_dir.resolve())).resolve()
     torchaudio.save(str(tgt_path), wav, sr)
+    paths_lens.append((tgt_path, wav.size(-1)))
+
+paths_lens.sort(key=lambda x: x[1])
+for path, length in paths_lens:
+    print(length, path, file=length_file)
