@@ -17,6 +17,7 @@ import tqdm
 from pathlib import Path
 from torchaudio.sox_effects import apply_effects_file
 from collections import defaultdict
+from shutil import copyfile
 
 CACHE_PATH = os.path.join(os.path.dirname(__file__), '.cache/')
 
@@ -51,6 +52,11 @@ class SpeakerClassifiDataset(Dataset):
         print(f"Chosen {len(self.chosen_spks)} speakers: {self.chosen_spks}")
         self.dataset = [path for path in dataset if Path(path).parts[-3] in self.chosen_spks]
         self.label = [self.chosen_spks.index(Path(path).parts[-3]) for path in self.dataset]
+
+        audio_dir = Path(f"result/voxceleb1/{mode}")
+        os.makedirs(audio_dir, exist_ok=True)
+        for path in self.dataset:
+            copyfile(path, audio_dir / "-".join(Path(path).parts[-3:]))
 
     @property
     def speaker_num(self):

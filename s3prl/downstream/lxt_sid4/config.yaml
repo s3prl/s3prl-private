@@ -1,0 +1,40 @@
+runner:
+  total_steps: 1000
+  gradient_clipping: 1
+  gradient_accumulate_steps: 1
+
+  log_step: 200
+  eval_step: 200
+  save_step: 200
+  max_keep: 1
+  train_dataloader: train
+  eval_dataloaders:
+    - dev
+
+optimizer:
+  name: TorchOptim
+  torch_optim_name: Adam
+  lr: 1.0e-4
+
+# # comment the whole scheduler config block to disable learning rate scheduling
+# scheduler:
+#   name: linear_schedule_with_warmup
+#   num_warmup_steps: 5000
+
+downstream_expert: 
+  datarc:
+    lxt_audio: data/superb_all/1.1_augment_noises_6-9-12/
+    utts: data/superb_all/1.1_distributed/utt_with_valid_spk
+    min_secs: 1
+    max_secs: 1
+    n_train: 50
+    n_eval: 100  # dev + test, split evenly
+    seed: 0
+    # dump_dir: result/dump_sid2
+
+    train_batch_size: 32
+    num_workers: 12
+
+  modelrc:
+    projector_dim: 0
+    select: UtteranceLevel
