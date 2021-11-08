@@ -50,9 +50,17 @@ class DownstreamExpert(nn.Module):
         
         model_cls = eval(self.modelrc['select'])
         model_conf = self.modelrc.get(self.modelrc['select'], {})
-        self.projector = nn.Linear(upstream_dim, self.modelrc['projector_dim'])
+
+        projector_dim = self.modelrc['projector_dim']
+        if projector_dim <= 0:
+            self.projector = lambda x: x
+            latest_dim = upstream_dim
+        else:
+            self.projector = nn.Linear(upstream_dim, self.modelrc['projector_dim'])
+            latest_dim = projector_dim
+
         self.model = model_cls(
-            input_dim = self.modelrc['projector_dim'],
+            input_dim = latest_dim,
             output_dim = self.train_dataset.speaker_num,
             **model_conf,
         )
@@ -104,8 +112,8 @@ class DownstreamExpert(nn.Module):
         records['loss'].append(loss.item())
 
         records['filename'] += filenames
-        records['predict_speaker'] += SpeakerClassifiDataset.label2speaker(predicted_classid.cpu().tolist())
-        records['truth_speaker'] += SpeakerClassifiDataset.label2speaker(labels.cpu().tolist())
+        records['predict_speaker'] += self.train_dataset.label2speaker(predicted_classid.cpu().tolist())
+        records['truth_speaker'] += self.train_dataset.label2speaker(labels.cpu().tolist())
 
         return loss
 

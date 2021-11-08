@@ -27,7 +27,6 @@ class SpeakerClassifiDataset(Dataset):
 
         self.mode = mode
         self.root = file_path
-        self.speaker_num = 1251
         self.meta_data = meta_data
         self.max_timestep = max_timestep
         self.train_utt = train_utt
@@ -45,33 +44,20 @@ class SpeakerClassifiDataset(Dataset):
                 pickle.dump(dataset, cache)
         print(f'[SpeakerClassifiDataset] - there are {len(dataset)} files found')
 
-        self.dataset = dataset
-        self.label = self.build_label(self.dataset)
-
         random.seed(0)
-        chosen_spks = random.sample(sorted(list(set(self.label))), k=60)
-        print(f"Chosen speakers: {chosen_spks}")
-        self.dataset = [path for path in self.dataset if self.path2spk(path) in chosen_spks]
-        self.label = self.build_label(self.dataset)
+        all_spks = sorted(list(set([Path(path).parts[-3] for path in dataset])))
+        self.chosen_spks = random.sample(all_spks, k=60)
+        print(f"Chosen {len(self.chosen_spks)} speakers: {self.chosen_spks}")
+        self.dataset = [path for path in dataset if Path(path).parts[-3] in self.chosen_spks]
+        self.label = [self.chosen_spks.index(Path(path).parts[-3]) for path in self.dataset]
 
-    def path2spk(self, path):
-        id_string = path.split("/")[-3]
-        return int(id_string[2:]) - 10001
+    @property
+    def speaker_num(self):
+        return len(self.chosen_spks)
 
-    # file_path/id0001/asfsafs/xxx.wav
-    def build_label(self, train_path_list):
-
-        y = []
-        for path in train_path_list:
-            id_string = path.split("/")[-3]
-            y.append(int(id_string[2:]) - 10001)
-
-        return y
-    
-    @classmethod
     def label2speaker(self, labels):
-        return [f"id{label + 10001}" for label in labels]
-    
+        return [self.chosen_spks[label] for label in labels]
+
     def train(self):
 
         spk2paths = defaultdict(list)
@@ -128,7 +114,7 @@ class SpeakerClassifiDataset(Dataset):
         effects = [
             ["channels", "1"],
             ["gain", "-3.0"],
-            ["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"],
+            ["silence", "1", "0.1", "0.2%", "-1", "0.1", "0.2%"],
         ]
         wav, _ = apply_effects_file(self.dataset[idx], effects)
         wav = wav.squeeze(0)
