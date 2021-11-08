@@ -15,10 +15,10 @@ total_steps=$4
 expdir_root=$5
 shift 5
 
-min=1
-max=1
+min=-1
+max=-1
 projector_dim=0
-granularity=FrameLevel
+granularity=UtteranceLevel
 
 if [ -z "$*" ]; then
     lrs=("1.0e-1" "1.0e-2" "1.0e-3" "1")

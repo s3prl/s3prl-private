@@ -3,22 +3,22 @@
 set -x
 set -e
 
-if [ $# -lt "5" ]; then
-    echo $0 [upstream] [n_train] [seed] [total steps] [expdir_root]
+if [ $# -lt "3" ]; then
+    echo $0 [upstream] [total steps] [expdir_root]
     exit 1
 fi
 
 upstream=$1
-n_train=$2
-seed=$3
-total_steps=$4
-expdir_root=$5
-shift 5
+total_steps=$2
+expdir_root=$3
+shift 3
 
 min=1
-max=1
+max=2
+seed=0
+n_train=20
 projector_dim=0
-granularity=FrameLevel
+granularity=UtteranceLevel
 
 if [ -z "$*" ]; then
     lrs=("1.0e-1" "1.0e-2" "1.0e-3" "1")

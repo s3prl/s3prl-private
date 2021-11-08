@@ -23,13 +23,13 @@ optimizer:
 
 downstream_expert:
   save_best_on: dev
-  save_best_metric: utt-acc
+  save_best_metric: acc
   datarc:
-    lxt_audio: data/superb_all/1.1_normalized
+    lxt_audio: data/superb_all/1.1_augment_noises_10-12-14/
     utts: data/superb_all/1.1_distributed/utt_with_valid_spk
     min_secs: 1
     max_secs: 1
-    n_train: 5
+    n_train: 10
     n_eval: 40  # dev + test, split evenly
     seed: 0
     # dump_dir: result/dump_sid2
@@ -39,4 +39,4 @@ downstream_expert:
 
   modelrc:
     projector_dim: 0
-    select: FrameLevel
+    select: UtteranceLevel

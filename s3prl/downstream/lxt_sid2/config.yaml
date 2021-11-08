@@ -1,7 +1,7 @@
 runner:
   total_steps: 1000
   gradient_clipping: 1
-  gradient_accumulate_steps: 1
+  gradient_accumulate_steps: 4
 
   log_step: 200
   eval_step: 200
@@ -23,16 +23,16 @@ optimizer:
 
 downstream_expert: 
   datarc:
-    lxt_audio: data/superb_all/1.1_normalized
+    lxt_audio: data/superb_all/1.1_augment_noises/
     utts: data/superb_all/1.1_distributed/utt_with_valid_spk
     min_secs: 1
     max_secs: 1
     n_train: 5
-    n_eval: 40  # dev + test, split evenly
+    n_eval: 10  # dev + test, split evenly
     seed: 0
     # dump_dir: result/dump_sid2
 
-    train_batch_size: 32
+    train_batch_size: 8
     num_workers: 12
 
   modelrc:

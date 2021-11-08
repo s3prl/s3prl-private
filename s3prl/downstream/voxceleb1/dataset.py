@@ -24,7 +24,7 @@ CACHE_PATH = os.path.join(os.path.dirname(__file__), '.cache/')
 
 # Voxceleb 1 Speaker Identification
 class SpeakerClassifiDataset(Dataset):
-    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1, seed=0):
+    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1, seed=0, **kwargs):
 
         self.mode = mode
         self.seed = seed

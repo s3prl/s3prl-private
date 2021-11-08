@@ -26,9 +26,9 @@ downstream_expert:
     lxt_audio: data/superb_all/1.1_augment_noises_6-9-12/
     utts: data/superb_all/1.1_distributed/utt_with_valid_spk
     min_secs: 1
-    max_secs: 1
-    n_train: 50
-    n_eval: 100  # dev + test, split evenly
+    max_secs: 2
+    n_train: 20
+    n_eval: 40  # dev + test, split evenly
     seed: 0
     # dump_dir: result/dump_sid2
 

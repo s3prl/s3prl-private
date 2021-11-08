@@ -44,9 +44,9 @@ class DownstreamExpert(nn.Module):
 
         root_dir = Path(self.datarc['file_path'])
 
-        self.train_dataset = SpeakerClassifiDataset('train', root_dir, self.datarc['meta_data'], self.datarc['max_timestep'])
-        self.dev_dataset = SpeakerClassifiDataset('dev', root_dir, self.datarc['meta_data'])
-        self.test_dataset = SpeakerClassifiDataset('test', root_dir, self.datarc['meta_data'])
+        self.train_dataset = SpeakerClassifiDataset('train', **self.datarc)
+        self.dev_dataset = SpeakerClassifiDataset('dev', **self.datarc)
+        self.test_dataset = SpeakerClassifiDataset('test', **self.datarc)
         
         model_cls = eval(self.modelrc['select'])
         model_conf = self.modelrc.get(self.modelrc['select'], {})

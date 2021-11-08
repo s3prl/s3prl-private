@@ -49,7 +49,7 @@ class LxtSid(Dataset):
 
             segs_with_spk = []
             for spk, utt2segs in spk2utt.items():
-                utts = utt2segs.keys()
+                utts = list(utt2segs.keys())
                 random.shuffle(utts)
 
                 interval = round(len(utts) / 3)
