@@ -31,6 +31,8 @@ downstream_expert:
     train_batch_size: 8
     eval_batch_size: 1
     max_timestep: 128000
+    train_utt: 1
+    seed: 0
 
   modelrc:
     projector_dim: 0

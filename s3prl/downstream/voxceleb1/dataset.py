@@ -23,9 +23,10 @@ CACHE_PATH = os.path.join(os.path.dirname(__file__), '.cache/')
 
 # Voxceleb 1 Speaker Identification
 class SpeakerClassifiDataset(Dataset):
-    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1):
+    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1, seed=0):
 
         self.mode = mode
+        self.seed = seed
         self.root = file_path
         self.meta_data = meta_data
         self.max_timestep = max_timestep
@@ -44,7 +45,7 @@ class SpeakerClassifiDataset(Dataset):
                 pickle.dump(dataset, cache)
         print(f'[SpeakerClassifiDataset] - there are {len(dataset)} files found')
 
-        random.seed(0)
+        random.seed(self.seed)
         all_spks = sorted(list(set([Path(path).parts[-3] for path in dataset])))
         self.chosen_spks = random.sample(all_spks, k=60)
         print(f"Chosen {len(self.chosen_spks)} speakers: {self.chosen_spks}")
@@ -71,7 +72,7 @@ class SpeakerClassifiDataset(Dataset):
                 spk2paths[spk].append(str(x[0]))
         print("finish searching training set wav")
 
-        random.seed(0)
+        random.seed(self.seed)
         dataset = []
         for spk, paths in spk2paths.items():
             if self.train_utt is not None:

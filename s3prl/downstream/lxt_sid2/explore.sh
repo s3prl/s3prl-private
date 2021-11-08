@@ -3,7 +3,7 @@
 set -x
 set -e
 
-if [ $# -lt "6" ]; then
+if [ $# -lt "5" ]; then
     echo $0 [upstream] [n_train] [seed] [total steps] [expdir_root]
     exit 1
 fi
@@ -16,9 +16,9 @@ expdir_root=$5
 shift 5
 
 min=1
-max=2
-granularity=UtteranceLevel
+max=1
 projector_dim=0
+granularity=FrameLevel
 
 if [ -z "$*" ]; then
     lrs=("1.0e-1" "1.0e-2" "1.0e-3" "1")
