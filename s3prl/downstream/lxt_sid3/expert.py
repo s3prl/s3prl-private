@@ -54,7 +54,8 @@ class DownstreamExpert(nn.Module):
         self.objective = nn.CrossEntropyLoss()
 
         self.expdir = Path(expdir)
-        self.save_best_on = self.datarc.get("save_best_on", "dev")
+        self.save_best_on = downstream_expert.get("save_best_on", "dev")
+        self.save_best_metric = downstream_expert.get("save_best_metric", "acc")
         self.register_buffer('best_score', torch.ones(1) * -1<<31)
 
     def _get_train_dataloader(self, dataset, epoch):
@@ -94,13 +95,15 @@ class DownstreamExpert(nn.Module):
         features = self.projector(features)
         predicted, _ = self.model(features, features_len)
         labels = torch.LongTensor(labels).to(features.device)
-
+        
+        frame_level = False
         if predicted.dim() == 3:
+            frame_level = True
             frames, frame_labels, frame_uids = [], [], []
             for p, l, label, uid in zip(predicted, features_len, labels, uids):
                 frames.append(p[:l])
                 frame_labels.append(label.expand(l))
-                frame_uids.extend([f"{uid}#{t}" for t in range(l)])
+                frame_uids.extend([f"{uid}:{t}" for t in range(l)])
             predicted = torch.cat(frames, dim=0)
             labels = torch.cat(frame_labels, dim=0)
             uids = frame_uids
@@ -109,6 +112,22 @@ class DownstreamExpert(nn.Module):
         predicted_classid = predicted.max(dim=-1).indices
         records['acc'] += (predicted_classid == labels).view(-1).cpu().float().tolist()
         records['loss'].append(loss.item())
+        if frame_level:
+            utt_predicteds = predicted.split(features_len)
+            utt_labels = labels.split(features_len)
+            def split_uids(uids, features_len):
+                start = 0
+                for length in features_len:
+                    yield uids[start : start + length]
+                    start = start + length
+            utt_uids = list(split_uids(uids, features_len))
+            for utt_predicted, utt_label, utt_uid in zip(utt_predicteds, utt_labels, utt_uids):
+                classids = (utt_predicted.max(dim=-1).indices.tolist())
+                classid = sorted([(c, classids.count(c)) for c in list(set(classids))], key=lambda x: x[1], reverse=True)[0][0]
+                records["utt-acc"].append(float(classid == utt_label[0]))
+                records["utt-predict_speaker"].append(classid)
+                records["utt-truth_speaker"].append(utt_label[0])
+                records["utt-uid"].append(utt_uid[0].split(":")[0])
 
         records["filename"] += uids
         records["predict_speaker"] += list(predicted_classid)
@@ -118,7 +137,9 @@ class DownstreamExpert(nn.Module):
 
     def log_records(self, split, records, logger, global_step, **kwargs):
         save_names = []
-        for key in ["acc", "loss"]:
+        for key in ["acc", "loss", "utt-acc"]:
+            if key not in records:
+                continue
             values = records[key]
             average = torch.FloatTensor(values).mean().item()
             logger.add_scalar(
@@ -126,9 +147,9 @@ class DownstreamExpert(nn.Module):
                 average,
                 global_step=global_step
             )
+            print(f"{split} {key}: {average}")
             with open(self.expdir / "log.log", 'a') as f:
-                if key == 'acc':
-                    print(f"{split} {key}: {average}")
+                if key == self.save_best_metric:
                     f.write(f'{split} at step {global_step}: {average}\n')
                     if split == self.save_best_on and average > self.best_score:
                         self.best_score = torch.ones(1) * average
@@ -143,5 +164,14 @@ class DownstreamExpert(nn.Module):
             with open(Path(self.expdir) / f"{split}_truth.txt", "w") as file:
                 lines = [f"{f} {getattr(self, f'{split}_dataset').spkrs[l]}\n" for f, l in zip(records["filename"], records["truth_speaker"])]
                 file.writelines(lines)
+            
+            if "utt-acc" in records:
+                with open(Path(self.expdir) / f"{split}_utt_predict.txt", "w") as file:
+                    lines = [f"{f} {getattr(self, f'{split}_dataset').spkrs[p]}\n" for f, p in zip(records["utt-uid"], records["utt-predict_speaker"])]
+                    file.writelines(lines)
+
+                with open(Path(self.expdir) / f"{split}_utt_truth.txt", "w") as file:
+                    lines = [f"{f} {getattr(self, f'{split}_dataset').spkrs[l]}\n" for f, l in zip(records["utt-uid"], records["utt-truth_speaker"])]
+                    file.writelines(lines)
 
         return save_names
