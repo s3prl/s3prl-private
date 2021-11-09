@@ -9,17 +9,9 @@ from pathlib import Path
 from itertools import product
 import matplotlib.pyplot as plt
 from collections import defaultdict
-from torchaudio.sox_effects import apply_effects_file
 
 torchaudio.set_audio_backend("sox_io")
 SAMPLE_RATE = 16000
-
-EFFECTS = [
-    ["channels", "1"],
-    ["rate", "16000"],
-    ["gain", "-3.0"],
-    ["silence", "1", "0.1", "0.1%", "-1", "0.1", "0.1%"],
-]
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--lxt", required=True)
@@ -46,7 +38,7 @@ with Path(args.split_file).open() as split_file:
     new_uttr_spkrs = []
     for uttr, spkr in tqdm(uttr_spkrs):
         path = lxt / f"{uttr}.wav"
-        wav, sr = apply_effects_file(path, EFFECTS)
+        wav, sr = torchaudio.load(path)
         wav = wav.squeeze(0)
         start = 0
         while (len(wav) - start) / SAMPLE_RATE > args.min_secs:
