@@ -17,6 +17,7 @@ min=1
 max=2
 seed=0
 n_train=20
+n_eval=40
 projector_dim=0
 granularity=UtteranceLevel
 
@@ -29,7 +30,7 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/${min}_${max}secs/projector${projector_dim}/${granularity}/train_seg${n_train}/${upstream}/lr${lr}/${seed}seed/
-    python3 run_downstream.py -a -m train -u $upstream -s SID -d lxt_sid4 -o config.optimizer.lr=$lr,,config.downstream_expert.modelrc.projector_dim=$projector_dim,,config.downstream_expert.modelrc.select=$granularity,,config.runner.total_steps=$total_steps,,config.downstream_expert.datarc.min_secs=$min,,config.downstream_expert.datarc.max_secs=$max,,config.downstream_expert.datarc.seed=$seed,,config.downstream_expert.datarc.n_train=$n_train \
+    python3 run_downstream.py -a -m train -u $upstream -s SID -d lxt_sid4 -o config.optimizer.lr=$lr,,config.downstream_expert.modelrc.projector_dim=$projector_dim,,config.downstream_expert.modelrc.select=$granularity,,config.runner.total_steps=$total_steps,,config.downstream_expert.datarc.min_secs=$min,,config.downstream_expert.datarc.max_secs=$max,,config.downstream_expert.datarc.seed=$seed,,config.downstream_expert.datarc.n_train=$n_train,,config.downstream_expert.datarc.n_eval=$n_eval \
         -p $expdir
 
     last_ckpt=$(ls -t $expdir | grep -P ".*states.*\.ckpt" | head -n 1) # take the last checkpoint for train acc
