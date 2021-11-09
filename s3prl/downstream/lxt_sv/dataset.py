@@ -25,7 +25,8 @@ EFFECTS = [
 ]
 
 class LxtSvTrain(Dataset):
-    def __init__(self, lxt_audio, lxt_train, min_secs=1, max_secs=2, **kwargs):
+    def __init__(self, lxt_audio, lxt_train, min_secs=1, max_secs=2, seed=0, **kwargs):
+        random.seed(seed)
 
         with Path(lxt_train).open() as train_file:
             def extract_uttr_spkr(line):
