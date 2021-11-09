@@ -92,12 +92,14 @@ class LxtSid(Dataset):
             for wav, spk, seg_id in self.pairs:
                 torchaudio.save(str(tgt_dir / f"{spk.replace(' ', '_')}:{seg_id}.wav"), wav.view(1, -1), SAMPLE_RATE)
 
+        self.duplicated_pairs = self.pairs * 10000
+
 
     def __len__(self):
-        return len(self.pairs)
+        return len(self.duplicated_pairs)
 
     def __getitem__(self, index):
-        wav, spkr, uids = self.pairs[index]
+        wav, spkr, uids = self.duplicated_pairs[index]
         label = self.spkrs.index(spkr)
         return wav.numpy(), label, uids
 
