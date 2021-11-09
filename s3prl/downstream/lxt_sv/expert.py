@@ -176,7 +176,7 @@ class DownstreamExpert(nn.Module):
                 print(f"sv_lxt/{split}-{key}: {avg}")
 
         else:
-            eer, *others = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
+            eer, thresh = self.eval_metric(np.array(records['labels']), np.array(records['scores']))
             logger.add_scalar(f'sv_lxt/{split}-EER', eer, global_step=global_step)
             print(f'sv_lxt/{split}-EER: {eer}')
 
@@ -184,9 +184,16 @@ class DownstreamExpert(nn.Module):
                 self.best_score = torch.ones(1) * eer
                 save_names.append(f'{split}-best.ckpt')
 
+            with open(Path(self.expdir) / f"{split}_threshold", "w") as file:
+                print(float(thresh), file=file)
+
             with open(Path(self.expdir) / f"{split}_predict.txt", "w") as file:
                 for (name1, name2), score in zip(records["pair_names"], records["scores"]):
                     print(score, name1, name2, file=file)
+
+            with open(Path(self.expdir) / f"{split}_predict_hard.txt", "w") as file:
+                for (name1, name2), score in zip(records["pair_names"], records["scores"]):
+                    print(int(score > float(thresh)), name1, name2, file=file)
 
             with open(Path(self.expdir) / f"{split}_truth.txt", "w") as file:
                 for (name1, name2), score in zip(records["pair_names"], records["labels"]):
