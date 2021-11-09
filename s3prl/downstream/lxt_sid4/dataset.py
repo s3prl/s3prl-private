@@ -10,6 +10,8 @@ from collections import defaultdict
 SAMPLE_RATE = 16000
 LONG_ENOUGH_SECS = 4
 TRIM_START_SECS = 2
+OPTIMIZE_STEPS = 5000
+BATCH_SIZE = 32
 
 class LxtSid(Dataset):
     def __init__(self, split, lxt_audio, utts, min_secs=2, max_secs=4, seed=0, n_train=10, n_eval=40, dump_dir=None, **kwargs) -> None:
@@ -92,14 +94,16 @@ class LxtSid(Dataset):
             for wav, spk, seg_id in self.pairs:
                 torchaudio.save(str(tgt_dir / f"{spk.replace(' ', '_')}:{seg_id}.wav"), wav.view(1, -1), SAMPLE_RATE)
 
-        self.duplicated_pairs = self.pairs * 10000
+        if "train" in split:
+            total_items = OPTIMIZE_STEPS * BATCH_SIZE
+            self.pairs = self.pairs * (total_items // len(self.pairs))
 
 
     def __len__(self):
-        return len(self.duplicated_pairs)
+        return len(self.pairs)
 
     def __getitem__(self, index):
-        wav, spkr, uids = self.duplicated_pairs[index]
+        wav, spkr, uids = self.pairs[index]
         label = self.spkrs.index(spkr)
         return wav.numpy(), label, uids
 
