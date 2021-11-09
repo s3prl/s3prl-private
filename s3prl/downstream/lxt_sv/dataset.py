@@ -1,6 +1,6 @@
 import os 
 import random
-from hashlib import sha256
+import torchaudio
 
 import tqdm
 import torch
@@ -12,6 +12,10 @@ from torchaudio.sox_effects import apply_effects_file
 
 HIDDEN_SAMPLE_RATE = 44100
 SAMPLE_RATE = 16000
+LONG_ENOUGH_SECS = 4
+TRIM_START_SECS = 2
+OPTIMIZE_STEPS = 5000
+BATCH_SIZE = 32
 
 EFFECTS = [
 ["channels", "1"],
@@ -37,14 +41,21 @@ class LxtSvTrain(Dataset):
 
         for uid, spkr in tqdm.tqdm(zip(utterance_ids, spkrs), desc="Loading wavs", total=len(spkrs)):
             path = Path(lxt_audio) / f"{uid}.wav"
-            wav, _ = apply_effects_file(str(path), EFFECTS)
+            wav, _ = torchaudio.load(str(path))
             wav = wav.squeeze(0)
+
+            if (len(wav) / SAMPLE_RATE) > LONG_ENOUGH_SECS:
+                # prevent microphone noises
+                wav = wav[TRIM_START_SECS * SAMPLE_RATE:]
             start = 0
             while (len(wav) - start) / SAMPLE_RATE > min_secs:
                 samples = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
                 end = start + samples
                 self.dataset.append((wav[start : end], spkr, f"{uid}_{start}_{end}"))
                 start = end
+
+        total_items = OPTIMIZE_STEPS * BATCH_SIZE
+        self.dataset = self.dataset * (total_items // len(self.dataset))
 
     def __len__(self):
         return len(self.dataset)
@@ -72,8 +83,8 @@ class LxtSvEval(Dataset):
             for pair in tqdm.tqdm(usage_list, desc=f"Initializing {split}"):
                 match, uid1, uid2 = pair.split()
 
-                wav1, _ = apply_effects_file(str(self.root / f"{uid1}.wav"), EFFECTS)
-                wav2, _ = apply_effects_file(str(self.root / f"{uid2}.wav"), EFFECTS)
+                wav1, _ = torchaudio.load(str(self.root / f"{uid1}.wav"))
+                wav2, _ = torchaudio.load(str(self.root / f"{uid2}.wav"))
 
                 if wav1.size(1) < min_secs * SAMPLE_RATE or wav2.size(1) < min_secs * SAMPLE_RATE:
                     continue
@@ -135,7 +146,7 @@ class LxtSvSegEval(Dataset):
 
         def get_segment(uid):
             uid, start, end = parse_segment(uid)
-            wav, _ = apply_effects_file(str(self.root / f"{uid}.wav"), EFFECTS)
+            wav, _ = torchaudio.load(str(self.root / f"{uid}.wav"))
             wav = wav.squeeze(0).numpy()
             wav_segment = wav[int(start) : int(end)]
             return wav_segment

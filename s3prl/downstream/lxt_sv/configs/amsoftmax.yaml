@@ -1,5 +1,5 @@
 runner:
-  total_steps: 2000
+  total_steps: 5000
   gradient_clipping: 1.0e+3
   gradient_accumulate_steps: 1
 
@@ -27,12 +27,12 @@ downstream_expert:
   datarc:
     train_dataset: lxt  # lxt / voxceleb1
 
-    lxt_audio: ./data/superb_all/1.1_resampled/
+    lxt_audio: ./data/superb_all/1.1_augment_noises_6-9-12/
     lxt_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv.lst
     lxt_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv.lst
-    lxt_seg_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv_seg_10000.lst
-    lxt_seg_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv_seg_10000.lst
-    lxt_train: ./data/superb_all/1.1_distributed/train_5hr/train/utt2spk
+    lxt_seg_dev: ./data/superb_all/1.1_distributed/train_5hr/dev/sv_seg_5000.lst
+    lxt_seg_test: ./data/superb_all/1.1_distributed/train_5hr/test/sv_seg_5000.lst
+    lxt_train: ./data/superb_all/1.1_distributed/train_5hr/train/utt2spk_pruned
 
     voxceleb1_path: /path/to/VoxCeleb1
     voxceleb1_spkr: 30
