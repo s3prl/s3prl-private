@@ -45,15 +45,19 @@ class LxtSvTrain(Dataset):
             wav, _ = torchaudio.load(str(path))
             wav = wav.squeeze(0)
 
-            if (len(wav) / SAMPLE_RATE) > LONG_ENOUGH_SECS:
-                # prevent microphone noises
-                wav = wav[TRIM_START_SECS * SAMPLE_RATE:]
-            start = 0
-            while (len(wav) - start) / SAMPLE_RATE > min_secs:
-                samples = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
-                end = start + samples
-                self.dataset.append((wav[start : end], spkr, f"{uid}_{start}_{end}"))
-                start = end
+            if min_secs < 0 or max_secs < 0:
+                self.dataset.append((wav, spkr, f"{uid}_0_-1"))
+            else:
+                start = 0
+                if (len(wav) / SAMPLE_RATE) > LONG_ENOUGH_SECS:
+                    # prevent microphone noises
+                    start = TRIM_START_SECS * SAMPLE_RATE
+                frames = len(wav)
+                while (frames - start) / SAMPLE_RATE > min_secs:
+                    interval = random.randint(min_secs * SAMPLE_RATE, max_secs * SAMPLE_RATE)
+                    end = start + interval
+                    self.dataset.append((wav[start : end], spkr, f"{uid}_{start}_{end}"))
+                    start = end
 
         total_items = OPTIMIZE_STEPS * BATCH_SIZE
         self.dataset = self.dataset * (total_items // len(self.dataset))

@@ -13,6 +13,9 @@ from collections import defaultdict
 torchaudio.set_audio_backend("sox_io")
 SAMPLE_RATE = 16000
 
+LONG_ENOUGH_SECS = 4
+TRIM_START_SECS = 2
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--lxt", required=True)
 parser.add_argument("--split_file", required=True)
@@ -40,12 +43,20 @@ with Path(args.split_file).open() as split_file:
         path = lxt / f"{uttr}.wav"
         wav, sr = torchaudio.load(path)
         wav = wav.squeeze(0)
-        start = 0
-        while (len(wav) - start) / SAMPLE_RATE > args.min_secs:
-            samples = random.randint(args.min_secs * SAMPLE_RATE, args.max_secs * SAMPLE_RATE)
-            end = start + samples
-            new_uttr_spkrs.append((f"{uttr}_{start}_{end}", spkr))
-            start = end
+
+        if args.min_secs < 0 or args.max_secs < 0:
+            new_uttr_spkrs.append((f"{uttr}_0_-1", spkr))
+        else:
+            start = 0
+            if (len(wav) / SAMPLE_RATE) > LONG_ENOUGH_SECS:
+                # prevent microphone noises
+                start = TRIM_START_SECS * SAMPLE_RATE
+            frames = len(wav)
+            while (frames - start) / SAMPLE_RATE > args.min_secs:
+                interval = random.randint(args.min_secs * SAMPLE_RATE, args.max_secs * SAMPLE_RATE)
+                end = start + interval
+                new_uttr_spkrs.append((f"{uttr}_{start}_{end}", spkr))
+                start = end
     uttr_spkrs = new_uttr_spkrs
 
 spkr2uttr = defaultdict(list)
