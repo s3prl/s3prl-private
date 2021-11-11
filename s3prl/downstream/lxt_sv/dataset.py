@@ -75,7 +75,7 @@ class LxtSvTrain(Dataset):
 
 
 class LxtSvEval(Dataset):
-    def __init__(self, split, lxt_audio, min_secs=1, max_secs=2, seed=0, **kwargs):
+    def __init__(self, split, lxt_audio, seed=0, **kwargs):
         random.seed(seed)
 
         self.root = Path(lxt_audio)
@@ -91,18 +91,7 @@ class LxtSvEval(Dataset):
                 wav1, _ = torchaudio.load(str(self.root / f"{uid1}.wav"))
                 wav2, _ = torchaudio.load(str(self.root / f"{uid2}.wav"))
 
-                if wav1.size(1) < min_secs * SAMPLE_RATE or wav2.size(1) < min_secs * SAMPLE_RATE:
-                    continue
-
-                def sample_interval(wav):
-                    samples = random.randint(min_secs * SAMPLE_RATE, min(max_secs * SAMPLE_RATE, len(wav)))
-                    start = random.randint(0, len(wav) - samples)
-                    return wav[start : start + samples]
-
-                wav1 = sample_interval(wav1.squeeze(0).numpy())
-                wav2 = sample_interval(wav2.squeeze(0).numpy())
-
-                one_pair = [wav1, wav2, uid1.strip(), uid2.strip(), int(match)]
+                one_pair = [wav1.view(-1), wav2.view(-1), uid1.strip(), uid2.strip(), int(match)]
                 self.pairs.append(one_pair)
 
     def __len__(self):
