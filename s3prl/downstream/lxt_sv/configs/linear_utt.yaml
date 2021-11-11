@@ -8,8 +8,8 @@ runner:
   save_step: 200
   max_keep: 1
   eval_dataloaders:
-  - lxt_seg_dev
-  - lxt_seg_test
+  - lxt_dev
+  - lxt_test
 
 optimizer: 
   name: TorchOptim
@@ -22,7 +22,7 @@ optimizer:
 #   num_warmup_steps: 6000
 
 downstream_expert:
-  save_best_on: lxt_seg_dev
+  save_best_on: lxt_dev
 
   datarc:
     train_dataset: lxt  # lxt / voxceleb1
