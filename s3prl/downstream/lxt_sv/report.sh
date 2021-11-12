@@ -11,12 +11,14 @@ if [ ! -d $upstream_dir ]; then
     exit 1
 fi
 
+lr_eer=$(mktemp)
 for lr_dir in $(ls -d $upstream_dir/*);
 do
-    dev_score=$(cat $lr_dir/*/dev.result | grep EER | cut -d " " -f 2 | num mean)
+    dev_score=$(cat $lr_dir/*/dev.result | grep EER | cut -d " " -f 2 | num avg)
+    test_score=$(cat $lr_dir/*/test.result | grep EER | cut -d " " -f 2 | num avg)
 
-    test_score=$(cat $lr_dir/*/test.result | grep EER | cut -d " " -f 2 | num mean)
-
-    echo $(basename $lr_dir): dev $dev_score, test $test_score
+    echo $(basename $lr_dir): dev $dev_score test $test_score >> $lr_eer
 done
 
+cat $lr_eer | sort -grk 3
+rm $lr_eer
