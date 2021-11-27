@@ -14,7 +14,7 @@ cd ${Your_s3prl-private_repo}/preprocess/diarization/scripts
 
 ```
 python prepare_diarization.py \
-    --target_dir ${Your_s3prl-private_repo}/s3prl/downstream/diarization/data \
+    --target_dir ${Your_s3prl-private_repo}/s3prl/downstream/diarization/data/lxt \
     --source_dir "Libri2Mix/wav16k/max/metadata"
 ```
 
