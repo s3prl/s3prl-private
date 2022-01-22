@@ -82,7 +82,7 @@ def float2str(number, size=6):
     return (size - len(number)) * "0" + number
 
 
-def process_metadata(metadata, target_dir):
+def process_metadata(metadata, target_dir, libri2mix):
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
@@ -100,6 +100,14 @@ def process_metadata(metadata, target_dir):
         assert len(header) == 6
         for linenum, line in enumerate(f, 1):
             mix_id, mix_path, source1_wav, source2_wav, _, length = line.strip().split(",")
+
+            def replace_absolute_libri2mix(path):
+                relpath = re.search(f".*Libri2Mix{os.path.sep}(.+)", path).groups()[0]
+                return os.path.join(libri2mix, str(relpath))
+            mix_path = replace_absolute_libri2mix(mix_path)
+            source1_wav = replace_absolute_libri2mix(source1_wav)
+            source2_wav = replace_absolute_libri2mix(source2_wav)
+
             new_mix_id = pad_zero(mix_id_count)
             mix_id_count += 1
 
@@ -138,7 +146,7 @@ def process_metadata(metadata, target_dir):
     rttm.close()
     reco2dur.close()
 
-    
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--target_dir', type=str, required=True, help='Path to generate kaldi_style result')
@@ -146,8 +154,10 @@ parser.add_argument('--source_dir', type=str, default="Libri2Mix/wav16k/max/meta
 
 args = parser.parse_args()
 
-process_metadata(os.path.join(args.source_dir, "mixture_tr-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "train"))
-process_metadata(os.path.join(args.source_dir, "mixture_cv-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "dev"))
-process_metadata(os.path.join(args.source_dir, "mixture_tt-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "test"))
+libri2mix = re.search(f"(.+Libri2Mix)", args.source_dir).groups()[0]
+libri2mix = os.path.abspath(libri2mix)
+process_metadata(os.path.join(args.source_dir, "mixture_tr-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "train"), libri2mix)
+process_metadata(os.path.join(args.source_dir, "mixture_cv-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "dev"), libri2mix)
+process_metadata(os.path.join(args.source_dir, "mixture_tt-split_train_1hr_mix_both.csv"), os.path.join(args.target_dir, "test"), libri2mix)
 
 print("Successfully finish Kaldi-style preparation")
