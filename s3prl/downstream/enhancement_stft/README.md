@@ -8,9 +8,10 @@ cd scripts/LXT
 # change the settings in prepare_LXT_enh.sh
 ./generate_LXT_enh.sh
 
-python data_prepare_LXT1Mix.py output_dir/LXT1Mix5hr2repeat ../../datasets/LXT1Mix5hr2repeat --part train
-python data_prepare_LXT1Mix.py output_dir/LXT1Mix5hr2repeat ../../datasets/LXT1Mix5hr2repeat --part dev
-python data_prepare_LXT1Mix.py output_dir/LXT1Mix5hr2repeat ../../datasets/LXT1Mix5hr2repeat --part test
+cd s3prl/s3prl
+python3 downstream/enhancement_stft/scripts/LXT/data_prepare_LXT1Mix.py data/superb_all/LXT1Mix5hr2repeat downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat --part train
+python3 downstream/enhancement_stft/scripts/LXT/data_prepare_LXT1Mix.py data/superb_all/LXT1Mix5hr2repeat downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat --part dev
+python3 downstream/enhancement_stft/scripts/LXT/data_prepare_LXT1Mix.py data/superb_all/LXT1Mix5hr2repeat downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat --part test
 ```
 
 #### Training
