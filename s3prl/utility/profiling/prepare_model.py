@@ -1,6 +1,3 @@
-
-
-
 import torch
 import fairseq
 import logging
@@ -46,7 +43,7 @@ def prepare_model(model, *args, **kwargs):
     
         if not is_leaf_module(module=_module):
             return
-    
+        print(_module)
         _module.register_buffer('madd', torch.zeros(1).long())
 
     class_to_call = {}  # storing the original `__call__()` for each module.

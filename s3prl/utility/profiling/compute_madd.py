@@ -189,7 +189,7 @@ def compute_Linear_madd(module, output, *args, **kwargs):
 
     num_rows = input_numel / input_dim
     mul = num_rows * input_dim * output_dim
-    add = (num_rows - 1) * input_dim * output_dim
+    add = num_rows * (input_dim - 1) * output_dim
     if module.bias is not None:
         add = add + output_numel
     return mul + add
