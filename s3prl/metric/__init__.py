@@ -1,1 +1,1 @@
-from .common import accuracy
+from .common import accuracy, compute_eer, compute_minDCF

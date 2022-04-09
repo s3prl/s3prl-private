@@ -1,2 +1,3 @@
 from .example_utterance_classification_preprocessor import ExampleUtteranceClassificationPreprocessor
 from .voxceleb1_sid_preprocessor import VoxCeleb1SIDPreprocessor
+from .voxceleb1_sv_preprocessor import VoxCeleb1SVPreprocessor
