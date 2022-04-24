@@ -22,21 +22,30 @@ class SpeakerVerification(Module):
         output_size (int): defined by len(categories)
     """
 
-    def __init__(self, model, categories: Dict[str], loss_type: str="amsoftmax"):
+    def __init__(
+        self,
+        model,
+        categories: dict(str),
+        trials: list(tuple()),
+        loss_type: str = "softmax",
+    ):
         """
         model.output_size should match len(categories)
 
         Args:
             model (SpeakerClassifier)
-            categories (Dict[str]):
-                each key in the Dict is the final prediction content in str.
+            categories (dict[str]):
+                each key in the Dictionary is the final prediction content in str.
                 use categories[key] to encode as numeric label
+            trials:
+                each tuple in the list consists of (enroll_path, test_path, label)
         """
-        
+
         super().__init__()
         self.model = model
         self.categories = categories
-        
+        self.trials = trials
+
         if loss_type == "amsoftmax":
             self.loss = amsoftmax(
                 input_size=self.model.output_size, output_size=len(self.categories)
@@ -48,8 +57,8 @@ class SpeakerVerification(Module):
             )
 
         else:
-            raise ValueError('{} loss type is not defined'.format(loss_type))
-        
+            raise ValueError("{} loss type is not defined".format(loss_type))
+
         assert self.loss.output_size == len(categories)
 
     @property
@@ -72,9 +81,9 @@ class SpeakerVerification(Module):
         """
         # TODO: consider x_len into pooling
         spk_embeddings = self.model(x, x_len).slice(1)
-        
+
         return Output(hidden_states=spk_embeddings)
-    
+
     def _general_forward(
         self,
         x: torch.Tensor,
@@ -86,10 +95,7 @@ class SpeakerVerification(Module):
         y = torch.LongTensor(label).to(x.device)
         loss, logits = self.loss(spk_embeddings, y).slice(2)
 
-        prediction = [
-            index
-            for index in logits.argmax(dim=-1).detach().cpu().tolist()
-        ]
+        prediction = [index for index in logits.argmax(dim=-1).detach().cpu().tolist()]
 
         logs = Logs()
         logs.add_hidden_state("logits", logits)
@@ -119,7 +125,7 @@ class SpeakerVerification(Module):
         return Output(
             logs=logs,
         )
-    
+
     def train_step(
         self,
         x: torch.Tensor,
@@ -148,7 +154,7 @@ class SpeakerVerification(Module):
                 so that people can do more things with the internal states
         """
         return self._general_forward(x, x_len, label, name)
-    
+
     def train_reduction(self, batch_results: list, on_epoch_end: bool = None):
         """
         After several forward steps, outputs should be collected untouched (but detaching the Tensors)
@@ -178,7 +184,7 @@ class SpeakerVerification(Module):
         name: List[str],
     ):
         return self._general_forward(x, x_len, label, name)
-    
+
     def valid_reduction(self, batch_results: list, on_epoch_end: bool = None):
         return self._general_reduction(batch_results, on_epoch_end)
 
@@ -186,7 +192,6 @@ class SpeakerVerification(Module):
         self,
         x: torch.Tensor,
         x_len: torch.LongTensor,
-        label: List[str],
         name: List[str],
     ):
         """
@@ -204,18 +209,19 @@ class SpeakerVerification(Module):
         spk_embeddings = self(x, x_len).slice(1)
         return Output(name=name, output=spk_embeddings)
 
-    def test_reduction(
-            self, 
-            batch_results: Dict(), 
-            trials: List[tuple()], 
-            on_epoch_end: bool = None
-        ):
+    def test_reduction(self, batch_results: list(), on_epoch_end: bool = None):
 
+        embeddings = {}
+        for batch_result in batch_results:
+            for key, value in zip(batch_result.name, batch_result.output):
+                embeddings[key] = value
+
+        trials = self.trials
         scores = []
         labels = []
         for label, enroll, test in tqdm(trials, desc="Test Scoring", total=len(trials)):
-            enroll_embd = batch_results[enroll]
-            test_embd   = batch_results[test]
+            enroll_embd = embeddings[enroll]
+            test_embd   = embeddings[test]
             score       = F.cosine_similarity(enroll_embd, test_embd, dim=0).item()
             scores.append(score)
             labels.append(label)
@@ -226,7 +232,7 @@ class SpeakerVerification(Module):
 
         logs = Logs()
         logs.add_scalar("EER", EER)
-        logs.add_scalar("EERthreshold", EERthreshold)
+        logs.add_scalar("EERthreshold", EERthreshold.item())
         logs.add_scalar("minDCF", minDCF)
         logs.add_scalar("minDCF_threshold", minDCFthreshold)
 

@@ -18,16 +18,17 @@ logger = logging.getLogger(__name__)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--voxceleb1", type=str, default="/mnt/ssd-201-112-01/cpii.local/bzheng/voxceleb1", help="The root directory of VoxCeleb1")
+    parser.add_argument("--voxceleb1", type=str, default="/work/jason410/PublicData/Voxceleb1", help="The root directory of VoxCeleb1")
     parser.add_argument("--save_to", type=str, default="result/sv", help="The directory to save checkpoint")
     parser.add_argument("--total_steps", type=int, default=200000)
     parser.add_argument("--log_step", type=int, default=100)
-    parser.add_argument("--eval_step", type=int, default=5000)
+    parser.add_argument("--eval_step", type=int, default=200)
     parser.add_argument("--save_step", type=int, default=100)
 
     parser.add_argument("--backbone", type=str, default="XVector")
     parser.add_argument("--pooling_type", type=str, default="TAP")
     parser.add_argument("--loss_type", type=str, default="softmax")
+    parser.add_argument("--spk_embd_dim", type=int, default=1500)
     args = parser.parse_args()
     return args
 
@@ -85,7 +86,6 @@ def main():
         **train_dataset.statistics(),
     )
     test_dataset.save_checkpoint(save_to / "test_dataset.ckpt")
-    test_dataset_reload = Object.load_checkpoint(save_to / "test_dataset.ckpt")
     test_sampler = problem.TestSampler(test_dataset, 8)
     test_sampler = DistributedBatchSamplerWrapper(test_sampler, num_replicas=1, rank=0)
     test_dataloader = DataLoader(
@@ -118,7 +118,7 @@ def main():
             backbone=args.backbone,
             pooling_type=args.pooling_type,
             input_size=upstream.output_size,
-            output_size=1500
+            output_size=args.spk_embd_dim
         )
 
         model = UpstreamDownstreamModel(upstream, downstream)
@@ -127,7 +127,8 @@ def main():
         task = problem.Task(
             model=model, 
             categories=preprocessor.statistics().category, 
-            loss_type=args.loss_type
+            loss_type=args.loss_type,
+            trials=test_dataset.statistics().label
         )
         task = task.to(device)
 
@@ -227,24 +228,23 @@ def main():
                         logger.info(f"{log.name}: {log.data}")
                     
                     # test
-                    test_results = {}
+                    test_results = []
                     for batch in tqdm(
                         test_dataloader, desc="Test", total=len(test_dataloader)
                     ):
                         batch = batch.to(device)
                         result = task.test_step(**batch)
-                        for key, value in zip(result.name, result.output):
-                            test_results[key] = value
+                        test_results.append(result)
+                        # for key, value in zip(result.name, result.output):
+                        #     test_results[key] = value
 
                     logs: Logs = task.test_reduction(
                                             batch_results=test_results,
-                                            trials=test_dataset.labels
                                             ).logs
                     logger.info(f"[Test] step {global_step}")
                     for log in logs.values():
                         logger.info(f"{log.name}: {log.data}")
-                    print(1)
-            
+
             if (global_step + 1) % args.save_step == 0:
                 task.save_checkpoint(save_to / "task.ckpt")
                 torch.save(optimizer.state_dict(), save_to / "optimizer.ckpt")

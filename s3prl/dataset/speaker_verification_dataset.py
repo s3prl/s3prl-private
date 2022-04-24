@@ -149,7 +149,7 @@ class SpeakerTrialDataset(Dataset):
         """
         super().__init__()
         self.sources = source
-        self.labels = label
+        self.trials = label
         self.source_loader = source_loader or TorchaudioLoader()
 
         # prepare metadata
@@ -171,21 +171,19 @@ class SpeakerTrialDataset(Dataset):
 
         path = Path(self.sources[index])
         x = self.source_loader(path).output
-        label = self.labels[index]
-        return Output(x=x, label=label, name=self.sources[index])
+        return Output(x=x, name=self.sources[index])
 
     def __len__(self):
         return len(self.sources)
 
     def collate_fn(self, samples):
-        xs, labels, names = [], [], []
+        xs, names = [], []
         for sample in samples:
             xs.append(pad_audio(sample.x, sample_rate=self.source_loader.sample_rate, second=-1))
-            labels.append(sample.label)
             names.append(sample.name)
         xs_len = torch.LongTensor([len(x) for x in xs])
         xs = torch.cat(xs, dim=1).transpose(1, 0).unsqueeze(-1)
-        return Output(x=xs, x_len=xs_len, label=labels, name=names)
+        return Output(x=xs, x_len=xs_len, name=names)
 
     def statistics(self):
-        return Output()
+        return Output(label=self.trials)
