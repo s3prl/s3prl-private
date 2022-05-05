@@ -15,7 +15,7 @@ from s3prl import hub
 logger = logging.getLogger(__name__)
 
 
-def f(q, device_id: int, per_gpu_num: int):
+def f(q, done, device_id: int, per_gpu_num: int, mode: str):
     device = f"cuda:{device_id}"
     model = getattr(hub, "wav2vec2")().to(device)
     model.eval()
@@ -25,7 +25,17 @@ def f(q, device_id: int, per_gpu_num: int):
         for i in range(per_gpu_num):
             wav = torch.randn(16000 * secs).to(device)
             repre = torch.stack(model([wav])["hidden_states"], dim=2)
+            if mode == "cuda":
+                repre = repre
+            elif mode == "tensor":
+                repre = repre.detach().cpu()
+            elif mode == "numpy":
+                repre = repre.detach().cpu().numpy()
+            else:
+                raise NotImplementedError
             q.put(repre)
+    q.put(None)
+    done.wait()
 
 
 def all_alive(ps: List[mp.Process]):
@@ -48,27 +58,39 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--total_num", type=int, default=100)
     parser.add_argument("--gpu_num", type=int, default=1)
+    parser.add_argument("--mode", default="cuda")
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
     queues = []
+    dones = []
     processes = []
     for i in range(args.gpu_num):
         q = ctx.Queue()
+        done = ctx.Event()
         queues.append(q)
+        dones.append(done)
 
-        p = ctx.Process(target=f, args=(q, i, int(args.total_num / args.gpu_num)))
+        p = ctx.Process(
+            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode)
+        )
         processes.append(p)
 
     for p in processes:
         p.start()
 
     pbar = tqdm(total=args.total_num, dynamic_ncols=True)
-    while not all_end(processes) or pbar.n < args.total_num:
-        for q in queues:
-            if not q.empty():
-                tmp = q.get()
-                tmp = tmp.cpu()
+    while not all_end(processes):
+        for q, done in zip(queues, dones):
+            try:
+                recv = q.get_nowait()
+            except queue.Empty:
+                pass
+            else:
+                if recv is None:
+                    done.set()
+                elif isinstance(recv, torch.Tensor):
+                    recv = recv.cpu()
                 pbar.update()
 
     logger.info("start joining process")
