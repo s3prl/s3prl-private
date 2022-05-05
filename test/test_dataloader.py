@@ -8,7 +8,7 @@ from tqdm import tqdm
 from typing import List
 
 import torch
-import multiprocessing as mp
+import torch.multiprocessing as mp
 
 from s3prl import hub
 
@@ -23,6 +23,7 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str):
     secs = random.randint(20, 40)
     with torch.no_grad():
         for i in range(per_gpu_num):
+            print(f"cuda {device_id}: {torch.cuda.memory_allocated(device_id) // (1024 ** 3)} GB", flush=True)
             wav = torch.randn(16000 * secs).to(device)
             repre = torch.stack(model([wav])["hidden_states"], dim=2)
             if mode == "cuda":
@@ -83,14 +84,19 @@ if __name__ == "__main__":
     while not all_end(processes):
         for q, done in zip(queues, dones):
             try:
+                print("get from queue")
                 recv = q.get_nowait()
+                print("successfully get")
             except queue.Empty:
+                print("queue is empty")
                 pass
             else:
+                print(f"get in main: {pbar.n}", flush=True)
                 if recv is None:
                     done.set()
                 elif isinstance(recv, torch.Tensor):
-                    recv = recv.cpu()
+                    recv_cpu = recv.cpu()
+                    del recv
                 pbar.update()
 
     logger.info("start joining process")
