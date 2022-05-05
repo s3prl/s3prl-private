@@ -71,6 +71,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--total_num", type=int, default=100)
     parser.add_argument("--gpu_num", type=int, default=1)
+    parser.add_argument("--queue_size", type=int, default=2)
     parser.add_argument("--mode", default="cuda")
     args = parser.parse_args()
 
@@ -79,7 +80,7 @@ if __name__ == "__main__":
     dones = []
     processes = []
     for i in range(args.gpu_num):
-        q = ctx.Queue()
+        q = ctx.Queue(maxsize=args.queue_size)
         done = ctx.Event()
         queues.append(q)
         dones.append(done)
