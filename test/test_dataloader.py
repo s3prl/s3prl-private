@@ -25,8 +25,7 @@ def f(q, device_id: int, per_gpu_num: int):
         for i in range(per_gpu_num):
             wav = torch.randn(16000 * secs).to(device)
             repre = torch.stack(model([wav])["hidden_states"], dim=2)
-            repre = repre.detach().cpu()
-            q.put(repre.numpy())
+            q.put(repre)
 
 
 def all_alive(ps: List[mp.Process]):
@@ -68,7 +67,8 @@ if __name__ == "__main__":
     while not all_end(processes) or pbar.n < args.total_num:
         for q in queues:
             if not q.empty():
-                q.get()
+                tmp = q.get()
+                tmp = tmp.cpu()
                 pbar.update()
 
     logger.info("start joining process")
