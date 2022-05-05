@@ -20,12 +20,24 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str):
     model = getattr(hub, "wav2vec2")().to(device)
     model.eval()
 
+    step = 0
     secs = random.randint(20, 40)
     with torch.no_grad():
-        for i in range(per_gpu_num):
-            print(f"cuda {device_id}: {torch.cuda.memory_allocated(device_id) // (1024 ** 3)} GB", flush=True)
-            wav = torch.randn(16000 * secs).to(device)
-            repre = torch.stack(model([wav])["hidden_states"], dim=2)
+        while step < per_gpu_num:
+            print(
+                f"cuda {device_id}: {torch.cuda.memory_allocated(device_id) // (1024 ** 3)} GB",
+                flush=True,
+            )
+
+            try:
+                wav = torch.randn(16000 * secs).to(device)
+                repre = torch.stack(model([wav])["hidden_states"], dim=2)
+            except RuntimeError:
+                torch.cuda.empty_cache()
+                continue
+            else:
+                step += 1
+
             if mode == "cuda":
                 repre = repre
             elif mode == "tensor":
