@@ -66,8 +66,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--total_num", type=int, default=100)
     parser.add_argument("--gpu_num", type=int, default=1)
-    parser.add_argument("--queue_size", type=int, default=2)
     parser.add_argument("--mode", default="cuda")
+    parser.add_argument("--queue_size", type=int, default=1)
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
@@ -91,17 +91,15 @@ if __name__ == "__main__":
     pbar = tqdm(total=args.total_num, dynamic_ncols=True)
     while not all_end(processes):
         for q, done in zip(queues, dones):
-            try:
-                recv = q.get_nowait()
-            except queue.Empty:
-                pass
-            else:
-                if recv is None:
-                    done.set()
-                elif isinstance(recv, torch.Tensor):
-                    recv_cpu = recv.cpu()
-                    del recv
-                pbar.update()
+            recv = q.get()
+            if recv is None:
+                done.set()
+            elif isinstance(recv, torch.Tensor):
+                # do not move to cpu (and then to cpu)
+                # moving from cuda to cpu is a serious I/O bottleneck
+                recv_cuda = recv.to(f"cuda:{args.gpu_num}")
+                del recv
+            pbar.update()
 
     logger.info("start joining process")
     for p in processes:
