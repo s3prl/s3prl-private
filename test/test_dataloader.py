@@ -27,11 +27,6 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch
     repre = None
     with torch.no_grad():
         while step < per_gpu_num:
-            while not q.empty():
-                # Due to the background threading of multiprocessing
-                # queue, this line is highly possible to be skipped
-                print(f"Enter step {step}", flush=True)
-
             repre = torch.stack(
                 model(
                     [torch.randn(16000 * secs).to(device) for i in range(batch_size)]
@@ -84,32 +79,34 @@ if __name__ == "__main__":
     parser.add_argument("upstream", default="wav2vec2_large_ll60k")
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--total_num", type=int, default=100)
-    parser.add_argument("--gpu_num", type=int, default=1)
     parser.add_argument("--mode", default="cuda")
     parser.add_argument("--secs", type=int, default=14)
     parser.add_argument("--queue_size", type=int, default=1)
+    parser.add_argument("--single_gpu", action="store_true")
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
+    main_gpu = 1
+    worker_gpus = [1, 2]
 
-    if args.gpu_num == 1:
+    if args.single_gpu:
         q = PseudoQueue()
         done = ctx.Event()
-        f(q, done, 0, args.total_num, args.mode, args.upstream, args.batch_size, args.secs, use_tqdm=True)
+        f(q, done, main_gpu, args.total_num, args.mode, args.upstream, args.batch_size, args.secs, use_tqdm=True)
         done.set()
         exit(0)
 
     queues = []
     dones = []
     processes = []
-    for i in range(args.gpu_num):
+    for i in worker_gpus:
         q = ctx.Queue(maxsize=args.queue_size)
         done = ctx.Event()
         queues.append(q)
         dones.append(done)
 
         p = ctx.Process(
-            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode, args.upstream, args.batch_size, args.secs)
+            target=f, args=(q, done, i, int(args.total_num / len(worker_gpus)), args.mode, args.upstream, args.batch_size, args.secs)
         )
         processes.append(p)
 
@@ -129,8 +126,8 @@ if __name__ == "__main__":
             elif isinstance(recv, torch.Tensor):
                 # do not move to cpu (and then to gpu)
                 # moving from cuda to cpu is a serious I/O bottleneck
-                with benchmark("move to cuda"):
-                    recv_cuda = recv.to(f"cuda:{args.gpu_num}")
+                with benchmark(f"move from {recv.device} to cuda:{main_gpu}", freq=1, device=f"cuda:{main_gpu}"):
+                    recv_cuda = recv.to(f"cuda:{main_gpu}")
                 del recv
             pbar.update()
 
