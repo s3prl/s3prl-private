@@ -15,23 +15,22 @@ from s3prl import hub
 logger = logging.getLogger(__name__)
 
 
-def f(q, done, device_id: int, per_gpu_num: int, mode: str):
+def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch_size: int):
     device = f"cuda:{device_id}"
-    model = getattr(hub, "wav2vec2")().to(device)
+    model = getattr(hub, upstream)().to(device)
     model.eval()
 
     step = 0
-    secs = random.randint(20, 40)
+    repre = None
     with torch.no_grad():
         while step < per_gpu_num:
-            try:
-                wav = torch.randn(16000 * secs).to(device)
-                repre = torch.stack(model([wav])["hidden_states"], dim=2)
-            except RuntimeError:
-                torch.cuda.empty_cache()
-                continue
-            else:
-                step += 1
+            repre = torch.stack(
+                model(
+                    [torch.randn(16000 * 14).to(device) for i in range(batch_size)]
+                )["hidden_states"],
+                dim=2
+            )
+            step += 1
 
             if mode == "cuda":
                 repre = repre
@@ -41,7 +40,10 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str):
                 repre = repre.detach().cpu().numpy()
             else:
                 raise NotImplementedError
+
             q.put(repre)
+            del repre
+
     q.put(None)
     done.wait()
 
@@ -64,6 +66,8 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
     parser = argparse.ArgumentParser()
+    parser.add_argument("upstream", default="wav2vec2_large_ll60k")
+    parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--total_num", type=int, default=100)
     parser.add_argument("--gpu_num", type=int, default=1)
     parser.add_argument("--mode", default="cuda")
@@ -81,7 +85,7 @@ if __name__ == "__main__":
         dones.append(done)
 
         p = ctx.Process(
-            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode)
+            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode, args.upstream, args.batch_size)
         )
         processes.append(p)
 
