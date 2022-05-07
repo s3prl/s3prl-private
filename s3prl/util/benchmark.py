@@ -11,17 +11,18 @@ _history = defaultdict(list)
 
 
 class benchmark(ContextDecorator):
-    def __init__(self, name: str, freq: int = 20) -> None:
+    def __init__(self, name: str, freq: int = 20, device = None) -> None:
         super().__init__()
         self.name = name
         self.freq = freq
+        self.device = device
 
     def __enter__(self):
-        torch.cuda.synchronize()
+        torch.cuda.synchronize(self.device)
         self.start = time()
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
-        torch.cuda.synchronize()
+        torch.cuda.synchronize(self.device)
         seconds = time() - self.start
 
         global _history
