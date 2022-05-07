@@ -4,6 +4,7 @@ import random
 import logging
 import argparse
 import numpy as np
+from time import time
 from tqdm import tqdm
 from typing import List
 
@@ -12,6 +13,8 @@ import torch.multiprocessing as mp
 
 from s3prl import hub
 from s3prl.util.benchmark import benchmark
+
+SKIP_INIT_ITERATION = 50
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +39,8 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch
             step += 1
             if use_tqdm:
                 pbar.update()
+                if step == SKIP_INIT_ITERATION:
+                    start = time()
 
             if mode == "cuda":
                 repre = repre
@@ -48,6 +53,9 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch
 
             q.put(repre)
             del repre
+
+    if use_tqdm:
+        print("true speed:", (per_gpu_num - SKIP_INIT_ITERATION) / (time() - start))
 
     q.put(None)
     done.wait()
@@ -87,7 +95,7 @@ if __name__ == "__main__":
 
     ctx = mp.get_context("forkserver")
     main_gpu = 1
-    worker_gpus = [1, 2]
+    worker_gpus = [1, 2, 3]
 
     if args.single_gpu:
         q = PseudoQueue()
@@ -126,10 +134,13 @@ if __name__ == "__main__":
             elif isinstance(recv, torch.Tensor):
                 # do not move to cpu (and then to gpu)
                 # moving from cuda to cpu is a serious I/O bottleneck
-                with benchmark(f"move from {recv.device} to cuda:{main_gpu}", freq=1, device=f"cuda:{main_gpu}"):
-                    recv_cuda = recv.to(f"cuda:{main_gpu}")
+                # with benchmark(f"move from {recv.device} to cuda:{main_gpu}", freq=1, device=f"cuda:{main_gpu}"):
+                recv_cuda = recv.to(f"cuda:{main_gpu}")
                 del recv
             pbar.update()
+            if pbar.n == SKIP_INIT_ITERATION:
+                start = time()
+    print("true speed:", (args.total_num - SKIP_INIT_ITERATION) / (time() - start))
 
     logger.info("start joining process")
     for p in processes:
