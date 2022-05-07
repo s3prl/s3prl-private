@@ -11,11 +11,12 @@ import torch
 import torch.multiprocessing as mp
 
 from s3prl import hub
+from s3prl.util.benchmark import benchmark
 
 logger = logging.getLogger(__name__)
 
 
-def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch_size: int, use_tqdm: bool = False):
+def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch_size: int, secs: int, use_tqdm: bool = False):
     device = f"cuda:{device_id}"
     model = getattr(hub, upstream)().to(device)
     model.eval()
@@ -26,9 +27,14 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch
     repre = None
     with torch.no_grad():
         while step < per_gpu_num:
+            while not q.empty():
+                # Due to the background threading of multiprocessing
+                # queue, this line is highly possible to be skipped
+                print(f"Enter step {step}", flush=True)
+
             repre = torch.stack(
                 model(
-                    [torch.randn(16000 * 14).to(device) for i in range(batch_size)]
+                    [torch.randn(16000 * secs).to(device) for i in range(batch_size)]
                 )["hidden_states"],
                 dim=2
             )
@@ -80,6 +86,7 @@ if __name__ == "__main__":
     parser.add_argument("--total_num", type=int, default=100)
     parser.add_argument("--gpu_num", type=int, default=1)
     parser.add_argument("--mode", default="cuda")
+    parser.add_argument("--secs", type=int, default=14)
     parser.add_argument("--queue_size", type=int, default=1)
     args = parser.parse_args()
 
@@ -88,7 +95,7 @@ if __name__ == "__main__":
     if args.gpu_num == 1:
         q = PseudoQueue()
         done = ctx.Event()
-        f(q, done, 0, args.total_num, args.mode, args.upstream, args.batch_size, use_tqdm=True)
+        f(q, done, 0, args.total_num, args.mode, args.upstream, args.batch_size, args.secs, use_tqdm=True)
         done.set()
         exit(0)
 
@@ -102,7 +109,7 @@ if __name__ == "__main__":
         dones.append(done)
 
         p = ctx.Process(
-            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode, args.upstream, args.batch_size)
+            target=f, args=(q, done, i, int(args.total_num / args.gpu_num), args.mode, args.upstream, args.batch_size, args.secs)
         )
         processes.append(p)
 
@@ -120,9 +127,10 @@ if __name__ == "__main__":
             if recv is None:
                 done.set()
             elif isinstance(recv, torch.Tensor):
-                # do not move to cpu (and then to cpu)
+                # do not move to cpu (and then to gpu)
                 # moving from cuda to cpu is a serious I/O bottleneck
-                recv_cuda = recv.to(f"cuda:{args.gpu_num}")
+                with benchmark("move to cuda"):
+                    recv_cuda = recv.to(f"cuda:{args.gpu_num}")
                 del recv
             pbar.update()
 
