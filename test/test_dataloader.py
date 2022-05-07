@@ -15,11 +15,13 @@ from s3prl import hub
 logger = logging.getLogger(__name__)
 
 
-def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch_size: int):
+def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch_size: int, use_tqdm: bool = False):
     device = f"cuda:{device_id}"
     model = getattr(hub, upstream)().to(device)
     model.eval()
 
+    if use_tqdm:
+        pbar = tqdm(total=per_gpu_num)
     step = 0
     repre = None
     with torch.no_grad():
@@ -31,6 +33,8 @@ def f(q, done, device_id: int, per_gpu_num: int, mode: str, upstream: str, batch
                 dim=2
             )
             step += 1
+            if use_tqdm:
+                pbar.update()
 
             if mode == "cuda":
                 repre = repre
@@ -62,6 +66,11 @@ def all_end(ps: List[mp.Process]):
     return True
 
 
+class PseudoQueue:
+    def put(self, x):
+        pass
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
@@ -75,6 +84,14 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
+
+    if args.gpu_num == 1:
+        q = PseudoQueue()
+        done = ctx.Event()
+        f(q, done, 0, args.total_num, args.mode, args.upstream, args.batch_size, use_tqdm=True)
+        done.set()
+        exit(0)
+
     queues = []
     dones = []
     processes = []
@@ -95,7 +112,11 @@ if __name__ == "__main__":
     pbar = tqdm(total=args.total_num, dynamic_ncols=True)
     while not all_end(processes):
         for q, done in zip(queues, dones):
-            recv = q.get()
+            try:
+                recv = q.get_nowait()
+            except queue.Empty:
+                continue
+
             if recv is None:
                 done.set()
             elif isinstance(recv, torch.Tensor):
