@@ -14,7 +14,7 @@ import torch.multiprocessing as mp
 from s3prl import hub
 from s3prl.util.benchmark import benchmark
 
-SKIP_INIT_ITERATION = 50
+SKIP_INIT_ITERATION = 100
 
 logger = logging.getLogger(__name__)
 
@@ -90,14 +90,15 @@ if __name__ == "__main__":
     parser.add_argument("--mode", default="cuda")
     parser.add_argument("--secs", type=int, default=14)
     parser.add_argument("--queue_size", type=int, default=1)
-    parser.add_argument("--single_gpu", action="store_true")
+    parser.add_argument("--gpus", type=int, nargs="+")
+    parser.add_argument("--main_gpu", type=int, default=0)
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
-    main_gpu = 1
-    worker_gpus = [1, 2, 3]
+    main_gpu = args.main_gpu
+    worker_gpus = args.gpus
 
-    if args.single_gpu:
+    if len(args.gpus) == 1:
         q = PseudoQueue()
         done = ctx.Event()
         f(q, done, main_gpu, args.total_num, args.mode, args.upstream, args.batch_size, args.secs, use_tqdm=True)
@@ -140,7 +141,8 @@ if __name__ == "__main__":
             pbar.update()
             if pbar.n == SKIP_INIT_ITERATION:
                 start = time()
-    print("true speed:", (args.total_num - SKIP_INIT_ITERATION) / (time() - start))
+            if pbar.n == args.total_num:
+                print("true speed:", (args.total_num - SKIP_INIT_ITERATION) / (time() - start))
 
     logger.info("start joining process")
     for p in processes:
