@@ -4,6 +4,7 @@ import random
 import logging
 import argparse
 import numpy as np
+from time import time
 from tqdm import tqdm
 from typing import List
 
@@ -14,6 +15,8 @@ from s3prl import hub
 from s3prl.util.benchmark import benchmark
 
 logger = logging.getLogger(__name__)
+
+SKIP_ITER_NUM = 200
 
 
 def f(
@@ -47,6 +50,8 @@ def f(
             step += 1
             if use_tqdm:
                 pbar.update()
+                if step == SKIP_ITER_NUM:
+                    start = time()
 
             if mode == "cuda":
                 repre = repre
@@ -59,6 +64,7 @@ def f(
 
             conn.send(repre)
             del repre
+    logger.info(f"final speed: {(per_gpu_num - SKIP_ITER_NUM) / (time() - start)}")
 
     logger.debug("final", conn.recv())
     conn.send("reach end")
@@ -95,23 +101,21 @@ if __name__ == "__main__":
     parser.add_argument("upstream", default="wav2vec2_large_ll60k")
     parser.add_argument("--batch_size", type=int, default=16)
     parser.add_argument("--total_num", type=int, default=100)
-    parser.add_argument("--gpu_num", type=int, default=1)
     parser.add_argument("--mode", default="cuda")
     parser.add_argument("--secs", type=int, default=14)
-    parser.add_argument("--queue_size", type=int, default=1)
-    parser.add_argument("--move_to", default="cuda")
-    parser.add_argument("--use_pseudo", action="store_true")
+    parser.add_argument("--gpus", type=int, nargs="+")
+    parser.add_argument("--main_gpu", type=int, default=0)
     args = parser.parse_args()
 
     ctx = mp.get_context("forkserver")
 
-    if args.gpu_num == 1 and args.use_pseudo:
+    if len(args.gpus) == 1:
         conn = PseudoConn()
         done = ctx.Event()
         f(
             conn,
             done,
-            0,
+            args.main_gpu,
             args.total_num,
             args.mode,
             args.upstream,
@@ -125,7 +129,7 @@ if __name__ == "__main__":
     conns = []
     dones = []
     processes = []
-    for i in range(args.gpu_num):
+    for i in args.gpus:
         parent, child = ctx.Pipe()
         parent.send("can run")
         conns.append(parent)
@@ -139,7 +143,7 @@ if __name__ == "__main__":
                 child,
                 done,
                 i,
-                int(args.total_num / args.gpu_num),
+                int(args.total_num / len(args.gpus)),
                 args.mode,
                 args.upstream,
                 args.batch_size,
@@ -164,19 +168,16 @@ if __name__ == "__main__":
             elif isinstance(recv, torch.Tensor):
                 # do not move to cpu (and then to gpu)
                 # moving from cuda to cpu is a serious I/O bottleneck
-                if args.move_to == "cuda":
-                    with benchmark("move to cuda"):
-                        recv_cuda = recv.to(f"cuda:{args.gpu_num}")
-                if args.move_to == "cpu":
-                    with benchmark("move to cpu and to cuda"):
-                        with benchmark("move to cpu"):
-                            recv_cpu = recv.cpu()
-                        with benchmark("move to cuda"):
-                            recv_cuda = recv_cpu.to(f"cuda:{args.gpu_num}")
+                with benchmark(f"move from cuda:{recv.device} to cuda:{args.main_gpu}", freq=1, device=args.main_gpu):
+                    recv_cuda = recv.to(f"cuda:{args.main_gpu}")
 
                 del recv
                 conn.send("can run")
             pbar.update()
+            if pbar.n == SKIP_ITER_NUM:
+                start = time()
+            if pbar.n == args.total_num:
+                logger.info(f"final speed: {(args.total_num - SKIP_ITER_NUM) / (time() - start)}")
 
     logger.info("start joining process")
     for p in processes:
