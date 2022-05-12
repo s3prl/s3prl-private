@@ -173,9 +173,14 @@ class Container(OrderedDict):
     def _recursive_apply(cls, obj, apply_fn):
         if isinstance(obj, torch.Tensor):
             obj = apply_fn(obj)
-        elif isinstance(obj, (list, tuple)):
+        elif isinstance(obj, list):
             for index in range(len(obj)):
                 obj[index] = cls._recursive_apply(obj[index], apply_fn)
+        elif isinstance(obj, tuple):
+            new_tuple = []
+            for index in range(len(obj)):
+                new_tuple.append(cls._recursive_apply(obj[index], apply_fn))
+            obj = tuple(new_tuple)
         elif isinstance(obj, dict):
             for key in list(obj.keys()):
                 obj[key] = cls._recursive_apply(obj[key], apply_fn)
