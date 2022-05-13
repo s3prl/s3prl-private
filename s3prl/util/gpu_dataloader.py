@@ -1,6 +1,7 @@
+import queue
 import logging
-from typing import List, Tuple
-from copy import deepcopy
+from typing import Iterable, List, Tuple
+from dataclasses import dataclass
 
 import torch
 import torch.nn as nn
@@ -14,6 +15,19 @@ BLOCK_SECS = 5
 
 logger = logging.getLogger(__name__)
 
+# Usually we won't get benefit from increasing this constant
+# Since the GPU computation is the bottleneck
+CUDA_QUEUE_SIZE = 1
+
+
+@dataclass
+class WorkerContext:
+    sender2worker: mp.Queue
+    worker2main: mp.Queue
+    sender2worker_done: mp.Event
+    worker2main_done: mp.Event
+    process: mp.Process
+
 
 class MultipleGPUDataLoader:
     def __init__(
@@ -24,101 +38,167 @@ class MultipleGPUDataLoader:
         main_device_id: int,
         worker_device_ids: List[int],
         start_method: str = "forkserver",
+        data_queue_size: int = 10,
     ) -> None:
         self.dataloader = dataloader
+        self.preprocessor_cls = preprocessor_cls
+        self.preprocessor_init_args = preprocessor_init_args
         self.main_device_id = main_device_id
         self.worker_device_ids = worker_device_ids
-
-        self.ctx = mp.get_context(start_method)
-        self.dones: List[mp.Event] = []
-        self.parent_conns: List[Connection] = []
-        self.processes: List[mp.Process] = []
-
-        for device_id in worker_device_ids:
-            done = self.ctx.Event()
-            parent_conn, child_conn = self.ctx.Pipe()
-            process = self.ctx.Process(
-                target=self.preprocess,
-                args=(
-                    preprocessor_cls,
-                    preprocessor_init_args,
-                    device_id,
-                    child_conn,
-                    done,
-                ),
-            )
-            process.start()
-
-            self.dones.append(done)
-            self.parent_conns.append(parent_conn)
-            self.processes.append(process)
-
-    def __del__(self):
-        for process in self.processes:
-            result = process.join(BLOCK_SECS)
-            if result is None:
-                process.terminate()
+        self.start_method = start_method
+        self.data_queue_size = data_queue_size
 
     def __len__(self):
         return len(self.dataloader)
 
     def __iter__(self):
-        num_batches = len(self.dataloader)
-        iterator = iter(self.dataloader)
+        preprocessor = self.preprocessor_cls(*self.preprocessor_init_args).cuda(
+            self.main_device_id
+        )
+        preprocessor.eval()
 
-        for parent_id in range(len(self.parent_conns)):
-            parent_conn = self.parent_conns[parent_id]
-            new_batch = next(iterator)
-            new_batch = deepcopy(new_batch)
-            parent_conn.send(new_batch)
-            del new_batch
+        ctx = mp.get_context(self.start_method)
 
-        for batch_id in range(num_batches):
-            parent_id = batch_id % len(self.parent_conns)
-            parent_conn = self.parent_conns[parent_id]
+        worker_contexts: List[WorkerContext] = []
+        for device_id in self.worker_device_ids:
+            sender2worker = ctx.Queue(maxsize=self.data_queue_size)
+            worker2main = ctx.Queue(maxsize=CUDA_QUEUE_SIZE)
+            sender2worker_done = ctx.Event()
+            worker2main_done = ctx.Event()
+            process = ctx.Process(
+                target=self.preprocess,
+                args=(
+                    self.preprocessor_cls,
+                    self.preprocessor_init_args,
+                    device_id,
+                    self.main_device_id,
+                    sender2worker,
+                    worker2main,
+                    sender2worker_done,
+                    worker2main_done,
+                ),
+            )
+            process.start()
+            worker_contexts.append(
+                WorkerContext(
+                    sender2worker,
+                    worker2main,
+                    sender2worker_done,
+                    worker2main_done,
+                    process,
+                )
+            )
 
-            received_batch = parent_conn.recv()
-            preprocessed_batch = received_batch.to(self.main_device_id)
-            del received_batch
-            yield preprocessed_batch
-            del preprocessed_batch
+        sender2main = ctx.Queue(self.data_queue_size)
+        sender2main_done = ctx.Event()
 
-            if batch_id + len(self.parent_conns) >= num_batches:
-                parent_conn.send(None)
-            else:
-                new_batch = next(iterator)
-                new_batch = deepcopy(new_batch)
-                parent_conn.send(new_batch)
-                del new_batch
+        sender2workers = [sender2main] + [c.sender2worker for c in worker_contexts]
+        sender2workers_done = [sender2main_done] + [
+            c.sender2worker_done for c in worker_contexts
+        ]
+        sender = ctx.Process(
+            target=self.sender,
+            args=(self.dataloader, sender2workers, sender2workers_done),
+        )
+        sender.start()
 
-        for done in self.dones:
-            done.set()
-        for process in self.processes:
-            process.join()
+        worker_processes = [c.process for c in worker_contexts]
+        with torch.no_grad():
+            while not self.all_sender_workers_end(sender, worker_processes):
+                if sender.is_alive():
+                    try:
+                        batch = sender2main.get_nowait()
+                    except queue.Empty:
+                        pass
+                    else:
+                        if batch is None:
+                            sender2main_done.set()
+                        else:
+                            batch = batch.to(f"cuda:{self.main_device_id}")
+                            preprocessed_batch = preprocessor(**batch)
+                            yield preprocessed_batch
+                            del batch
+                            del preprocessed_batch
+
+                for context in worker_contexts:
+                    if context.process.is_alive():
+                        try:
+                            preprocessed_batch = context.worker2main.get_nowait()
+                        except queue.Empty:
+                            pass
+                        else:
+                            if preprocessed_batch is None:
+                                context.worker2main_done.set()
+                            else:
+                                yield preprocessed_batch
+                                del preprocessed_batch
+
+        sender.join()
+        for context in worker_contexts:
+            context.process.join()
+
+    @staticmethod
+    def all_sender_workers_end(sender: mp.Process, workers: List[mp.Process]):
+        for p in [sender, *workers]:
+            if p.is_alive():
+                return False
+        return True
+
+    @staticmethod
+    def sender(
+        dataloader: Iterable,
+        sender2workers: List[mp.Queue],
+        sender2workers_done: List[mp.Event],
+    ):
+        data_iter = iter(dataloader)
+        batch = next(data_iter)
+        unfinished_sender2workers = sender2workers.copy()
+        while len(unfinished_sender2workers) > 0:
+            for sender2worker in unfinished_sender2workers.copy():
+                try:
+                    sender2worker.put_nowait(batch)
+                except queue.Full:
+                    continue
+                else:
+                    if batch is None:
+                        unfinished_sender2workers.remove(sender2worker)
+
+                    try:
+                        batch = next(data_iter)
+                    except StopIteration:
+                        batch = None
+
+        for sender2worker_done in sender2workers_done:
+            sender2worker_done.wait()
 
     @staticmethod
     def preprocess(
         preprocessor_cls,
-        preprocessor_init_args: Tuple,
+        preprocessor_init_args,
         device_id: int,
-        child_conn: Connection,
-        done: mp.Event,
+        main_device_id: int,
+        sender2worker: mp.Queue,
+        worker2main: mp.Queue,
+        sender2worker_done: mp.Event,
+        worker2main_done: mp.Event,
     ):
         preprocessor = preprocessor_cls(*preprocessor_init_args).to(f"cuda:{device_id}")
         preprocessor.eval()
+
         with torch.no_grad():
             while True:
-                batch = child_conn.recv()
+                batch = sender2worker.get()
                 if batch is None:
-                    del batch
+                    sender2worker_done.set()
+                    worker2main.put(None)
                     break
                 else:
-                    assert isinstance(batch, Container)
                     batch_cuda = batch.to(f"cuda:{device_id}")
                     del batch
-                    preprocessed_batch = preprocessor(**batch_cuda)
-                    child_conn.send(preprocessed_batch)
+                    preprocessed_batch = preprocessor(**batch_cuda).to(
+                        f"cuda:{main_device_id}"
+                    )
+                    worker2main.put(preprocessed_batch)
                     del preprocessed_batch
 
-        child_conn.close()
-        done.wait()
+        worker2main_done.wait()
