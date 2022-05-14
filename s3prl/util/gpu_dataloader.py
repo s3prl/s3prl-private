@@ -1,5 +1,6 @@
 import queue
 import logging
+import threading
 from typing import Iterable, List, Tuple
 from dataclasses import dataclass
 
@@ -39,6 +40,8 @@ class MultipleGPUDataLoader:
         worker_device_ids: List[int],
         start_method: str = "forkserver",
         data_queue_size: int = 10,
+        device_thread_num: int = 4,
+        premoved_cuda_limit: int = 10,
     ) -> None:
         self.dataloader = dataloader
         self.preprocessor_cls = preprocessor_cls
@@ -47,6 +50,8 @@ class MultipleGPUDataLoader:
         self.worker_device_ids = worker_device_ids
         self.start_method = start_method
         self.data_queue_size = data_queue_size
+        self.device_thread_num = device_thread_num
+        self.premoved_cuda_limit = premoved_cuda_limit
 
     def __len__(self):
         return len(self.dataloader)
@@ -102,47 +107,104 @@ class MultipleGPUDataLoader:
         )
         sender.start()
 
+        raw_batch_cuda_semaphore = threading.BoundedSemaphore(self.premoved_cuda_limit)
+        raw_batch_cuda_queue = queue.Queue()
+        raw_batch_cudar = threading.Thread(
+            target=self.device_mover,
+            args=(
+                sender2main,
+                sender2main_done,
+                raw_batch_cuda_queue,
+                raw_batch_cuda_semaphore,
+                self.main_device_id,
+            ),
+        )
+        raw_batch_cudar.start()
+
+        preprocessed_batch_cuda_semaphore = threading.BoundedSemaphore(
+            self.premoved_cuda_limit
+        )
+        preprocessed_batch_cuda_queue = queue.Queue()
+        preprocessed_batch_cudars = []
+        for worker_context in worker_contexts:
+            for i in range(self.device_thread_num):
+                thread = threading.Thread(
+                    target=self.device_mover,
+                    args=(
+                        worker_context.worker2main,
+                        worker_context.worker2main_done,
+                        preprocessed_batch_cuda_queue,
+                        preprocessed_batch_cuda_semaphore,
+                        self.main_device_id,
+                    ),
+                )
+                thread.start()
+                preprocessed_batch_cudars.append(thread)
+
         worker_processes = [c.process for c in worker_contexts]
         with torch.no_grad():
-            while not self.all_sender_workers_end(sender, worker_processes):
+            while not self.all_processes_end([sender, *worker_processes]):
                 if sender.is_alive():
                     try:
-                        batch = sender2main.get_nowait()
+                        batch = raw_batch_cuda_queue.get_nowait()
                     except queue.Empty:
                         pass
                     else:
-                        if batch is None:
-                            sender2main_done.set()
-                        else:
-                            batch = batch.to(f"cuda:{self.main_device_id}")
-                            preprocessed_batch = preprocessor(**batch)
-                            yield preprocessed_batch
-                            del batch
-                            del preprocessed_batch
+                        raw_batch_cuda_semaphore.release()
+                        preprocessed_batch = preprocessor(**batch)
+                        del batch
+                        yield preprocessed_batch
+                        del preprocessed_batch
 
-                for context in worker_contexts:
-                    if context.process.is_alive():
-                        try:
-                            preprocessed_batch = context.worker2main.get_nowait()
-                        except queue.Empty:
-                            pass
-                        else:
-                            if preprocessed_batch is None:
-                                context.worker2main_done.set()
-                            else:
-                                yield preprocessed_batch
-                                del preprocessed_batch
+                if not self.all_processes_end(worker_processes):
+                    try:
+                        preprocessed_batch = preprocessed_batch_cuda_queue.get_nowait()
+                    except queue.Empty:
+                        pass
+                    else:
+                        preprocessed_batch_cuda_semaphore.release()
+                        yield preprocessed_batch
+                        del preprocessed_batch
+
+        raw_batch_cudar.join()
+        for cudar in preprocessed_batch_cudars:
+            cudar.join()
 
         sender.join()
         for context in worker_contexts:
             context.process.join()
 
     @staticmethod
-    def all_sender_workers_end(sender: mp.Process, workers: List[mp.Process]):
-        for p in [sender, *workers]:
+    def all_processes_end(processes: List[mp.Process]):
+        for p in processes:
             if p.is_alive():
                 return False
         return True
+
+    @staticmethod
+    def device_mover(
+        data_queue: mp.Queue,
+        data_queue_done: mp.Event,
+        result_queue: mp.Queue,
+        premoved_cuda_semaphore: threading.BoundedSemaphore,
+        device_id: int,
+    ):
+        while True:
+            try:
+                premoved_cuda_semaphore.acquire()
+                batch = data_queue.get()
+            except (ValueError, OSError):
+                # the data_queue is closed
+                break
+            else:
+                if batch is None:
+                    break
+                else:
+                    batch_on_device = batch.to(f"cuda:{device_id}")
+                    result_queue.put(batch_on_device)
+                    del batch
+                    del batch_on_device
+        data_queue_done.set()
 
     @staticmethod
     def sender(
@@ -195,9 +257,7 @@ class MultipleGPUDataLoader:
                 else:
                     batch_cuda = batch.to(f"cuda:{device_id}")
                     del batch
-                    preprocessed_batch = preprocessor(**batch_cuda).to(
-                        f"cuda:{main_device_id}"
-                    )
+                    preprocessed_batch = preprocessor(**batch_cuda)
                     worker2main.put(preprocessed_batch)
                     del preprocessed_batch
 
