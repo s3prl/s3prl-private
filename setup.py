@@ -8,7 +8,7 @@ here = pathlib.Path(__file__).parent.resolve()
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 requirements = [
-    "torch>=1.7.0",
+    "torch>=1.7.0, !=1.10.0",
     "torchaudio>=0.7.0",
     "torchvision>=0.8.0",
     "joblib>=0.12.4",
@@ -17,7 +17,7 @@ requirements = [
     "scikit-learn>=0.23.2",
     "PyYAML>=5.4",
     "tqdm>=4.56.0",
-    "numpy>=1.19.5, <1.21",
+    "numpy>=1.21",
     "pandas>=1.1.5",
     "tensorboardX>=1.9, <2.3",
     "matplotlib>=3.3.4",
@@ -44,7 +44,10 @@ requirements = [
     "easydict",
     "catalyst",
     "sentencepiece",
-    "huggingface_hub @ git+https://github.com/huggingface/huggingface_hub.git#egg=huggingface_hub" # TODO: Replace with v0.0.17 when it is released
+    "huggingface_hub>=0.2.1", # TODO: Replace with v0.0.17 when it is released
+    "mutagen",
+    "fairseq @ git+https://github.com//pytorch/fairseq.git@f2146bdc7abf293186de9449bfa2272775e39e1d#egg=fairseq",
+    "lighthubert @ git+https://github.com/mechanicalsea/lighthubert#egg=lighthubert"
 ]
 
 # Arguments marked as "Required" below must be included for upload to PyPI.

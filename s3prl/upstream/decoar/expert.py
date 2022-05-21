@@ -67,6 +67,10 @@ class UpstreamExpert(nn.Module):
             padding_mask[i, diff:] = True
 
         features = self.model(features, padding_mask)
+        return {
+            "hidden_states": [features],
+            "last_hidden_state": features,
+        }
 
         # This forward function only does the model forward
         # The return dict is then handled by UpstreamBase's hooks

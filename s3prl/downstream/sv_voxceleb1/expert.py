@@ -27,7 +27,7 @@ from torch.utils.data import DataLoader, DistributedSampler
 from torch.distributed import is_initialized, get_rank, get_world_size
 #-------------#
 from s3prl.utility.helper import is_leader_process
-from .model import Model, AMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
+from .model import Model, AMSoftmaxLoss, AAMSoftmaxLoss, SoftmaxLoss, UtteranceExtractor
 from .dataset import SpeakerVerifi_train, SpeakerVerifi_test, LxtSvEval
 from .utils import EER
 

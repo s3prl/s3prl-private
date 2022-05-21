@@ -2,15 +2,21 @@
     <img src="./file/S3PRL-logo.png" width="900"/>
     <br>
     <br>
-    <a href="./LICENSE.txt"><img alt="MIT License" src="https://img.shields.io/badge/license-MIT-blue.svg" /></a>
+    <a href="./LICENSE.txt"><img alt="Apache License 2.0" src="./file/license.svg" /></a>
     <a href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="CC_BY_NC License" src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-lightgrey.svg" /></a>
     <a href="https://github.com/s3prl/s3prl/actions"><img alt="Build" src="https://github.com/allenai/allennlp/workflows/Master/badge.svg?event=push&branch=master"></a>
     <a href="#development-pattern-for-contributors"><img alt="Codecov" src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg"></a>
     <a href="https://github.com/s3prl/s3prl/issues"><img alt="Bitbucket open issues" src="https://img.shields.io/github/issues/s3prl/s3prl"></a>
 </p>
 
+## Announcement
+
+If you wish to submit to SUPERB benchmark while you find [superbbenchmark.org](www.superbbenchmark.org) is down temporarily, please try to use [140.112.21.28](140.112.21.28) as an alternative. They share the same backend. We will make the official domain work as soon as possible.
+
 ## What's New
 
+* *Mar 2022*: Introduce [**SUPERB-SG**](https://arxiv.org/abs/2203.06849), see [Speech Translation](./s3prl/downstream/speech_translation), [Out-of-domain ASR](./s3prl/downstream/ctc/), [Voice Conversion](./s3prl/downstream/a2o-vc-vcc2020/), [Speech Separation](./s3prl/downstream/separation_stft/) and [Speech Enhancement](./s3prl/downstream/enhancement_stft/) for more info.
+* *Nov 2021*: Introduce [**S3PRL-VC**](https://arxiv.org/abs/2110.06280), see [Any-to-one](https://github.com/s3prl/s3prl/tree/master/s3prl/downstream/a2o-vc-vcc2020) and [Any-to-any](https://github.com/s3prl/s3prl/tree/master/s3prl/downstream/a2a-vc-vctk) docs for more info.
 * *Oct 2021*: Support [**DistilHuBERT**](https://arxiv.org/abs/2110.01900), see [docs](./s3prl/upstream/distiller/README.md) for more info
 * *Sep 2021:* We host a *challenge* in [*AAAI workshop: The 2nd Self-supervised Learning for Audio and Speech Processing*](https://aaai-sas-2022.github.io/)! See [**SUPERB official site**](https://superbbenchmark.org/) for the challenge details and the [**SUPERB documentation**](./s3prl/downstream/docs/superb.md) in this toolkit!
 * *Aug 2021:* We now have a tutorial that introduces our toolkit, you can **[watch it on Youtube](https://youtu.be/PkMFnS6cjAc)**!
@@ -64,13 +70,7 @@ If you find this toolkit helpful to your research, please do consider citing [ou
 pip install -e ./
 ```
 
-4. Install the specific fairseq
-
-```sh
-pip install fairseq@git+https://github.com//pytorch/fairseq.git@f2146bdc7abf293186de9449bfa2272775e39e1d#egg=fairseq
-```
-
-5. Some upstream models require special dependencies. If you encounter error with a specific upstream model, you can look into the `README.md` under each `upstream` folder. E.g., `upstream/pase/README.md`
+4. Some upstream models require special dependencies. If you encounter error with a specific upstream model, you can look into the `README.md` under each `upstream` folder. E.g., `upstream/pase/README.md`
 
 ## Development pattern for contributors
 
@@ -101,8 +101,7 @@ pip install fairseq@git+https://github.com//pytorch/fairseq.git@f2146bdc7abf2931
 
 ## License
 
-The majority of S3PRL Toolkit is licensed under CC-BY-NC, 
-however portions of the project are available under separate license terms: S3PRL is licensed under the MIT license.
+The majority of S3PRL Toolkit is licensed under the Apache License version 2.0, however all the files authored by Facebook, Inc. (which have explicit copyright statement on the top) are licensed under CC-BY-NC.
 
 ## Used by
 <details><summary>List of papers that used our toolkit (Feel free to add your own paper by making a pull request)</summary><p>
