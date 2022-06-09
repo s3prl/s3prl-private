@@ -14,8 +14,30 @@ import torch
 import torchaudio
 from functools import partial
 from torch.nn.utils.rnn import pad_sequence
-from torchaudio.transforms import Spectrogram, MelScale, MFCC
-from torchaudio.functional import magphase, compute_deltas
+from torchaudio.transforms import MelScale, MFCC
+from torchaudio.functional import compute_deltas
+
+try:
+    from torchaudio.functional import magphase
+except ImportError:
+    # since pytorch 1.10, magphase is removed
+    from typing import Tuple
+    def magphase(
+            complex_tensor: torch.Tensor,
+            power: float = 1.0
+    ) -> Tuple[torch.Tensor, torch.Tensor]:
+        r"""Separate a complex-valued spectrogram with shape `(..., 2)` into its magnitude and phase.
+
+        Args:
+            complex_tensor (Tensor): Tensor shape of `(..., complex=2)`
+            power (float): Power of the norm. (Default: `1.0`)
+
+        Returns:
+            (Tensor, Tensor): The magnitude and phase of the complex tensor
+        """
+        mag = complex_tensor.pow(2.).sum(-1).pow(0.5 * power)
+        phase = torch.atan2(complex_tensor[..., 1], complex_tensor[..., 0])
+        return mag, phase
 
 
 ############
@@ -79,7 +101,7 @@ class OnlinePreprocessor(torch.nn.Module):
         self._stft_args = {'center': True, 'pad_mode': 'reflect', 'normalized': False, 'onesided': True}
         # stft_args: same default values as torchaudio.transforms.Spectrogram & librosa.core.spectrum._spectrogram
         self._stft = partial(torch.stft, **self._win_args, **self._stft_args)
-        self._magphase = partial(torchaudio.functional.magphase, power=2)
+        self._magphase = partial(magphase, power=2)
         self._melscale = MelScale(sample_rate=sample_rate, n_mels=n_mels)
         self._mfcc_trans = MFCC(sample_rate=sample_rate, n_mfcc=n_mfcc, log_mels=True, melkwargs=self._win_args)
         self._istft = partial(torch.istft, **self._win_args, **self._stft_args)
