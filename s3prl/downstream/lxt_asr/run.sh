@@ -22,11 +22,11 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/$upstream/lr$lr
-    python3 run_downstream.py -a -m train -u $upstream -s ASR -d lxt_asr -o config.optimizer.lr=$lr,,config.runner.total_steps=10000 \
+    python3 run_downstream.py --upstream_feature_normalize -a -m train -u $upstream -s ASR -d lxt_asr -o config.optimizer.lr=$lr,,config.runner.total_steps=10000 \
         -p $expdir
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev
-    python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t lxt_dev > $expdir/dev.result    
-    python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t lxt_test > $expdir/test.result
+    python3 run_downstream.py --upstream_feature_normalize -m evaluate -e $expdir/$dev_ckpt -t lxt_dev > $expdir/dev.result    
+    python3 run_downstream.py --upstream_feature_normalize -m evaluate -e $expdir/$dev_ckpt -t lxt_test > $expdir/test.result
 done
 
