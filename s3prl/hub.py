@@ -13,7 +13,7 @@ def _get_hubconf_entries():
             _module_name = "." + str(relpath).replace(os.path.sep, ".")[:-3]  # remove .py
             _module = importlib.import_module(_module_name, package=__package__)
 
-        except ModuleNotFoundError as e:
+        except (ModuleNotFoundError, ImportError) as e:
             if "pase" in _module_name:
                 # pase is not installed by default. See upstream/pase/README.md
                 continue
