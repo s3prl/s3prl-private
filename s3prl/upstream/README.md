@@ -68,15 +68,15 @@ print(dir(hub))
 
 We support most of the existing SSL pretrained models. You can refer to [SUPERB](https://arxiv.org/abs/2105.01051) paper for their pre-training loss styles.
 
-Publication Date | Model | Name | Paper | Input | Stride | Pre-train Data | Official Ckpt | Official Repo 
+Publication Date | Model | Name | Paper | Input | Stride | Pre-train Data | Official Ckpt | Official Repo
 |---|---|---|---|---|---|---|---|---
-10 Jul 2018 | CPC | modified_cpc | [arxiv](https://arxiv.org/abs/1807.03748) | wav | 10ms | [LibriLight-60k](https://github.com/facebookresearch/libri-light) | X | [FAIR](https://github.com/facebookresearch/CPC_audio)
+10 Jul 2018 | CPC | - | [arxiv](https://arxiv.org/abs/1807.03748) | wav | 10ms | - | X | Unavailable
 5 Apr 2019 | APC | apc | [arxiv](https://arxiv.org/abs/1904.03240) | Mel | 10ms | [LibriSpeech-360](http://www.openslr.org/12) | O | [APC](https://github.com/Alexander-H-Liu/NPC)
 6 Apr 2019 | PASE | pase_plus | [arxiv](https://arxiv.org/abs/1904.03416) | wav | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | X | [PASE](https://github.com/santi-pdp/pase)
 11 Apr 2019 | Wav2Vec | wav2vec | [arxiv](https://arxiv.org/abs/1904.05862) | wav | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [Fairseq](https://github.com/pytorch/fairseq)
 12 Oct 2019 | VQ-Wav2Vec | vq_wav2vec | [arxiv](https://arxiv.org/abs/1910.05453) | wav | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [Fairseq](https://github.com/pytorch/fairseq)
 25 Oct 2019 | Mockingjay | mockingjay | [arxiv](https://arxiv.org/abs/1910.12638) | Mel | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [S3PRL](https://github.com/andi611/Self-Supervised-Speech-Pretraining-and-Representation-Learning)
-7 Feb 2020 | Modified-CPC | cpc | [arxiv](https://arxiv.org/abs/2002.02848) | wav | 10ms | [LibriLight-60k](https://github.com/facebookresearch/libri-light) | O | [FAIR](https://github.com/facebookresearch/CPC_audio)
+7 Feb 2020 | Modified-CPC | modified_cpc | [arxiv](https://arxiv.org/abs/2002.02848) | wav | 10ms | [LibriLight-60k](https://github.com/facebookresearch/libri-light) | O | [FAIR](https://github.com/facebookresearch/CPC_audio)
 17 May 2020 | VQ-APC | vq_apc | [arxiv](https://arxiv.org/abs/2005.08392) | Mel | 10ms | [LibriSpeech-360](http://www.openslr.org/12) | O | [NPC](https://github.com/Alexander-H-Liu/NPC)
 18 May 2020 | Audio Albert | audio_albert | [arxiv](https://arxiv.org/abs/2005.08575) | Mel | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | X | [S3PRL](https://github.com/andi611/Self-Supervised-Speech-Pretraining-and-Representation-Learning)
 20 Jun 2020 | Wav2Vec 2.0 | wav2vec2 / wav2vec2_large_ll60k | [arxiv](https://arxiv.org/abs/2006.11477) | wav | 20ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [Fairseq](https://github.com/pytorch/fairseq)
@@ -86,7 +86,7 @@ Jun 14 2021 | HuBERT | hubert / hubert_large_ll60k | [arxiv](https://arxiv.org/a
 Dec 3 2019 | DeCoAR | decoar | [arxiv](https://arxiv.org/abs/1912.01679) | Mel | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [speech-representations](https://github.com/awslabs/speech-representations)
 Dec 11 2020 | DeCoAR 2.0 | decoar2 | [arxiv](https://arxiv.org/abs/2012.06659) | Mel | 10ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [speech-representations](https://github.com/awslabs/speech-representations)
 Oct 5 2021 | DistilHuBERT | distilhubert | [arxiv](https://arxiv.org/abs/2110.01900) | wav | 20ms | [LibriSpeech-960](http://www.openslr.org/12) | O | [S3PRL](https://github.com/s3prl/s3prl)
-
+May 27 2022 | Robust HuBERT | hubert_base_robust_mgr | [arxiv](https://arxiv.org/abs/2203.16104) | wav | 20ms | [LibriSpeech-960](http://www.openslr.org/12) with mgr distortion | X | Unavailable
 ### Acoustic Feature Upstreams
 
 We also provide classic acoustic features as baselines. For each upstream with `Name`, you can configure their options (available by their `Backend`) in `s3prl/upstream/baseline/Name.yaml`.

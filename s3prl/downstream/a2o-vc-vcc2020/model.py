@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- #
 """*********************************************************************************************"""
 #   FileName     [ model.py ]
-#   Synopsis     [ the simple (LSTMP), simple-AR and taco2-AR models ]
+#   Synopsis     [ the simple (LSTMP), simple-AR and taco2-AR models for any-to-one voice conversion ]
 #   Reference    [ `WaveNet Vocoder with Limited Training Data for Voice Conversion`, Interspeech 2018 ]
 #   Reference    [ `Non-Parallel Voice Conversion with Autoregressive Conversion Model and Duration Adjustment`, Joint WS for BC & VCC 2020 ]
 #   Author       [ Wen-Chin Huang (https://github.com/unilight) ]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- #
 """*********************************************************************************************"""
 #   FileName     [ evaluate.py ]
-#   Synopsis     [ main objective evaluation script for voice conversion ]
+#   Synopsis     [ main objective evaluation script for any-to-one voice conversion ]
 #   Author       [ Wen-Chin Huang (https://github.com/unilight) ]
 #   Copyright    [ Copyright(c), Toda Lab, Nagoya University, Japan ]
 """*********************************************************************************************"""
@@ -13,9 +13,9 @@ import os
 
 import numpy as np
 import librosa
-from scipy.io import wavfile
 
 import torch
+from tqdm import tqdm
 import yaml
 
 from utils import find_files
@@ -36,7 +36,7 @@ def get_number(basename):
 
 def _calculate_asv_score(model, file_list, gt_root, trgspk, threshold):
     results = {}
-    for i, cvt_wav_path in enumerate(file_list):
+    for i, cvt_wav_path in enumerate(tqdm(file_list)):
         basename = get_basename(cvt_wav_path)
         number = get_number(basename)
         
@@ -54,7 +54,7 @@ def _calculate_asr_score(model, device, file_list, groundtruths):
     c_results = {k: 0 for k in keys}
     w_results = {k: 0 for k in keys}
 
-    for i, cvt_wav_path in enumerate(file_list):
+    for i, cvt_wav_path in enumerate(tqdm(file_list)):
         basename = get_basename(cvt_wav_path)
         number = get_number(basename)
         groundtruth = groundtruths[number[1:]] # get rid of the first character "E"
@@ -68,7 +68,7 @@ def _calculate_asr_score(model, device, file_list, groundtruths):
         # error calculation
         c_result, w_result, norm_groundtruth, norm_transcription = calculate_measures(groundtruth, transcription)
 
-        ers[basename] = [c_result["wer"] * 100.0, w_result["wer"] * 100.0, norm_transcription, norm_groundtruth]
+        ers[basename] = [c_result["cer"] * 100.0, w_result["wer"] * 100.0, norm_transcription, norm_groundtruth]
 
         for k in keys:
             c_results[k] += c_result[k]

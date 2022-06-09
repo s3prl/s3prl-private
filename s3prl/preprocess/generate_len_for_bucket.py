@@ -12,8 +12,6 @@
 # IMPORTATION #
 ###############
 import os
-import sys
-import pickle
 import argparse
 import torchaudio
 import numpy as np
@@ -21,16 +19,6 @@ import pandas as pd
 from tqdm import tqdm
 from pathlib import Path
 from joblib import Parallel, delayed
-torchaudio.set_audio_backend("sox_io")
-
-
-##################
-# BOOLEAB STRING #
-##################
-def boolean_string(s):
-    if s not in ['False', 'True']:
-        raise ValueError('Not a valid boolean string')
-    return s == 'True'
 
 
 #############################
@@ -54,7 +42,9 @@ def get_preprocess_args():
 # EXTRACT LENGTH #
 ##################
 def extract_length(input_file):
+    torchaudio.set_audio_backend("sox_io")
     return torchaudio.info(input_file).num_frames
+
 
 ###################
 # GENERATE LENGTH #
@@ -96,7 +86,9 @@ def main():
     # get arguments
     args = get_preprocess_args()
     
-    if 'librispeech' in args.input_data.lower():
+    if 'librilight' in args.input_data.lower():
+        SETS = ['small', 'medium', 'large'] + ['small-splitted', 'medium-splitted', 'large-splitted']
+    elif 'librispeech' in args.input_data.lower():
         SETS = ['train-clean-100', 'train-clean-360', 'train-other-500', 'dev-clean', 'dev-other', 'test-clean', 'test-other']
     elif 'timit' in args.input_data.lower():
         SETS = ['TRAIN', 'TEST']
