@@ -22,7 +22,9 @@ requirements = [
     "scikit-learn>=0.23.2",
     "PyYAML>=5.4",
     "tqdm>=4.56.0",
-    "numpy>=1.21",
+    "numpy>=1.21,<1.22", # <1.22 for numba
+    "pesq==0.0.2", # for numpy
+    "setuptools==59.5.0", # for torch.utils.tensorboard
     "pandas>=1.1.5",
     "tensorboardX>=1.9, <2.3",
     "matplotlib>=3.3.4",
