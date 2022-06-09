@@ -119,6 +119,7 @@ dmypy.json
 .pyre/
 
 # data and log directory
+datasets
 runs
 save
 TODO

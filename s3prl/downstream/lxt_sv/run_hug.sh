@@ -25,12 +25,12 @@ do
     for seed in 1 2 3;
     do
         expdir=$expdir_root/${org}__${repo}__${revision}/lr$lr/seed${seed}
-        python3 run_downstream.py -a -m train -u $org/$repo --upstream_revision $revision -s ASV -d lxt_sv -o config.optimizer.lr=$lr \
+        python3 run_downstream.py --upstream_feature_normalize -a -m train -u $org/$repo --upstream_revision $revision -s ASV -d lxt_sv -o config.optimizer.lr=$lr \
             -p $expdir --seed $seed --hub huggingface --config downstream/lxt_sv/configs/linear_balanced.yaml
 
         dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev
-        python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t lxt_seg_dev > $expdir/dev.result    
-        python3 run_downstream.py -m evaluate -e $expdir/$dev_ckpt -t lxt_seg_test > $expdir/test.result
+        python3 run_downstream.py --upstream_feature_normalize -m evaluate -e $expdir/$dev_ckpt -t lxt_seg_dev > $expdir/dev.result
+        python3 run_downstream.py --upstream_feature_normalize -m evaluate -e $expdir/$dev_ckpt -t lxt_seg_test > $expdir/test.result
 
     done
 done

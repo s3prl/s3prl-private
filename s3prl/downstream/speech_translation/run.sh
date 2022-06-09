@@ -14,7 +14,7 @@ expdir_root=$1
 shift
 
 if [ -z "$*" ]; then
-    lrs=("1" "1.0e-1" "1.0e-2" "1.0e-3")
+    lrs=("1.0e-3")
 else
     lrs=($*)
 fi
@@ -22,7 +22,7 @@ fi
 for lr in "${lrs[@]}";
 do
     expdir=$expdir_root/$upstream/lr$lr
-    python3 run_downstream.py --upstream_feature_normalize -a -m train -u $upstream -s SID -d lxt_sid4 -o config.optimizer.lr=$lr \
+    python3 run_downstream.py --upstream_feature_normalize -a -m train -u $upstream -s ST -d speech_translation -o config.optimizer.lr=$lr \
         -p $expdir
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev

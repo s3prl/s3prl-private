@@ -29,7 +29,7 @@ fi
 for layer in ${layers[@]};
 do
     expdir=$expdir_root/$upstream/layer$layer
-    python3 run_downstream.py -m evaluate -u $upstream -s QbE -l $layer -d lxt_dtw -p $expdir
+    python3 run_downstream.py --upstream_feature_normalize -m evaluate -u $upstream -s QbE -l $layer -d lxt_dtw -p $expdir
 
     score_dir=$expdir/scoring
     mkdir -p $score_dir
