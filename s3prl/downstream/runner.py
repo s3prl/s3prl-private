@@ -436,7 +436,7 @@ class Runner():
 
         # prepare data
         dataloader = self.downstream.model.get_dataloader(split)
-        evaluate_ratio = float(self.config["runner"].get("evaluate_ratio", 1))
+        evaluate_ratio = float(self.config.get("runner", {}).get("evaluate_ratio", 1))
         evaluate_steps = round(len(dataloader) * evaluate_ratio)
 
         batch_ids = []
