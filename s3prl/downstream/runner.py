@@ -149,6 +149,7 @@ class Runner():
 
         model = Upstream(
             ckpt = ckpt_path,
+            upstream_feature_selection = self.args.upstream_feature_selection,
             model_config = self.args.upstream_model_config,
             refresh = upstream_refresh,
         ).to(self.args.device)

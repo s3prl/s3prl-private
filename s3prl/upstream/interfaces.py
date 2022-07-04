@@ -151,11 +151,11 @@ class Featurizer(nn.Module):
 
         if feature_selection not in paired_features:
             if "hidden_states" in paired_features:
-                show(
-                    f"[{self.name}] - Warning: {feature_selection} is not a supported args.upstream_feature_selection."
-                    f" Using \"hidden_states\" as the default key.",
-                    file=sys.stderr
-                )
+                # show(
+                #     f"[{self.name}] - Warning: {feature_selection} is not a supported args.upstream_feature_selection."
+                #     f" Using \"hidden_states\" as the default key.",
+                #     file=sys.stderr
+                # )
                 feature_selection = "hidden_states"
             else:
                 show(
