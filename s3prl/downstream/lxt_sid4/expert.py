@@ -55,7 +55,7 @@ class DownstreamExpert(nn.Module):
 
         self.expdir = Path(expdir)
         self.save_best_on = self.datarc.get("save_best_on", "dev")
-        self.register_buffer('best_score', torch.ones(1) * -1<<31)
+        self.register_buffer('best_score', torch.ones(1) * (-1<<31))
 
     def _get_train_dataloader(self, dataset, epoch):
         sampler = DistributedSampler(dataset) if is_initialized() else None

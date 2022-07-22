@@ -89,7 +89,7 @@ class DownstreamExpert(nn.Module):
         self.eval_metric = EER
 
         self.save_best_on = self.downstream.get("save_best_on", "lxt_dev")
-        self.register_buffer('best_score', torch.ones(1) * 1<<31)
+        self.register_buffer('best_score', torch.ones(1) * (1<<31))
 
     def get_dataloader(self, split, epoch=0):
         if "train" in split:
