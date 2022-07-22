@@ -52,7 +52,7 @@ requirements = [
     "easydict",
     "catalyst",
     "sentencepiece",
-    "huggingface_hub>=0.2.1",  # TODO: Replace with v0.0.17 when it is released
+    "huggingface_hub>=0.2.1,<0.7",  # TODO: Replace with v0.0.17 when it is released
     "mutagen",
 ]
 
@@ -60,7 +60,6 @@ requirements = [
 # Fields marked as "Optional" may be commented out.
 
 install_from_github = [
-    "fairseq@git+https://github.com//pytorch/fairseq.git@b5a039c292facba9c73f59ff34621ec131d82341#egg=fairseq",
     "lighthubert@git+https://github.com/mechanicalsea/lighthubert#egg=lighthubert",
 ]
 
