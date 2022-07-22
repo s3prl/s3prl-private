@@ -71,3 +71,11 @@ def hubert_base_robust_mgr(refresh=False, *args, **kwargs):
     """
     kwargs["ckpt"] = "https://huggingface.co/kphuang68/HuBERT_base_robust_mgr/resolve/main/HuBERT_base_robust_mgr_best_loss_2.7821.pt"
     return hubert_url(refresh=refresh, *args, **kwargs)
+
+def hubert_base_robust_mgwham_rbp(refresh=False, *args, **kwargs):
+    """
+    TODO
+        refresh (bool): whether to download ckpt/config again if existed
+    """
+    kwargs["ckpt"] = "https://huggingface.co/kphuang68/HuBERT_base_robust_mgwham_rbp/resolve/main/HuBERT_base_robust_mgwham_rbp_best_loss_2.9590.pt"
+    return hubert_url(refresh=refresh, *args, **kwargs)

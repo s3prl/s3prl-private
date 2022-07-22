@@ -138,6 +138,7 @@ CMU_MOSI.zip
 libri_alignment.zip
 data
 *.out
+core.*
 
 # checkpoints
 *.ckpt
@@ -159,3 +160,4 @@ experiment
 *.tar.gz
 *.tsv
 *.csv
+*xlsx

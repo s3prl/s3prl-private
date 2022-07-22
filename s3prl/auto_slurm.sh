@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=Hello_TWCC    ## job name
 #SBATCH --nodes=1                ## 索取 1 節點
-#SBATCH --mem=65536
+#SBATCH --mem=92160
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=4        ## 該 task 索取 4 CPUs
 #SBATCH --gres=gpu:1             ## 每個節點索取 1 GPUs
 #SBATCH --time=48:00:00          ## 最長跑 10 分鐘 (測試完這邊記得改掉，或是直接刪除該行)
-#SBATCH --account=ENT211069      ## PROJECT_ID 請填入計畫ID(ex: MST108XXX)，扣款也會根據此計畫ID
+#SBATCH --account=MST111038      ## PROJECT_ID 請填入計畫ID(ex: MST108XXX)，扣款也會根據此計畫ID
 #SBATCH --partition=gp2d         ## gtest 為測試用 queue，後續測試完可改 gp1d(最長跑1天)、gp2d(最長跑2天)、gp4d(最長跑4天)
 
 echo "0. setup environment"

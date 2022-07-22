@@ -25,7 +25,8 @@ requirements = [
     "numpy>=1.21,<1.22", # <1.22 for numba
     "pesq==0.0.2", # for numpy
     "setuptools==59.5.0", # for torch.utils.tensorboard
-    "pandas>=1.1.5",
+    "openpyxl", # for summarize the result
+    "pandas>=1.1.5,<1.4", # DataFrame.append will be deprecated
     "tensorboardX>=1.9, <2.3",
     "matplotlib>=3.3.4",
     "Pillow>=6.2.2",
