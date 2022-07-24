@@ -119,6 +119,7 @@ dmypy.json
 .pyre/
 
 # data and log directory
+wandb/
 datasets
 runs
 save

@@ -54,6 +54,7 @@ requirements = [
     "sentencepiece",
     "huggingface_hub>=0.2.1,<0.7",  # TODO: Replace with v0.0.17 when it is released
     "mutagen",
+    "wandb"
 ]
 
 # Arguments marked as "Required" below must be included for upload to PyPI.

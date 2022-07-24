@@ -26,6 +26,7 @@ from s3prl.upstream.interfaces import Featurizer
 from s3prl.utility.helper import is_leader_process, get_model_state, show, defaultdict
 
 from huggingface_hub import HfApi, HfFolder, Repository
+import wandb
 
 SAMPLE_RATE = 16000
 
@@ -73,6 +74,19 @@ Upstream Model: {upstream_model}
 """
 
 
+class Logger():
+    def __init__(self, expdir):
+        self.tblogger = SummaryWriter(expdir)
+        
+    
+    def add_scalar(self, key, value, global_step):
+        self.tblogger.add_scalar(key, value, global_step)
+        wandb.log({key: value}, step=global_step)
+
+    def close(self):
+        self.tblogger.close()
+
+
 class ModelEntry:
     def __init__(self, model, name, trainable, interfaces):
         self.model = model
@@ -96,6 +110,15 @@ class Runner():
         self.downstream = self._get_downstream()
         self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
+        wandb.init(
+            project=args.upstream.replace("/", "--"),
+            name="{}-{:.1E}".format(args.upstream_feature_selection, config['optimizer']['lr']),
+            resume=True
+        )
+        wandb.config.update(self.args)
+        wandb.config.update(self.config)
+
+        wandb.save(args.config)
 
     def _load_weight(self, model, name):
         init_weight = self.init_ckpt.get(name)
@@ -259,7 +282,7 @@ class Runner():
 
         # Tensorboard logging
         if is_leader_process():
-            logger = SummaryWriter(self.args.expdir)
+            logger = Logger(self.args.expdir)
 
         batch_ids = []
         backward_steps = 0
@@ -418,7 +441,7 @@ class Runner():
         if not_during_training:
             split = self.args.evaluate_split
             tempdir = tempfile.mkdtemp()
-            logger = SummaryWriter(tempdir)
+            logger = Logger(tempdir)
 
         # fix seed to guarantee the same evaluation protocol across steps 
         random.seed(self.args.seed)
