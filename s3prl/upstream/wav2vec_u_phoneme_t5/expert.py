@@ -144,7 +144,6 @@ class UpstreamExpert(UpstreamBase):
             wav_padding_mask if self.apply_padding_mask else None,
             layer=24
         )
-        input(len(results["layer_results"]))
 
         if self.interface_mode == "single_layer":
             assert len(results["layer_results"]) > self.interface_value
