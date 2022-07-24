@@ -168,6 +168,16 @@ class Featurizer(nn.Module):
         self.feature_selection = feature_selection
         self.layer_selection = layer_selection
         self.normalize = normalize
+        # feature_groups should like {"hidden_states": [[feature_indices], ...,[feature_indices]]}
+        self.groups = getattr(upstream, "feature_groups", None)
+        if self.groups:
+            for key in self.groups:
+                index_set = set()
+                index_count = 0
+                for group in self.groups[key]:
+                    index_set = index_set.union(set(group))
+                    index_count += len(group)
+                assert len(index_set) == index_count, f"Some feature groups are overlaped in feature_groups['{key}']"
 
         feature = self._select_feature(paired_features)
         if isinstance(feature, (list, tuple)):
@@ -230,18 +240,39 @@ class Featurizer(nn.Module):
             " following options: --upstream_trainable --upstream_feature_selection last_hidden_state."
             " Or: -f -s last_hidden_state"
         )
-        stacked_feature = torch.stack(feature, dim=0)
+        if self.groups is None:
+            stacked_feature = torch.stack(feature, dim=0)
 
-        if self.normalize:
-            stacked_feature = F.layer_norm(
-                stacked_feature, (stacked_feature.shape[-1],))
+            if self.normalize:
+                stacked_feature = F.layer_norm(
+                    stacked_feature, (stacked_feature.shape[-1],))
 
-        _, *origin_shape = stacked_feature.shape
-        stacked_feature = stacked_feature.view(self.layer_num, -1)
-        norm_weights = F.softmax(self.weights, dim=-1)
-        weighted_feature = (norm_weights.unsqueeze(-1) * stacked_feature).sum(dim=0)
-        weighted_feature = weighted_feature.view(*origin_shape)
+            _, *origin_shape = stacked_feature.shape
+            stacked_feature = stacked_feature.view(self.layer_num, -1)
+            norm_weights = F.softmax(self.weights, dim=-1)
+            weighted_feature = (norm_weights.unsqueeze(-1) * stacked_feature).sum(dim=0)
+            weighted_feature = weighted_feature.view(*origin_shape)
 
+        else:
+            weighted_features = []
+            groups = self.groups.get(self.feature_selection, self.groups["hidden_states"])
+            for group in groups:
+                subfeature = [feature[i] for i in group]
+                stacked_feature = torch.stack(subfeature, dim=0)
+                
+                if self.normalize:
+                    stacked_feature = F.layer_norm(
+                        stacked_feature, (stacked_feature.shape[-1],))
+                    
+                _, *origin_shape = stacked_feature.shape
+                stacked_feature = stacked_feature.view(len(group), -1)
+                norm_weights = F.softmax(self.weights[group], dim=-1)
+                weighted_feature = (norm_weights.unsqueeze(-1) * stacked_feature).sum(dim=0)
+                weighted_feature = weighted_feature.view(*origin_shape)
+                weighted_features.append(weighted_feature)
+            
+            weighted_feature = torch.cat(weighted_features, dim=-1)
+        
         return weighted_feature
 
     def tolist(self, paired_wavs: List[Tensor], paired_feature: Tensor):
