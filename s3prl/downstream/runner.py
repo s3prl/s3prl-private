@@ -313,7 +313,10 @@ class Runner():
                     else:
                         with torch.no_grad():
                             features = self.upstream.model(wavs)
-                    features = self.featurizer.model(wavs, features)
+
+                    cif_lengths = features.get("feature_lengths")
+
+                    features = self.featurizer.model(wavs, features, cif_lengths)
 
                     if specaug:
                         features, _ = specaug(features)
@@ -472,7 +475,8 @@ class Runner():
             wavs = [torch.FloatTensor(wav).to(self.args.device) for wav in wavs]
             with torch.no_grad():
                 features = self.upstream.model(wavs)
-                features = self.featurizer.model(wavs, features)
+                cif_lengths = features.get("feature_lengths")
+                features = self.featurizer.model(wavs, features, cif_lengths)
                 self.downstream.model(
                     split,
                     features, *others,

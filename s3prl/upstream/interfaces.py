@@ -145,7 +145,7 @@ class Featurizer(nn.Module):
         self.name = "Featurizer"
 
         upstream.eval()
-        paired_wavs = [torch.randn(SAMPLE_RATE).to(upstream_device)]
+        paired_wavs = [torch.randn(SAMPLE_RATE * 2).to(upstream_device)]
         with torch.no_grad():
             paired_features = upstream(paired_wavs)
 
@@ -275,13 +275,17 @@ class Featurizer(nn.Module):
         
         return weighted_feature
 
-    def tolist(self, paired_wavs: List[Tensor], paired_feature: Tensor):
+    def tolist(self, paired_wavs: List[Tensor], paired_feature: Tensor, cif_lengths=None):
         assert paired_feature.dim() == 3, "(batch_size, max_seq_len, feat_dim)"
-        feature_len = [round(len(wav) / self.downsample_rate) for wav in paired_wavs]
-        a = paired_feature.size(1)
-        b = round(max([len(wav) for wav in paired_wavs]) / self.downsample_rate)
-        # NOTICE: this assertion has been relaxed once from <5 to <=5 (for wav2vec_u), if it is triggered again, don't relax again
-        assert abs(a - b) <= TOLERABLE_SEQLEN_DIFF, f"{a}, {b}"
+
+        if cif_lengths is not None:
+            feature_len = cif_lengths.tolist()
+        elif isinstance(self.downsample_rate, (int, float)):
+            a = paired_feature.size(1)
+            b = round(max([len(wav) for wav in paired_wavs]) / self.downsample_rate)
+            # NOTICE: this assertion has been relaxed once from <5 to <=5 (for wav2vec_u), if it is triggered again, don't relax again
+            assert abs(a - b) <= TOLERABLE_SEQLEN_DIFF, f"{a}, {b}"
+            feature_len = [round(len(wav) / self.downsample_rate) for wav in paired_wavs]
         feature = [f[:l] for f, l in zip(paired_feature, feature_len)]
         return feature
 
@@ -289,9 +293,10 @@ class Featurizer(nn.Module):
         self,
         paired_wavs: List[Tensor],
         paired_features: Dict[str, Union[Tensor, List[Tensor], Dict[str, Tensor]]],
+        cif_lengths=None
     ):
         feature = self._select_feature(paired_features)
         if isinstance(feature, (list, tuple)):
             feature = self._weighted_sum(feature)
 
-        return self.tolist(paired_wavs, feature)
+        return self.tolist(paired_wavs, feature, cif_lengths)
