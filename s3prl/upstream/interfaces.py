@@ -278,7 +278,10 @@ class Featurizer(nn.Module):
     def tolist(self, paired_wavs: List[Tensor], paired_feature: Tensor):
         assert paired_feature.dim() == 3, "(batch_size, max_seq_len, feat_dim)"
         feature_len = [round(len(wav) / self.downsample_rate) for wav in paired_wavs]
-        assert abs(paired_feature.size(1) - round(max([len(wav) for wav in paired_wavs]) / self.downsample_rate)) < TOLERABLE_SEQLEN_DIFF
+        a = paired_feature.size(1)
+        b = round(max([len(wav) for wav in paired_wavs]) / self.downsample_rate)
+        # NOTICE: this assertion has been relaxed once from <5 to <=5 (for wav2vec_u), if it is triggered again, don't relax again
+        assert abs(a - b) <= TOLERABLE_SEQLEN_DIFF, f"{a}, {b}"
         feature = [f[:l] for f, l in zip(paired_feature, feature_len)]
         return feature
 

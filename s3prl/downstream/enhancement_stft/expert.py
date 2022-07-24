@@ -42,7 +42,8 @@ def match_length(feat_list, length_list):
     bs = len(length_list)
     new_feat_list = []
     for i in range(bs):
-        assert abs(feat_list[i].size(0) - length_list[i]) < 5
+        # NOTICE: this assertion has been relaxed once from <5 to <=6 (for wav2vec_u), if it is triggered again, don't relax again
+        assert abs(feat_list[i].size(0) - length_list[i]) <= 6, f"{feat_list[i].size(0)}, {length_list[i]}"
         if feat_list[i].size(0) == length_list[i]:
             new_feat_list.append(feat_list[i])
         elif feat_list[i].size(0) > length_list[i]:
