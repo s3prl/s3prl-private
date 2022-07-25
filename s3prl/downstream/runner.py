@@ -112,11 +112,10 @@ class Runner():
 
         wandb.init(
             project=args.upstream.replace("/", "--"),
-            name="{}-{:.1E}".format(args.upstream_feature_selection, config['optimizer']['lr']),
-            resume=True
+            name="{}-{:.1E}".format(args.upstream_feature_selection, config['optimizer']['lr'])
         )
-        wandb.config.update(self.args)
-        wandb.config.update(self.config)
+        wandb.config.update(self.args, allow_val_change=True)
+        wandb.config.update(self.config, allow_val_change=True)
 
         wandb.save(args.config)
 
