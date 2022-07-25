@@ -1,7 +1,8 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
 
 from s3prl import Output
 
@@ -100,22 +101,24 @@ class amsoftmax(NNModule):
 
 class aamsoftmax(NNModule):
     def __init__(
-        self, 
-        input_size: int, 
-        output_size: int, 
-        margin: float = 0.3, 
-        scale: float = 15, 
-        easy_margin = False, 
+        self,
+        input_size: int,
+        output_size: int,
+        margin: float = 0.3,
+        scale: float = 15,
+        easy_margin=False,
         **kwargs
     ):
         super(aamsoftmax, self).__init__()
 
         self.test_normalize = True
-        
+
         self.m = margin
         self.s = scale
         self.in_feats = input_size
-        self.weight = torch.nn.Parameter(torch.FloatTensor(output_size, input_size), requires_grad=True)
+        self.weight = torch.nn.Parameter(
+            torch.FloatTensor(output_size, input_size), requires_grad=True
+        )
         self.ce = nn.CrossEntropyLoss()
         nn.init.xavier_normal_(self.weight, gain=1)
 
@@ -126,7 +129,6 @@ class aamsoftmax(NNModule):
         # make the function cos(theta+m) monotonic decreasing while theta in [0°,180°]
         self.th = math.cos(math.pi - self.m)
         self.mm = math.sin(math.pi - self.m) * self.m
-
 
     @property
     def input_size(self):
@@ -148,7 +150,7 @@ class aamsoftmax(NNModule):
 
         assert x.size()[0] == label.size()[0]
         assert x.size()[1] == self.in_feats
-        
+
         # cos(theta)
         cosine = F.linear(F.normalize(x), F.normalize(self.weight))
         # cos(theta + m)
@@ -160,11 +162,11 @@ class aamsoftmax(NNModule):
         else:
             phi = torch.where((cosine - self.th) > 0, phi, cosine - self.mm)
 
-        #one_hot = torch.zeros(cosine.size(), device='cuda' if torch.cuda.is_available() else 'cpu')
+        # one_hot = torch.zeros(cosine.size(), device='cuda' if torch.cuda.is_available() else 'cpu')
         one_hot = torch.zeros_like(cosine)
         one_hot.scatter_(1, label.view(-1, 1), 1)
         output = (one_hot * phi) + ((1.0 - one_hot) * cosine)
         output = output * self.s
 
-        loss   = self.ce(output, label)
+        loss = self.ce(output, label)
         return Output(loss=loss)
