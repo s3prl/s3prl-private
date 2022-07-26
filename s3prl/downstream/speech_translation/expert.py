@@ -74,8 +74,10 @@ class DownstreamExpert(nn.Module):
         self.upstream_rate = downstream_expert.get('upstream_rate', upstream_rate)
         if self.upstream_rate < 0:
             self.upstream_rate = upstream_rate
-        assert self.upstream_rate % upstream_rate == 0
-        self.downsample_ratio = int(self.upstream_rate / upstream_rate)
+            self.downsample_ratio = 1
+        else:
+            assert self.upstream_rate % upstream_rate == 0
+            self.downsample_ratio = int(self.upstream_rate / upstream_rate)
         self.downsample_method = downstream_expert.get('downsample_method', 'drop')
         if self.downsample_method == 'concat':
             upstream_dim *= self.downsample_ratio

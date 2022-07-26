@@ -83,6 +83,9 @@ class Logger():
         self.tblogger.add_scalar(key, value, global_step)
         wandb.log({key: value}, step=global_step)
 
+    def add_audio(self, *args, **kwargs):
+        self.tblogger.add_audio(*args, **kwargs)
+
     def close(self):
         self.tblogger.close()
 
@@ -112,7 +115,7 @@ class Runner():
 
         wandb.init(
             project=args.upstream.replace("/", "--"),
-            name="{}-{:.1E}".format(args.upstream_feature_selection, config['optimizer']['lr'])
+            name="{}-{:.1E}".format(args.upstream_feature_selection, config.get('optimizer', {}).get('lr', 1))
         )
         wandb.config.update(self.args, allow_val_change=True)
         wandb.config.update(self.config, allow_val_change=True)
