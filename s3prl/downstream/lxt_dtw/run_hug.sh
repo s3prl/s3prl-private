@@ -34,10 +34,12 @@ fi
 for layer in ${layers[@]};
 do
     expdir=$expdir_root/$upstream/layer$layer
-    python3 run_downstream.py --upstream_feature_normalize -m evaluate -u $org/$repo --upstream_revision $revision -s QbE -l $layer -d lxt_dtw \
-        -p $expdir --hub huggingface
+    if [ ! -f "$expdir/scoring/test.result" ] || [ "$(cat $expdir/scoring/test.result | grep "EER" | wc -l)" -lt 1 ]; then
+        python3 run_downstream.py --upstream_feature_normalize -m evaluate -u $org/$repo --upstream_revision $revision -s QbE -l $layer -d lxt_dtw \
+            -p $expdir --hub huggingface
 
-    score_dir=$expdir/scoring
-    mkdir -p $score_dir
-    python3 lxt/compute_map.py --scores $expdir/scores.txt --output_dir $score_dir
+        score_dir=$expdir/scoring
+        mkdir -p $score_dir
+        python3 lxt/compute_map.py --scores $expdir/scores.txt --output_dir $score_dir
+    fi
 done
