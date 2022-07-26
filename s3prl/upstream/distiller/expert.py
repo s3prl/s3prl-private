@@ -14,9 +14,10 @@ class UpstreamExpert(UpstreamBase):
     The Distiller wrapper
     """
 
-    def __init__(self, ckpt, model_config=None, **kwargs):
+    def __init__(self, ckpt, model_config=None, feature_selection=None, no_pred=False, **kwargs):
         super().__init__(**kwargs)
-
+        self.feature_selection = feature_selection
+        self.no_pred = no_pred
         if model_config is not None:
             print(
                 "[UpstreamExpert] - Using upstream expert config file from:",
@@ -32,6 +33,7 @@ class UpstreamExpert(UpstreamBase):
                 "permute_input": "False",
             }
 
+
         options["ckpt_file"] = ckpt
 
         self.model = PretrainedDistiller(options)
@@ -41,10 +43,10 @@ class UpstreamExpert(UpstreamBase):
 
     def forward(self, wavs, no_pred=False):
         _, feat_final, pred, pad_mask, layer_hidden = self.model(
-            wavs, get_hidden=True, no_pred=no_pred
+            wavs, get_hidden=True, no_pred=no_pred or self.no_pred
         )
         # pred: B x N x T x D
-        if not no_pred:
+        if not (no_pred or self.no_pred):
             hidden_feats = pred.transpose(0, 1).split(1, 0)
             hidden_feats = [hid.squeeze(0) for hid in hidden_feats]
         else:
@@ -57,5 +59,8 @@ class UpstreamExpert(UpstreamBase):
             "pad_mask": pad_mask,
             "paper": layer_hidden[-1],  # DistilHuBERT: https://arxiv.org/abs/2110.01900
         }
+
+        if self.feature_selection:
+            return {"hidden_states": states[self.feature_selection]}
 
         return states
