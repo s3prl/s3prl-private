@@ -1,0 +1,49 @@
+runner:
+  n_epochs: 200
+  total_steps: -1
+  gradient_clipping: 10.0
+  gradient_accumulate_steps: 2
+
+  log_step: 100
+  save_step: 1000
+  max_keep: 5
+
+  # Save checkpoint for every save_every_x_epochs epochs
+  save_every_x_epochs: 10
+
+  fp16: true
+
+prune:
+  sparsity: 0.9
+  # rewind, warnup, and period are epochs if n_epochs > 0, otherwise steps
+  rewind: 10 # weight-rewind checkpoint
+  warnup: 20 # before pruning
+  period: 20 # between two pruning
+  n_iters: 9 # times of pruning
+  strategy:
+    name: "L1Unstructured"
+    global: true
+    lr-rewind: true
+    weight-rewind: true
+
+optimizer:
+  name: TorchOptim
+  torch_optim_name: Adam
+  lr: 1.e-4
+  betas: [0.9, 0.999]
+  eps: 1.e-8
+  weight_decay: 0
+
+# # Decaying the learning rate by 0.5 for every epochs after 50
+# scheduler:
+#   name: decay_each_epoch_scheduler
+#   step_epoch: 51
+#   gamma: 0.5
+  
+pretrain_expert:
+  datarc:
+    num_workers: 8
+    train_batch_size: 16
+    max_timestep: -320 # Max length for audio feature (0 for no restriction, negative value to set minimum timestep)
+    sets: ['/home/nervjack2/libri-with-cluster/csv/libri-360-np-stage2-512.csv']
+    

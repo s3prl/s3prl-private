@@ -163,7 +163,7 @@ class S3prl_SpeechToTextDataset(SpeechToTextDataset):
 
         self.srs = srs
         self.max_feature_len = max_feature_len
-        self.max_wav_len = max_feature_len * upstream_rate
+        self.max_wav_len = max_feature_len * upstream_rate if max_feature_len >= 0 else -1
         self.resamplers = {}
         for sr in set(srs):
             self.resamplers[sr] = torchaudio.transforms.Resample(

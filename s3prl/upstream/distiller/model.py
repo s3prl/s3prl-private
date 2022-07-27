@@ -10,7 +10,7 @@ from torch import nn
 from fairseq.models.wav2vec.wav2vec2 import ConvFeatureExtractionModel
 from fairseq.modules import GradMultiply
 from .module import TransformerEncoder, SplitLinear
-
+import torchaudio
 
 class DistillerConfig:
     """
@@ -75,6 +75,14 @@ class DistillerConfig:
             config.get("init_teacher_encoder_layers", False)
         )
 
+        # Pre-trained Model Init.
+        self.init_melhubert_encoder_layers = bool(
+            config.get("init_melhubert_encoder_layers", False)
+        )
+
+        self.melhubert_ckpt = str(
+            config.get("melhubert_ckpt","")
+        )
 
 class DistillerModel(nn.Module):
     """
@@ -86,14 +94,25 @@ class DistillerModel(nn.Module):
 
         self.config = config
 
-        self.conv_layers = eval(config.extractor_conv_feature_layers)
-        feat_emb_dim = self.conv_layers[-1][0]
-        self.feature_extractor = ConvFeatureExtractionModel(
-            self.conv_layers,
-            dropout=config.extractor_dropout,
-            mode=config.extractor_mode,
-            conv_bias=False,
-        )
+        # [Project Chimera] Feature Extractor
+        # win_length default is n_fft
+        # hop_length default is win_length // 2
+        # if hop_length = 320, downsample rate = 160 (HuBERT downsample rate)
+        # if hop_length = 160, downsample rate = 160
+        # n_mels = 80 // 2, we follow Mel-HuBERT, concating afterwards
+        if config.extractor_mode == 'mel':
+            feat_emb_dim = 80
+            self.feature_extractor = torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_mels= feat_emb_dim // 2, n_fft=400, hop_length=160, window_fn=torch.hamming_window)
+
+        else:
+            self.conv_layers = eval(config.extractor_conv_feature_layers)
+            feat_emb_dim = self.conv_layers[-1][0]
+            self.feature_extractor = ConvFeatureExtractionModel(
+                self.conv_layers,
+                dropout=config.extractor_dropout,
+                mode=config.extractor_mode,
+                conv_bias=False,
+            )
         self.feature_grad_mult = config.feature_grad_mult
 
         self.n_tasks = config.n_tasks
@@ -137,6 +156,7 @@ class DistillerModel(nn.Module):
             else None
         )
 
+        # Encoder
         if config.encoder_layers > 0:
             self.encoder = TransformerEncoder(config)
         else:
@@ -175,6 +195,15 @@ class DistillerModel(nn.Module):
                 feat = self.feature_extractor(wave)
 
         feat = feat.transpose(1, 2)  # B x T x D
+        # [Project Chimera] downsample 160 -> downsample 320
+        # ref: Mel-HuBERT
+        if self.config.extractor_mode == 'mel':
+            odd_feat = feat[:,::2,:]
+            even_feat = feat[:,1::2,:]
+            if odd_feat.shape[1] != even_feat.shape[1]:
+                even_feat = torch.cat((even_feat, torch.zeros(even_feat.shape[0], 1, even_feat.shape[2]).to(feat.device)), dim=1)
+            feat = torch.cat((odd_feat, even_feat), dim=2)
+
         pad_mask = self.cal_pad_mask(pad_mask, feat.shape[1])
 
         return feat, pad_mask
@@ -270,8 +299,16 @@ class DistillerModel(nn.Module):
     def cal_pad_mask(self, pad_mask, max_len):
         """Calculates pad mask after conv."""
         pad_len = (pad_mask > 0).sum(1).long()
-        for _, k_size, s_size in self.conv_layers:
-            pad_len = (pad_len - k_size) // s_size + 1
+
+        # [Project Chimera]
+        # mel pad mask
+        if self.config.extractor_mode == 'mel':
+            pad_len = pad_len // self.feature_extractor.hop_length
+
+        # conv. pad mask
+        else:
+            for _, k_size, s_size in self.conv_layers:
+                pad_len = (pad_len - k_size) // s_size + 1
 
         new_pad_mask = torch.ones(
             (pad_mask.shape[0], max_len), dtype=pad_mask.dtype, device=pad_mask.device

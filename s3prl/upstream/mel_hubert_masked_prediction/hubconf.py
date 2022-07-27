@@ -16,3 +16,9 @@ def mel_hubert_masked_prediction_local(ckpt, *args, **kwargs):
     assert os.path.isfile(ckpt)
     return _UpstreamExpert(ckpt, *args, **kwargs)
 
+def chimera_melhubert(*args, **kwargs):
+
+    ckpt = "~/.cache/torch/hub/s3prl_cache/chimera_v1/states-40000.ckpt"
+    kwargs["model_config"] = "../../pretrain/mel_hubert_masked_prediction/pretraining-config/chimera_v1/config_model.yaml"
+    assert os.path.isfile(ckpt)
+    return _UpstreamExpert(ckpt, *args, **kwargs)
