@@ -62,3 +62,15 @@ def distilhubert_base_robust_mgwham_rbp_paper(refresh=False, *args, **kwargs):
         "ckpt"
     ] = "/home/joseph1227/.cache/torch/hub/s3prl_cache/setup2_2-dis_t_cont_cp/dev-dis-best.ckpt"
     return distiller_local(refresh=refresh, feature_selection="paper", no_pred=True, *args, **kwargs)
+
+def chimera_melhubert(*args, **kwargs):
+
+    ckpt = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/chimera_v1/states-40000.ckpt")
+    kwargs["config"] = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        os.pardir,
+        os.pardir,
+        "pretrain/mel_hubert_masked_prediction/pretraining-config/chimera_v1/config_model.yaml"
+    )
+    assert os.path.isfile(ckpt)
+    return _UpstreamExpert(ckpt, *args, **kwargs)
