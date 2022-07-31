@@ -130,13 +130,11 @@ def get_downstream_args():
             'backend', 'local_rank', 'past_exp',
         ]
         args = update_args(args, ckpt['Args'], preserve_list=cannot_overwrite_args)
-        os.makedirs(args.expdir, exist_ok=True)
         args.init_ckpt = ckpt_pth
         config = ckpt['Config']
 
     else:
         print('[Runner] - Start a new experiment')
-        os.makedirs(args.expdir, exist_ok=True)
 
         if args.config is None:
             args.config = f'./downstream/{args.downstream}/config.yaml'
@@ -148,7 +146,8 @@ def get_downstream_args():
 
     if args.override is not None and args.override.lower() != "none":
         override(args.override, args, config)
-        os.makedirs(args.expdir, exist_ok=True)
+    
+    os.makedirs(args.expdir, exist_ok=True)
     
     return args, config, backup_files
 

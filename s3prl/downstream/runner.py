@@ -75,13 +75,15 @@ Upstream Model: {upstream_model}
 
 
 class Logger():
-    def __init__(self, expdir):
+    def __init__(self, expdir, enable_wandb=True):
         self.tblogger = SummaryWriter(expdir)
+        self.enable_wandb = enable_wandb
         
     
     def add_scalar(self, key, value, global_step):
         self.tblogger.add_scalar(key, value, global_step)
-        wandb.log({key: value}, step=global_step)
+        if self.enable_wandb:
+            wandb.log({key: value}, step=global_step)
 
     def add_audio(self, *args, **kwargs):
         self.tblogger.add_audio(*args, **kwargs)
@@ -113,14 +115,15 @@ class Runner():
         self.downstream = self._get_downstream()
         self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
-        wandb.init(
-            project=args.upstream.replace("/", "--"),
-            name="{}-{:.1E}".format(args.upstream_feature_selection, config.get('optimizer', {}).get('lr', 1))
-        )
-        wandb.config.update(self.args, allow_val_change=True)
-        wandb.config.update(self.config, allow_val_change=True)
+        if args.mode == "train":
+            wandb.init(
+                project=args.upstream.replace("/", "--"),
+                name="{}-{:.1E}".format(args.upstream_feature_selection, config.get('optimizer', {}).get('lr', 1))
+            )
+            wandb.config.update(self.args, allow_val_change=True)
+            wandb.config.update(self.config, allow_val_change=True)
 
-        wandb.save(args.config)
+            wandb.save(args.config)
 
     def _load_weight(self, model, name):
         init_weight = self.init_ckpt.get(name)
@@ -284,7 +287,7 @@ class Runner():
 
         # Tensorboard logging
         if is_leader_process():
-            logger = Logger(self.args.expdir)
+            logger = Logger(self.args.expdir, True)
 
         batch_ids = []
         backward_steps = 0
@@ -446,7 +449,7 @@ class Runner():
         if not_during_training:
             split = self.args.evaluate_split
             tempdir = tempfile.mkdtemp()
-            logger = Logger(tempdir)
+            logger = Logger(tempdir, False)
 
         # fix seed to guarantee the same evaluation protocol across steps 
         random.seed(self.args.seed)

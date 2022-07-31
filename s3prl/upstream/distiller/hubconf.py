@@ -50,7 +50,7 @@ def distilhubert_base_robust_mgwham_rbp(refresh=False, *args, **kwargs):
     """
     kwargs[
         "ckpt"
-    ] = "/home/joseph1227/.cache/torch/hub/s3prl_cache/setup2_2-dis_t_cont_cp/dev-dis-best.ckpt"
+    ] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/setup2_2-dis_t_cont_cp/dev-dis-best.ckpt")
     return distiller_local(refresh=refresh, *args, **kwargs)
 
 def distilhubert_base_robust_mgwham_rbp_paper(refresh=False, *args, **kwargs):
@@ -60,7 +60,7 @@ def distilhubert_base_robust_mgwham_rbp_paper(refresh=False, *args, **kwargs):
     """
     kwargs[
         "ckpt"
-    ] = "/home/joseph1227/.cache/torch/hub/s3prl_cache/setup2_2-dis_t_cont_cp/dev-dis-best.ckpt"
+    ] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/setup2_2-dis_t_cont_cp/dev-dis-best.ckpt")
     return distiller_local(refresh=refresh, feature_selection="paper", no_pred=True, *args, **kwargs)
 
 def chimera_melhubert(*args, **kwargs):

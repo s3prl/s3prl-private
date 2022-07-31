@@ -36,7 +36,7 @@ class UpstreamExpert(UpstreamBase):
 
         options["ckpt_file"] = ckpt
 
-        self.model = PretrainedDistiller(options, kwargs["config"])
+        self.model = PretrainedDistiller(options, kwargs.get("config"))
 
     def get_downsample_rates(self, key: str) -> int:
         return 320
