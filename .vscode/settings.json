@@ -1,5 +1,0 @@
-{
-    "python.pythonPath": "/home/leo/miniconda3/envs/benchmark/bin/python",
-    "python.formatting.provider": "black",
-    "esbonio.sphinx.confDir": "${workspaceFolder}/docs/source"
-}
