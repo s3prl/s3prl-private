@@ -1,0 +1,42 @@
+﻿task
+====
+
+**(s3prl.task)**
+
+.. automodule:: s3prl.task
+
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+
+   s3prl.task.autoregressive_reconstruction_task
+   s3prl.task.base
+   s3prl.task.diarization
+   s3prl.task.dump_feature
+   s3prl.task.feat_reconstruction_task
+   s3prl.task.speaker_verification_task
+   s3prl.task.speech2text_ctc_task
+   s3prl.task.utterance_classification_task
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
