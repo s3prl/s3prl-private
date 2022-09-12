@@ -1,0 +1,38 @@
+encoder
+=======
+
+**(s3prl.dataio.encoder)**
+
+.. automodule:: s3prl.dataio.encoder
+
+
+
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+
+   s3prl.dataio.encoder.category
+   s3prl.dataio.encoder.g2p
+   s3prl.dataio.encoder.tokenizer
+   s3prl.dataio.encoder.vocabulary
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
