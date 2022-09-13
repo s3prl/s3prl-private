@@ -326,7 +326,13 @@
 <span class="n">EFFECTS</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;channels&quot;</span><span class="p">,</span> <span class="s2">&quot;1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;rate&quot;</span><span class="p">,</span> <span class="s2">&quot;16000&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;gain&quot;</span><span class="p">,</span> <span class="s2">&quot;-3.0&quot;</span><span class="p">]]</span>
 
 
-<div class="viewcode-block" id="gsc1_for_classification"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.gsc1_for_classification">[docs]</a><span class="k">def</span> <span class="nf">gsc1_for_classification</span><span class="p">(</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;gsc1_for_classification&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbKS&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="gsc1_for_classification"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.gsc1_for_classification">[docs]</a><span class="k">def</span> <span class="nf">gsc1_for_classification</span><span class="p">(</span>
     <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">gsc1</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -407,8 +413,8 @@
     <span class="k">return</span> <span class="n">train_path</span><span class="p">,</span> <span class="n">valid_path</span><span class="p">,</span> <span class="n">test_paths</span></div>
 
 
-<div class="viewcode-block" id="SuperbKS"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS">[docs]</a><span class="k">class</span> <span class="nc">SuperbKS</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
-<div class="viewcode-block" id="SuperbKS.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="SuperbKS"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS">[docs]</a><span class="k">class</span> <span class="nc">SuperbKS</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbKS.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -472,7 +478,7 @@
             <span class="n">evaluate</span><span class="o">=</span><span class="nb">dict</span><span class="p">(),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbKS.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbKS.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prepare_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -515,7 +521,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_current_arguments</span><span class="p">(</span><span class="n">flatten_dict</span><span class="o">=</span><span class="s2">&quot;prepare_data&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbKS.build_encoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.build_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">build_encoder</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbKS.build_encoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.build_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">build_encoder</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_encoder</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -561,7 +567,7 @@
 
         <span class="k">return</span> <span class="n">encoder</span></div>
 
-<div class="viewcode-block" id="SuperbKS.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbKS.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_dataset</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -634,7 +640,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span></div>
 
-<div class="viewcode-block" id="SuperbKS.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbKS.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_batch_sampler</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -700,7 +706,7 @@
 
         <span class="k">return</span> <span class="n">_build_batch_sampler</span><span class="p">(</span><span class="o">**</span><span class="n">build_batch_sampler</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbKS.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.common.superb_ks.SuperbKS.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbKS.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ks.html#s3prl.problem.SuperbKS.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_downstream</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">downstream_input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>

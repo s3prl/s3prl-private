@@ -18,20 +18,20 @@ upstream
 
 
 
-Featurizer
+S3PRLUpstream
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: Featurizer
+.. autoclass:: S3PRLUpstream
    :member-order: bysource
    :members:
    :undoc-members:
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
-S3PRLUpstream
+Featurizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: S3PRLUpstream
+.. autoclass:: Featurizer
    :member-order: bysource
    :members:
    :undoc-members:

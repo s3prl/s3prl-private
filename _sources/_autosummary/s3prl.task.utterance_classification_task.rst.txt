@@ -18,16 +18,6 @@ utterance\_classification\_task
 
 
 
-UtteranceClassificationTask
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: UtteranceClassificationTask
-   :member-order: bysource
-   :members:
-   :undoc-members:
-   :inherited-members: torch.nn.Module,nn.Module,Module
-   :show-inheritance:
-
 UtteranceClassifierExample
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -38,10 +28,10 @@ UtteranceClassifierExample
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
-UtteranceMultiClassClassificationTask
+UtteranceClassificationTask
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: UtteranceMultiClassClassificationTask
+.. autoclass:: UtteranceClassificationTask
    :member-order: bysource
    :members:
    :undoc-members:

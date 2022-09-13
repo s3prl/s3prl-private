@@ -316,7 +316,15 @@
 <span class="n">XVECTOR_TDNNS_LENGTH_REDUCTION</span> <span class="o">=</span> <span class="mi">14</span>
 
 
-<div class="viewcode-block" id="TDNN"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.TDNN">[docs]</a><span class="k">class</span> <span class="nc">TDNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;TDNN&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;XVectorBackbone&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SpeakerEmbeddingExtractor&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbXvector&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="TDNN"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.TDNN">[docs]</a><span class="k">class</span> <span class="nc">TDNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -363,7 +371,7 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="TDNN.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.TDNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="TDNN.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.TDNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        input:</span>
 <span class="sd">            x: with size (batch, seq_len, input_size)</span>
@@ -400,7 +408,7 @@
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="XVectorBackbone"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.XVectorBackbone">[docs]</a><span class="k">class</span> <span class="nc">XVectorBackbone</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="XVectorBackbone"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.XVectorBackbone">[docs]</a><span class="k">class</span> <span class="nc">XVectorBackbone</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -467,7 +475,7 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="XVectorBackbone.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.XVectorBackbone.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="XVectorBackbone.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.XVectorBackbone.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        input:</span>
 <span class="sd">            x: size (batch, seq_len, input_size)</span>
@@ -479,7 +487,7 @@
         <span class="k">return</span> <span class="n">x</span></div></div>
 
 
-<div class="viewcode-block" id="SpeakerEmbeddingExtractor"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.SpeakerEmbeddingExtractor">[docs]</a><span class="k">class</span> <span class="nc">SpeakerEmbeddingExtractor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SpeakerEmbeddingExtractor"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SpeakerEmbeddingExtractor">[docs]</a><span class="k">class</span> <span class="nc">SpeakerEmbeddingExtractor</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -538,7 +546,7 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="SpeakerEmbeddingExtractor.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.SpeakerEmbeddingExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">xlen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SpeakerEmbeddingExtractor.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SpeakerEmbeddingExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">xlen</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        input:</span>
 <span class="sd">            x: size (batch, seq_len, input_size)</span>
@@ -587,7 +595,7 @@
         <span class="k">return</span> <span class="n">hid_BxH</span>
 
 
-<div class="viewcode-block" id="SuperbXvector"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.SuperbXvector">[docs]</a><span class="k">class</span> <span class="nc">SuperbXvector</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbXvector"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SuperbXvector">[docs]</a><span class="k">class</span> <span class="nc">SuperbXvector</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This has some small differences compared to the original Xvector</span>
 
@@ -632,7 +640,7 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_size</span>
 
-<div class="viewcode-block" id="SuperbXvector.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.SuperbXvector.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbXvector.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SuperbXvector.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tdnns</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

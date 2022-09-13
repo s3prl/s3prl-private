@@ -325,8 +325,14 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;prepare_librispeech&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;prepare_common_tokenizer&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbASR&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
-<div class="viewcode-block" id="prepare_librispeech"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.prepare_librispeech">[docs]</a><span class="k">def</span> <span class="nf">prepare_librispeech</span><span class="p">(</span>
+
+<div class="viewcode-block" id="prepare_librispeech"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.prepare_librispeech">[docs]</a><span class="k">def</span> <span class="nf">prepare_librispeech</span><span class="p">(</span>
     <span class="n">target_dir</span><span class="p">,</span>
     <span class="n">cache_dir</span><span class="p">,</span>
     <span class="n">dataset_root</span><span class="p">,</span>
@@ -371,7 +377,7 @@
     <span class="k">return</span> <span class="n">train_path</span><span class="p">,</span> <span class="n">valid_path</span><span class="p">,</span> <span class="n">test_paths</span></div>
 
 
-<div class="viewcode-block" id="prepare_common_tokenizer"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.prepare_common_tokenizer">[docs]</a><span class="k">def</span> <span class="nf">prepare_common_tokenizer</span><span class="p">(</span>
+<div class="viewcode-block" id="prepare_common_tokenizer"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.prepare_common_tokenizer">[docs]</a><span class="k">def</span> <span class="nf">prepare_common_tokenizer</span><span class="p">(</span>
     <span class="n">target_dir</span><span class="p">,</span>
     <span class="n">cache_dir</span><span class="p">,</span>
     <span class="n">tokenizer_data_path</span><span class="p">,</span>
@@ -439,8 +445,8 @@
     <span class="k">return</span> <span class="n">tokenizer_path</span></div>
 
 
-<div class="viewcode-block" id="SuperbASR"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR">[docs]</a><span class="k">class</span> <span class="nc">SuperbASR</span><span class="p">(</span><span class="n">ASR</span><span class="p">):</span>
-<div class="viewcode-block" id="SuperbASR.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="SuperbASR"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR">[docs]</a><span class="k">class</span> <span class="nc">SuperbASR</span><span class="p">(</span><span class="n">ASR</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbASR.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -536,7 +542,7 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbASR.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prepare_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -576,7 +582,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_current_arguments</span><span class="p">(</span><span class="n">flatten_dict</span><span class="o">=</span><span class="s2">&quot;prepare_data&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbASR.prepare_tokenizer_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.prepare_tokenizer_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_tokenizer_data</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.prepare_tokenizer_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.prepare_tokenizer_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_tokenizer_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prepare_tokenizer_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -623,7 +629,7 @@
 
         <span class="k">return</span> <span class="n">tokenizer_data_path</span></div>
 
-<div class="viewcode-block" id="SuperbASR.build_tokenizer"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.build_tokenizer">[docs]</a>    <span class="k">def</span> <span class="nf">build_tokenizer</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.build_tokenizer"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.build_tokenizer">[docs]</a>    <span class="k">def</span> <span class="nf">build_tokenizer</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_tokenizer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -653,7 +659,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_current_arguments</span><span class="p">(</span><span class="n">flatten_dict</span><span class="o">=</span><span class="s2">&quot;build_tokenizer&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbASR.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_dataset</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -708,7 +714,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span></div>
 
-<div class="viewcode-block" id="SuperbASR.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_batch_sampler</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -760,7 +766,7 @@
 
         <span class="k">return</span> <span class="n">sampler</span></div>
 
-<div class="viewcode-block" id="SuperbASR.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbASR.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.SuperbASR.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_downstream</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">downstream_input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>

@@ -305,145 +305,11 @@
           <section id="utterance-classification-task">
 <h1>utterance_classification_task<a class="headerlink" href="#utterance-classification-task" title="Permalink to this heading">#</a></h1>
 <p><strong>(s3prl.task.utterance_classification_task)</strong></p>
-<span class="target" id="module-s3prl.task.utterance_classification_task"></span><section id="utteranceclassificationtask">
-<h2>UtteranceClassificationTask<a class="headerlink" href="#utteranceclassificationtask" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UtteranceClassificationTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample" title="s3prl.task.utterance_classification_task.UtteranceClassifierExample"><span class="pre">UtteranceClassifierExample</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.category.CategoryEncoder" title="s3prl.dataio.encoder.category.CategoryEncoder"><span class="pre">CategoryEncoder</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L50-L125"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="s3prl.task.base.html#s3prl.task.base.Task" title="s3prl.task.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.input_size">
-<span class="sig-name descname"><span class="pre">input_size</span></span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.input_size" title="Permalink to this definition">#</a></dt>
-<dd><p>defined by model.input_size</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.output_size">
-<span class="sig-name descname"><span class="pre">output_size</span></span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.output_size" title="Permalink to this definition">#</a></dt>
-<dd><p>defined by len(categories)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L74-L89"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.predict" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>torch.Tensor</em>) – (batch_size, timestamps, input_size)</p></li>
-<li><p><strong>x_len</strong> (<em>torch.LongTensor</em>) – (batch_size, )</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>(batch_size, output_size)
-prediction (list): prediction strings</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>logits (torch.Tensor)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L91-L111"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.forward" title="Permalink to this definition">#</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.reduction">
-<span class="sig-name descname"><span class="pre">reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L113-L125"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.dump_patches">
-<span class="sig-name descname"><span class="pre">dump_patches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.dump_patches" title="Permalink to this definition">#</a></dt>
-<dd><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>. In
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code>, the version number will be saved as in the attribute
-<cite>_metadata</cite> of the returned state dict, and thus pickled. <cite>_metadata</cite> is a
-dictionary with keys that follow the naming convention of state dict. See
-<code class="docutils literal notranslate"><span class="pre">_load_from_state_dict</span></code> on how to use this information in loading.</p>
-<p>If new parameters/buffers are added/removed from a module, this number shall
-be bumped, and the module’s <cite>_load_from_state_dict</cite> method can compare the
-version number and do appropriate changes if the state dict is from before
-the change.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.get_state">
-<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L12-L14"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.get_state" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.parse_cached_results">
-<span class="sig-name descname"><span class="pre">parse_cached_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L19-L29"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.parse_cached_results" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.set_state">
-<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L16-L17"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.set_state" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L61-L63"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L49-L51"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L53-L55"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L41-L43"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L57-L59"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L45-L47"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.training" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="utteranceclassifierexample">
+<span class="target" id="module-s3prl.task.utterance_classification_task"></span><section id="utteranceclassifierexample">
 <h2>UtteranceClassifierExample<a class="headerlink" href="#utteranceclassifierexample" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassifierExample">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UtteranceClassifierExample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassifierExample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L16-L47"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3prl.task.utterance_classification_task.</span></span><span class="sig-name descname"><span class="pre">UtteranceClassifierExample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassifierExample"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L21-L52"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassifierExample.input_size">
@@ -469,7 +335,7 @@ the change.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassifierExample.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassifierExample.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L36-L47"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample.forward" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassifierExample.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L41-L52"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample.forward" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -508,15 +374,37 @@ the change.</p>
 </dd></dl>
 
 </section>
-<section id="utterancemulticlassclassificationtask">
-<h2>UtteranceMultiClassClassificationTask<a class="headerlink" href="#utterancemulticlassclassificationtask" title="Permalink to this heading">#</a></h2>
+<section id="utteranceclassificationtask">
+<h2>UtteranceClassificationTask<a class="headerlink" href="#utteranceclassificationtask" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">UtteranceMultiClassClassificationTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample" title="s3prl.task.utterance_classification_task.UtteranceClassifierExample"><span class="pre">UtteranceClassifierExample</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">categories</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.category.CategoryEncoders" title="s3prl.dataio.encoder.category.CategoryEncoders"><span class="pre">CategoryEncoders</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceMultiClassClassificationTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L128-L221"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3prl.task.utterance_classification_task.</span></span><span class="sig-name descname"><span class="pre">UtteranceClassificationTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#s3prl.task.utterance_classification_task.UtteranceClassifierExample" title="s3prl.task.utterance_classification_task.UtteranceClassifierExample"><span class="pre">UtteranceClassifierExample</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.category.CategoryEncoder" title="s3prl.dataio.encoder.category.CategoryEncoder"><span class="pre">CategoryEncoder</span></a></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L55-L130"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference internal" href="s3prl.task.base.html#s3prl.task.base.Task" title="s3prl.task.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.input_size">
+<span class="sig-name descname"><span class="pre">input_size</span></span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.input_size" title="Permalink to this definition">#</a></dt>
+<dd><p>defined by model.input_size</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.output_size">
+<span class="sig-name descname"><span class="pre">output_size</span></span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.output_size" title="Permalink to this definition">#</a></dt>
+<dd><p>defined by len(categories)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceMultiClassClassificationTask.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L135-L162"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.predict" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L79-L94"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.predict" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -525,51 +413,37 @@ the change.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>List[(batch_size, sub_output_size)]
-prediction (np.array): (batch_size, num_category)</p>
+<dd class="field-even"><p>(batch_size, output_size)
+prediction (list): prediction strings</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>logit (torch.Tensor)</p>
+<dd class="field-odd"><p>logits (torch.Tensor)</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceMultiClassClassificationTask.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L164-L201"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.forward" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> – torch.Tensor, (batch_size, timestamps, input_size)</p></li>
-<li><p><strong>x_len</strong> – torch.LongTensor, (batch_size)</p></li>
-<li><p><strong>class_ids</strong> – torch.LongTensor, (batch_size, num_category)</p></li>
-<li><p><strong>labels</strong> – np.ndarray, (batch_size, num_category)</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>torch.Tensor
-prediction: np.ndarray
-label: np.ndarray</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>loss</p>
-</dd>
-</dl>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">LongTensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L96-L116"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.forward" title="Permalink to this definition">#</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.numpy_object_array_all_close">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">numpy_object_array_all_close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceMultiClassClassificationTask.numpy_object_array_all_close"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L203-L205"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.numpy_object_array_all_close" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.reduction">
-<span class="sig-name descname"><span class="pre">reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceMultiClassClassificationTask.reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L207-L221"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.reduction" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.reduction">
+<span class="sig-name descname"><span class="pre">reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/utterance_classification_task.html#UtteranceClassificationTask.reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py#L118-L130"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.reduction" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.dump_patches">
-<span class="sig-name descname"><span class="pre">dump_patches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.dump_patches" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.dump_patches">
+<span class="sig-name descname"><span class="pre">dump_patches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.dump_patches" title="Permalink to this definition">#</a></dt>
 <dd><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>. In
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code>, the version number will be saved as in the attribute
 <cite>_metadata</cite> of the returned state dict, and thus pickled. <cite>_metadata</cite> is a
@@ -582,53 +456,53 @@ the change.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.get_state">
-<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L12-L14"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.get_state" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L14-L16"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.get_state" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.parse_cached_results">
-<span class="sig-name descname"><span class="pre">parse_cached_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L19-L29"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.parse_cached_results" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.parse_cached_results">
+<span class="sig-name descname"><span class="pre">parse_cached_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L21-L31"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.parse_cached_results" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.set_state">
-<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L16-L17"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.set_state" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L18-L19"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.set_state" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.test_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L61-L63"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.test_reduction" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L63-L65"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_reduction" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.test_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L49-L51"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.test_step" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L51-L53"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.test_step" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.train_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L53-L55"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.train_reduction" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L55-L57"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_reduction" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.train_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L41-L43"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.train_step" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L43-L45"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.train_step" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.valid_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L57-L59"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.valid_reduction" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L59-L61"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_reduction" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.valid_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L45-L47"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.valid_step" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L47-L49"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.valid_step" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceMultiClassClassificationTask.training" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="s3prl.task.utterance_classification_task.UtteranceClassificationTask.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/utterance_classification_task.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.task.utterance_classification_task.UtteranceClassificationTask.training" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -694,9 +568,8 @@ the change.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">utterance_classification_task</a><ul>
-<li><a class="reference internal" href="#utteranceclassificationtask">UtteranceClassificationTask</a></li>
 <li><a class="reference internal" href="#utteranceclassifierexample">UtteranceClassifierExample</a></li>
-<li><a class="reference internal" href="#utterancemulticlassclassificationtask">UtteranceMultiClassClassificationTask</a></li>
+<li><a class="reference internal" href="#utteranceclassificationtask">UtteranceClassificationTask</a></li>
 </ul>
 </li>
 </ul>

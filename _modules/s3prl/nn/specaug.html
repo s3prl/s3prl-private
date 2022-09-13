@@ -315,6 +315,12 @@
 <span class="n">DEFAULT_TIME_WARP_MODE</span> <span class="o">=</span> <span class="s2">&quot;bicubic&quot;</span>
 
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ModelWithSpecaug&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SpecAug&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
 <div class="viewcode-block" id="ModelWithSpecaug"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.ModelWithSpecaug">[docs]</a><span class="k">class</span> <span class="nc">ModelWithSpecaug</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
 
@@ -408,7 +414,7 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span></div></div>
 
 
-<div class="viewcode-block" id="TimeWarp"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.TimeWarp">[docs]</a><span class="k">class</span> <span class="nc">TimeWarp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">TimeWarp</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Time warping using torch.interpolate.</span>
 <span class="sd">    Args:</span>
 <span class="sd">        window: time warp parameter</span>
@@ -420,10 +426,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">window</span> <span class="o">=</span> <span class="n">window</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
 
-<div class="viewcode-block" id="TimeWarp.extra_repr"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.TimeWarp.extra_repr">[docs]</a>    <span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;window=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="si">}</span><span class="s2">, mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span></div>
+    <span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;window=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="si">}</span><span class="s2">, mode=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span>
 
-<div class="viewcode-block" id="TimeWarp.time_warp"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.TimeWarp.time_warp">[docs]</a>    <span class="k">def</span> <span class="nf">time_warp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">time_warp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="n">org_size</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
             <span class="c1"># x: (Batch, Time, Freq) -&gt; (Batch, 1, Time, Freq)</span>
@@ -454,9 +460,9 @@
             <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="n">warped</span><span class="p">]</span> <span class="o">=</span> <span class="n">left</span>
             <span class="n">x</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">warped</span><span class="p">:]</span> <span class="o">=</span> <span class="n">right</span>
 
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">org_size</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">org_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="TimeWarp.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.TimeWarp.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward function.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            x: (Batch, Time, Freq)</span>
@@ -469,10 +475,10 @@
             <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ys</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span> <span class="n">x_lengths</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">_y</span>
 
-        <span class="k">return</span> <span class="n">ys</span><span class="p">,</span> <span class="n">x_lengths</span></div></div>
+        <span class="k">return</span> <span class="n">ys</span><span class="p">,</span> <span class="n">x_lengths</span>
 
 
-<div class="viewcode-block" id="MaskAlongAxis"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.MaskAlongAxis">[docs]</a><span class="k">class</span> <span class="nc">MaskAlongAxis</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">MaskAlongAxis</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">mask_width_range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
@@ -520,7 +526,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">max_n_time_masks</span> <span class="o">=</span> <span class="n">max_n_time_masks</span>
         <span class="c1">###############################################</span>
 
-<div class="viewcode-block" id="MaskAlongAxis.mask_along_axis"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.MaskAlongAxis.mask_along_axis">[docs]</a>    <span class="k">def</span> <span class="nf">mask_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">mask_along_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span><span class="p">):</span>
         <span class="n">org_size</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
             <span class="c1"># spec: (Batch, Channel, Length, Freq) -&gt; (Batch * Channel, Length, Freq)</span>
@@ -577,9 +583,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">masked_fill_</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="n">spec</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">*</span><span class="n">org_size</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span></div>
+        <span class="k">return</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span>
 
-<div class="viewcode-block" id="MaskAlongAxis.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.MaskAlongAxis.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">spec_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forward function.</span>
 <span class="sd">        Args:</span>
 <span class="sd">            spec: (Batch, Length, Freq)</span>
@@ -588,7 +594,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mask_along_axis</span><span class="p">(</span>
             <span class="n">spec</span><span class="p">,</span>
             <span class="n">spec_lengths</span><span class="p">,</span>
-        <span class="p">)</span></div></div>
+        <span class="p">)</span>
 </pre></div>
         </article>
       </div>

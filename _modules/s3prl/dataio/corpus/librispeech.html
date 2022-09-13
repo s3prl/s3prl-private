@@ -325,8 +325,11 @@
     <span class="s2">&quot;test-other&quot;</span><span class="p">,</span>
 <span class="p">]</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;LibriSpeech&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
-<div class="viewcode-block" id="read_text"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.librispeech.read_text">[docs]</a><span class="k">def</span> <span class="nf">read_text</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">read_text</span><span class="p">(</span><span class="n">file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="n">src_file</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot;.trans.txt&quot;</span>
     <span class="n">idx</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">stem</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.flac&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
@@ -335,10 +338,10 @@
             <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="k">return</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transcription of </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2"> not found!&quot;</span><span class="p">)</span></div>
+    <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Transcription of </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2"> not found!&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="check_no_repeat"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.librispeech.check_no_repeat">[docs]</a><span class="k">def</span> <span class="nf">check_no_repeat</span><span class="p">(</span><span class="n">splits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">check_no_repeat</span><span class="p">(</span><span class="n">splits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
     <span class="n">count</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="n">splits</span><span class="p">:</span>
         <span class="n">count</span><span class="p">[</span><span class="n">split</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -354,7 +357,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="kc">False</span>
 
-    <span class="k">return</span> <span class="kc">True</span></div>
+    <span class="k">return</span> <span class="kc">True</span>
 
 
 <span class="k">def</span> <span class="nf">_parse_spk_to_gender</span><span class="p">(</span><span class="n">speaker_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
@@ -378,7 +381,7 @@
     <span class="k">return</span> <span class="n">spk2gender</span>
 
 
-<div class="viewcode-block" id="LibriSpeech"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.librispeech.LibriSpeech">[docs]</a><span class="k">class</span> <span class="nc">LibriSpeech</span><span class="p">(</span><span class="n">Corpus</span><span class="p">):</span>
+<div class="viewcode-block" id="LibriSpeech"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.LibriSpeech">[docs]</a><span class="k">class</span> <span class="nc">LibriSpeech</span><span class="p">(</span><span class="n">Corpus</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -404,7 +407,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valid</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">test</span><span class="p">)</span>
 
-<div class="viewcode-block" id="LibriSpeech.get_corpus_splits"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.librispeech.LibriSpeech.get_corpus_splits">[docs]</a>    <span class="k">def</span> <span class="nf">get_corpus_splits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">splits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<div class="viewcode-block" id="LibriSpeech.get_corpus_splits"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.LibriSpeech.get_corpus_splits">[docs]</a>    <span class="k">def</span> <span class="nf">get_corpus_splits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">splits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_dict</span><span class="p">,</span> <span class="n">splits</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
@@ -477,7 +480,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-<div class="viewcode-block" id="LibriSpeech.download_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.librispeech.LibriSpeech.download_dataset">[docs]</a>    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="LibriSpeech.download_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html#s3prl.dataio.corpus.LibriSpeech.download_dataset">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">download_dataset</span><span class="p">(</span>
         <span class="bp">cls</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>

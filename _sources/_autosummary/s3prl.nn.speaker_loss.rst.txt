@@ -18,20 +18,20 @@ speaker\_loss
 
 
 
-amsoftmax
+softmax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: amsoftmax
+.. autoclass:: softmax
    :member-order: bysource
    :members:
    :undoc-members:
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
-softmax
+amsoftmax
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: softmax
+.. autoclass:: amsoftmax
    :member-order: bysource
    :members:
    :undoc-members:

@@ -320,6 +320,13 @@
 
 <span class="n">_download_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;.cache&quot;</span> <span class="o">/</span> <span class="s2">&quot;s3prl&quot;</span> <span class="o">/</span> <span class="s2">&quot;download&quot;</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;get_dir&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;set_dir&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;download&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;urls_to_filepaths&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
 
 <div class="viewcode-block" id="get_dir"><a class="viewcode-back" href="../../../_autosummary/s3prl.util.download.html#s3prl.util.download.get_dir">[docs]</a><span class="k">def</span> <span class="nf">get_dir</span><span class="p">():</span>
     <span class="n">_download_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -440,6 +447,7 @@
     <span class="k">return</span> <span class="n">paths</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">paths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
 
+<span class="n">download</span> <span class="o">=</span> <span class="n">_download</span>
 <span class="n">urls_to_filepaths</span> <span class="o">=</span> <span class="n">_urls_to_filepaths</span>
 </pre></div>
         </article>

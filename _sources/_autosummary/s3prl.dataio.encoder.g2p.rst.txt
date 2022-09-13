@@ -28,6 +28,16 @@ G2P
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
+defaultdict
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: defaultdict
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
 
 
 

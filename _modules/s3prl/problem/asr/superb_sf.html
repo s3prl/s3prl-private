@@ -318,8 +318,13 @@
 <span class="n">VOCAB_URL</span> <span class="o">=</span> <span class="s2">&quot;https://huggingface.co/datasets/s3prl/SNIPS/raw/main/character.txt&quot;</span>
 <span class="n">SLOTS_URL</span> <span class="o">=</span> <span class="s2">&quot;https://huggingface.co/datasets/s3prl/SNIPS/raw/main/slots.txt&quot;</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;audio_snips_for_slot_filling&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbSF&quot;</span><span class="p">,</span>
+<span class="p">]</span>
 
-<div class="viewcode-block" id="audio_snips_for_slot_filling"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.asr.superb_sf.audio_snips_for_slot_filling">[docs]</a><span class="k">def</span> <span class="nf">audio_snips_for_slot_filling</span><span class="p">(</span>
+
+<div class="viewcode-block" id="audio_snips_for_slot_filling"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.audio_snips_for_slot_filling">[docs]</a><span class="k">def</span> <span class="nf">audio_snips_for_slot_filling</span><span class="p">(</span>
     <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -359,8 +364,8 @@
     <span class="k">return</span> <span class="n">train_path</span><span class="p">,</span> <span class="n">valid_path</span><span class="p">,</span> <span class="n">test_paths</span></div>
 
 
-<div class="viewcode-block" id="SuperbSF"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.asr.superb_sf.SuperbSF">[docs]</a><span class="k">class</span> <span class="nc">SuperbSF</span><span class="p">(</span><span class="n">SuperbASR</span><span class="p">):</span>
-<div class="viewcode-block" id="SuperbSF.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.asr.superb_sf.SuperbSF.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="SuperbSF"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.SuperbSF">[docs]</a><span class="k">class</span> <span class="nc">SuperbSF</span><span class="p">(</span><span class="n">SuperbASR</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbSF.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.SuperbSF.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -468,7 +473,7 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbSF.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.asr.superb_sf.SuperbSF.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbSF.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.SuperbSF.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prepare_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -508,7 +513,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_current_arguments</span><span class="p">(</span><span class="n">flatten_dict</span><span class="o">=</span><span class="s2">&quot;prepare_data&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbSF.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.asr.superb_sf.SuperbSF.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbSF.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.asr.superb_sf.html#s3prl.problem.SuperbSF.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_batch_sampler</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>

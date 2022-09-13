@@ -18,20 +18,20 @@ sorted\_sampler
 
 
 
-SortedBucketingSampler
+SortedSliceSampler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: SortedBucketingSampler
+.. autoclass:: SortedSliceSampler
    :member-order: bysource
    :members:
    :undoc-members:
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
-SortedSliceSampler
+SortedBucketingSampler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: SortedSliceSampler
+.. autoclass:: SortedBucketingSampler
    :member-order: bysource
    :members:
    :undoc-members:

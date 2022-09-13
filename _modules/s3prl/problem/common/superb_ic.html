@@ -327,7 +327,13 @@
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="fsc_for_multi_classification"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.fsc_for_multi_classification">[docs]</a><span class="k">def</span> <span class="nf">fsc_for_multi_classification</span><span class="p">(</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;fsc_for_multi_classification&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbIC&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="fsc_for_multi_classification"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.fsc_for_multi_classification">[docs]</a><span class="k">def</span> <span class="nf">fsc_for_multi_classification</span><span class="p">(</span>
     <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">cache_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">dataset_root</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -388,8 +394,8 @@
     <span class="k">return</span> <span class="n">train_path</span><span class="p">,</span> <span class="n">valid_path</span><span class="p">,</span> <span class="n">test_paths</span></div>
 
 
-<div class="viewcode-block" id="SuperbIC"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC">[docs]</a><span class="k">class</span> <span class="nc">SuperbIC</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
-<div class="viewcode-block" id="SuperbIC.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+<div class="viewcode-block" id="SuperbIC"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC">[docs]</a><span class="k">class</span> <span class="nc">SuperbIC</span><span class="p">(</span><span class="n">Common</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbIC.default_config"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.default_config">[docs]</a>    <span class="k">def</span> <span class="nf">default_config</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
             <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -453,7 +459,7 @@
             <span class="p">),</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbIC.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbIC.prepare_data"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.prepare_data">[docs]</a>    <span class="k">def</span> <span class="nf">prepare_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">prepare_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -499,7 +505,7 @@
             <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_current_arguments</span><span class="p">(</span><span class="n">flatten_dict</span><span class="o">=</span><span class="s2">&quot;prepare_data&quot;</span><span class="p">)</span>
         <span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbIC.build_encoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.build_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">build_encoder</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbIC.build_encoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.build_encoder">[docs]</a>    <span class="k">def</span> <span class="nf">build_encoder</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_encoder</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -552,7 +558,7 @@
 
         <span class="k">return</span> <span class="n">encoder</span></div>
 
-<div class="viewcode-block" id="SuperbIC.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbIC.build_dataset"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.build_dataset">[docs]</a>    <span class="k">def</span> <span class="nf">build_dataset</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_dataset</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -611,7 +617,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">dataset</span></div>
 
-<div class="viewcode-block" id="SuperbIC.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbIC.build_batch_sampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.build_batch_sampler">[docs]</a>    <span class="k">def</span> <span class="nf">build_batch_sampler</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_batch_sampler</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">target_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -659,7 +665,7 @@
 
         <span class="k">return</span> <span class="n">_build_batch_sampler</span><span class="p">(</span><span class="o">**</span><span class="n">build_batch_sampler</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="SuperbIC.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
+<div class="viewcode-block" id="SuperbIC.build_downstream"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.build_downstream">[docs]</a>    <span class="k">def</span> <span class="nf">build_downstream</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">build_downstream</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
         <span class="n">downstream_input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -685,7 +691,7 @@
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">model</span></div>
 
-<div class="viewcode-block" id="SuperbIC.build_task"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.SuperbIC.build_task">[docs]</a>    <span class="k">def</span> <span class="nf">build_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">build_task</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">encoder</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbIC.build_task"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.SuperbIC.build_task">[docs]</a>    <span class="k">def</span> <span class="nf">build_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">build_task</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">encoder</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build the task, which defines the logics for every train/valid/test forward step for the :code:`model`,</span>
 <span class="sd">        and the logics for how to reduce all the batch results from multiple train/valid/test steps into metrics</span>

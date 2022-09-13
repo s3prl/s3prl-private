@@ -314,13 +314,13 @@
 <span class="p">]</span>
 
 
-<div class="viewcode-block" id="parse_lexicon"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.g2p.parse_lexicon">[docs]</a><span class="k">def</span> <span class="nf">parse_lexicon</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<div class="viewcode-block" id="parse_lexicon"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.parse_lexicon">[docs]</a><span class="k">def</span> <span class="nf">parse_lexicon</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">)</span>
     <span class="n">word</span><span class="p">,</span> <span class="o">*</span><span class="n">phonemes</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">word</span><span class="p">,</span> <span class="n">phonemes</span></div>
 
 
-<div class="viewcode-block" id="read_lexicon_files"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.g2p.read_lexicon_files">[docs]</a><span class="k">def</span> <span class="nf">read_lexicon_files</span><span class="p">(</span><span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<div class="viewcode-block" id="read_lexicon_files"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.read_lexicon_files">[docs]</a><span class="k">def</span> <span class="nf">read_lexicon_files</span><span class="p">(</span><span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
     <span class="n">w2p_dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
@@ -341,7 +341,7 @@
     <span class="k">return</span> <span class="n">w2p</span></div>
 
 
-<div class="viewcode-block" id="G2P"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.g2p.G2P">[docs]</a><span class="k">class</span> <span class="nc">G2P</span><span class="p">:</span>
+<div class="viewcode-block" id="G2P"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.G2P">[docs]</a><span class="k">class</span> <span class="nc">G2P</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Grapheme-to-phoneme</span>
 

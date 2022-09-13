@@ -22,40 +22,20 @@ util
 
 
 
-csv_to_kaldi_dir
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autofunction:: csv_to_kaldi_dir
-
-get_overall_der_from_dscore_file
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autofunction:: get_overall_der_from_dscore_file
-
-kaldi_dir_to_csv
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autofunction:: kaldi_dir_to_csv
-
 kaldi_dir_to_rttm
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: kaldi_dir_to_rttm
 
-make_rttm
+csv_to_kaldi_dir
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: make_rttm
+.. autofunction:: csv_to_kaldi_dir
 
-make_rttm_and_score
+kaldi_dir_to_csv
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: make_rttm_and_score
-
-score_with_dscore
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autofunction:: score_with_dscore
+.. autofunction:: kaldi_dir_to_csv
 
 
 

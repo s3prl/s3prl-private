@@ -310,8 +310,14 @@
 
 <span class="kn">from</span> <span class="nn">s3prl.nn.interface</span> <span class="kn">import</span> <span class="n">AbsFrameModel</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;RNNEncoder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SuperbDiarizationModel&quot;</span>
+<span class="p">]</span>
 
-<div class="viewcode-block" id="downsample"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.downsample">[docs]</a><span class="k">def</span> <span class="nf">downsample</span><span class="p">(</span>
+
+
+<span class="k">def</span> <span class="nf">downsample</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">x_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">,</span> <span class="n">sample_rate</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">sample_style</span><span class="p">:</span> <span class="nb">str</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Downsamples a sequence.</span>
@@ -345,10 +351,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample style=</span><span class="si">{</span><span class="n">sample_style</span><span class="si">}</span><span class="s2"> not supported.&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span></div>
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span>
 
 
-<div class="viewcode-block" id="RNNLayer"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.RNNLayer">[docs]</a><span class="k">class</span> <span class="nc">RNNLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">RNNLayer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -408,7 +414,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pj_layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RNNLayer.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.RNNLayer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">training</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="o">.</span><span class="n">flatten_parameters</span><span class="p">()</span>
 
@@ -435,7 +441,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">:</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pj_layer</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">xs_len</span></div>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">xs_len</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -443,10 +449,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_size</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_size</span>
 
 
-<div class="viewcode-block" id="RNNEncoder"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.RNNEncoder">[docs]</a><span class="k">class</span> <span class="nc">RNNEncoder</span><span class="p">(</span><span class="n">AbsFrameModel</span><span class="p">):</span>
+<div class="viewcode-block" id="RNNEncoder"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.RNNEncoder">[docs]</a><span class="k">class</span> <span class="nc">RNNEncoder</span><span class="p">(</span><span class="n">AbsFrameModel</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -502,7 +508,7 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">linear</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">prev_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RNNEncoder.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.RNNEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">x_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
+<div class="viewcode-block" id="RNNEncoder.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.RNNEncoder.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">x_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
         <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span> <span class="o">=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span>
         <span class="n">xs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
 
@@ -522,7 +528,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_size</span></div>
 
 
-<div class="viewcode-block" id="SuperbDiarizationModel"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.SuperbDiarizationModel">[docs]</a><span class="k">class</span> <span class="nc">SuperbDiarizationModel</span><span class="p">(</span><span class="n">AbsFrameModel</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbDiarizationModel"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.SuperbDiarizationModel">[docs]</a><span class="k">class</span> <span class="nc">SuperbDiarizationModel</span><span class="p">(</span><span class="n">AbsFrameModel</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">rnn_layers</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
@@ -545,7 +551,7 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_size</span>
 
-<div class="viewcode-block" id="SuperbDiarizationModel.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.rnn.SuperbDiarizationModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">features_len</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbDiarizationModel.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.rnn.html#s3prl.nn.SuperbDiarizationModel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">features</span><span class="p">,</span> <span class="n">features_len</span><span class="p">):</span>
         <span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_rnn</span><span class="p">:</span>
             <span class="n">hidden</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>

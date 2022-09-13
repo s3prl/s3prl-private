@@ -304,8 +304,12 @@
           <h1>Source code for s3prl.dataio.sampler.fixed_batch_size_batch_sampler</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">BatchSampler</span><span class="p">,</span> <span class="n">RandomSampler</span><span class="p">,</span> <span class="n">SequentialSampler</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;FixedBatchSizeBatchSampler&quot;</span>
+<span class="p">]</span>
 
-<div class="viewcode-block" id="FixedBatchSizeBatchSampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.sampler.fixed_batch_size_batch_sampler.html#s3prl.dataio.sampler.fixed_batch_size_batch_sampler.FixedBatchSizeBatchSampler">[docs]</a><span class="k">class</span> <span class="nc">FixedBatchSizeBatchSampler</span><span class="p">:</span>
+
+<div class="viewcode-block" id="FixedBatchSizeBatchSampler"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.sampler.fixed_batch_size_batch_sampler.html#s3prl.dataio.sampler.FixedBatchSizeBatchSampler">[docs]</a><span class="k">class</span> <span class="nc">FixedBatchSizeBatchSampler</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The reduced timestamps for a batch should not exceed the max_timestamp.</span>
 <span class="sd">    If shuffled, each indices are first shuffled before aggregated into batches</span>
@@ -325,7 +329,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span> <span class="o">=</span> <span class="n">SequentialSampler</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FixedBatchSizeBatchSampler.set_epoch"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.sampler.fixed_batch_size_batch_sampler.html#s3prl.dataio.sampler.fixed_batch_size_batch_sampler.FixedBatchSizeBatchSampler.set_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="FixedBatchSizeBatchSampler.set_epoch"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.sampler.fixed_batch_size_batch_sampler.html#s3prl.dataio.sampler.FixedBatchSizeBatchSampler.set_epoch">[docs]</a>    <span class="k">def</span> <span class="nf">set_epoch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">epoch</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="p">,</span> <span class="s2">&quot;set_epoch&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="o">.</span><span class="n">set_epoch</span><span class="p">(</span><span class="n">epoch</span><span class="p">)</span></div>
 
