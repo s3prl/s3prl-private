@@ -302,7 +302,15 @@
         </div>
         <article role="main">
           <h1>Source code for s3prl.dataio.sampler.fixed_batch_size_batch_sampler</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">BatchSampler</span><span class="p">,</span> <span class="n">RandomSampler</span><span class="p">,</span> <span class="n">SequentialSampler</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">The most commonly used batch sampler, recover the default batch sampler used</span>
+<span class="sd">in torch DataLoader</span>
+
+<span class="sd">Authors:</span>
+<span class="sd">  * Shu-wen Yang 2022</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">BatchSampler</span><span class="p">,</span> <span class="n">RandomSampler</span><span class="p">,</span> <span class="n">SequentialSampler</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;FixedBatchSizeBatchSampler&quot;</span>

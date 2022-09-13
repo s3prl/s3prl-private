@@ -302,7 +302,14 @@
         </div>
         <article role="main">
           <h1>Source code for s3prl.dataio.sampler.group_same_item_sampler</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Group the data points with the same key into the same batch</span>
+
+<span class="sd">Authors:</span>
+<span class="sd">  * Shu-wen Yang 2022</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;GroupSameItemSampler&quot;</span><span class="p">,</span>
