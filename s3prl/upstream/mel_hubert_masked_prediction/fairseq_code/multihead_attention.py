@@ -20,7 +20,6 @@ import torch.nn.functional as F
 from .fairseq_dropout import FairseqDropout
 from ..pytorch_code import multi_head_attention_forward
 from torch import Tensor, nn
-from s3prl.utility import prune
 
 class MultiheadAttention(nn.Module):
     """Multi-headed attention.
@@ -125,10 +124,6 @@ class MultiheadAttention(nn.Module):
 
         assert key is not None and value is not None
 
-        for submodule in [self.q_proj, self.k_proj, self.v_proj, self.out_proj]:
-            for hook in submodule._forward_pre_hooks.values():
-                if isinstance(hook, prune.BasePruningMethod):
-                    hook(submodule, None)
         return multi_head_attention_forward(
             query,
             key,
