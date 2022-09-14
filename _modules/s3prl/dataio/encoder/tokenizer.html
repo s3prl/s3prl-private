@@ -180,7 +180,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.speaker_model.html">speaker_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.specaug.html">specaug</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.upstream.html">upstream</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.vq_apc.html">vq_apc</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../_autosummary/s3prl.problem.html">problem</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -313,6 +312,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="c1"># Replacing the 2 tokens right before english starts as &lt;eos&gt; &amp; &lt;unk&gt;</span>
@@ -327,7 +327,7 @@
 <span class="p">)</span>
 
 <span class="c1"># Mapping for character-slot tokenizer (SNIPS)</span>
-<span class="n">translator</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s2">&quot;ÁÃÄÅÆÇÈÉÊËÍÏÐÒÓÔÖØÚÛĘŃŌŞŪ&quot;</span><span class="p">,</span> <span class="s2">&quot;AAAAACEEEEIIDOOOOOUUENOSU&quot;</span><span class="p">)</span>
+<span class="n">translator</span> <span class="o">=</span> <span class="nb">str</span><span class="o">.</span><span class="n">maketrans</span><span class="p">(</span><span class="s1">&#39;ÁÃÄÅÆÇÈÉÊËÍÏÐÒÓÔÖØÚÛĘŃŌŞŪ&quot;&#39;</span><span class="p">,</span> <span class="s2">&quot;AAAAACEEEEIIDOOOOOUUENOSU &quot;</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Tokenizer"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.Tokenizer">[docs]</a><span class="k">class</span> <span class="nc">Tokenizer</span><span class="p">:</span>
@@ -452,6 +452,7 @@
         <span class="c1"># &lt;pad&gt; = 0, &lt;eos&gt; = 1, &lt;unk&gt; = 2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vocab_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;eos&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">vocab_list</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vocab2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vocab_list</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">space_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vocab_to_idx</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slots</span> <span class="o">=</span> <span class="n">slots</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slot2id</span> <span class="o">=</span> <span class="p">{</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_vocab_list</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">slots</span><span class="p">))</span>
@@ -463,12 +464,15 @@
 <div class="viewcode-block" id="CharacterSlotTokenizer.encode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.CharacterSlotTokenizer.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
         <span class="c1"># Always strip trailing space, \r and \n</span>
         <span class="n">sent</span><span class="p">,</span> <span class="n">iobs</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2"> &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;楽園追放&quot;</span><span class="p">,</span> <span class="s2">&quot;EXPELLED&quot;</span><span class="p">)</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;官方杂志&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
         <span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">translator</span><span class="p">)</span>
+        <span class="n">sent</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot; +&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">sent</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
         <span class="n">sent</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">iobs</span> <span class="o">=</span> <span class="n">iobs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">wrd</span><span class="p">,</span> <span class="n">iob</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">sent</span><span class="p">,</span> <span class="n">iobs</span><span class="p">)):</span>
-            <span class="k">if</span> <span class="n">wrd</span> <span class="ow">in</span> <span class="s1">&#39;?!.,;-–…&quot;&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">wrd</span> <span class="ow">in</span> <span class="s2">&quot;?!.,;-–…&quot;</span><span class="p">:</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="n">wrd</span> <span class="o">==</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">:</span>
                 <span class="n">wrd</span> <span class="o">=</span> <span class="s2">&quot;AND&quot;</span>
@@ -480,7 +484,10 @@
             <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                 <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_idx</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vocab_to_idx</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">space_idx</span><span class="p">:</span>
+                    <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">space_idx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">tokens</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eos_idx</span><span class="p">:</span>
+            <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eos_idx</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">tokens</span></div>
 
 <div class="viewcode-block" id="CharacterSlotTokenizer.decode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.CharacterSlotTokenizer.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idxs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">ignore_repeat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
