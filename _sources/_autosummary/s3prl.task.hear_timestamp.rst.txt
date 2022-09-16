@@ -1,0 +1,135 @@
+hear\_timestamp
+===============
+
+**(s3prl.task.hear_timestamp)**
+
+.. automodule:: s3prl.task.hear_timestamp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CategoryEncoder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: CategoryEncoder
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+HearEventPredictionTask
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HearEventPredictionTask
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+OneHotToCrossEntropyLoss
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: OneHotToCrossEntropyLoss
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+ParameterGrid
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: ParameterGrid
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+Path
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: Path
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+Task
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: Task
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+defaultdict
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: defaultdict
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+tqdm
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: tqdm
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+
+
+
+
+
+
+create_events_from_prediction
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: create_events_from_prediction
+
+get_events_for_all_files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: get_events_for_all_files
+
+label_vocab_nlabels
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: label_vocab_nlabels
+
+median_filter
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: median_filter
+
+validate_score_return_type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: validate_score_return_type
+
+
+
+
+

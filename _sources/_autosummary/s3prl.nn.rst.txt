@@ -17,6 +17,7 @@
    s3prl.nn.beam_decoder
    s3prl.nn.cnn_npc
    s3prl.nn.common
+   s3prl.nn.hear
    s3prl.nn.interface
    s3prl.nn.linear
    s3prl.nn.pit

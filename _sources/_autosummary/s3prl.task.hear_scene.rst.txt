@@ -1,0 +1,75 @@
+hear\_scene
+===========
+
+**(s3prl.task.hear_scene)**
+
+.. automodule:: s3prl.task.hear_scene
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CategoryEncoder
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: CategoryEncoder
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+HearScenePredictionTask
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: HearScenePredictionTask
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+OneHotToCrossEntropyLoss
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: OneHotToCrossEntropyLoss
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+Task
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: Task
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+
+
+
+
+
+
+validate_score_return_type
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: validate_score_return_type
+
+
+
+
+
