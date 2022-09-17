@@ -170,6 +170,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -244,7 +245,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -396,19 +396,20 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">dropout_p</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
 <div class="viewcode-block" id="TDNN.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.TDNN.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            x (torch.Tensor): with size (batch, seq_len, input_size)</span>
+<span class="sd">            x (torch.FloatTensor): (batch, seq_len, input_size)</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            x (torch.Tensor): with size (batch, seq_len, output_size)</span>
+<span class="sd">            torch.FloatTensor: (batch, seq_len, output_size)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
@@ -506,21 +507,22 @@
         <span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
 <div class="viewcode-block" id="XVectorBackbone.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.XVectorBackbone.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            x (torch.Tensor): size (batch, seq_len, input_size)</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            x (torch.Tensor): size (batch, seq_len, output_size)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">            x (torch.FloatTensor): (batch, seq_len, input_size)</span>
 
+<span class="sd">        output:</span>
+<span class="sd">            torch.FloatTensor: (batch, seq_len, output_size)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># FIXME: This module should take x_len and output y_len</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">x</span></div></div>
 
@@ -540,7 +542,7 @@
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1500</span><span class="p">,</span>
         <span class="n">backbone</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;XVector&quot;</span><span class="p">,</span>
-        <span class="n">pooling_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TAP&quot;</span><span class="p">,</span>
+        <span class="n">pooling_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;TemporalAveragePooling&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
@@ -555,42 +557,29 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> backbone type is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backbone</span><span class="p">))</span>
 
-        <span class="n">pooling_type</span> <span class="o">=</span> <span class="n">pooling_type</span>
         <span class="k">if</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;TemporalAveragePooling&quot;</span> <span class="ow">or</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;TAP&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">TemporalAveragePooling</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-                <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">TemporalAveragePooling</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;TemporalStatisticsPooling&quot;</span> <span class="ow">or</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;TSP&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">TemporalStatisticsPooling</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-                <span class="n">output_size</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">TemporalStatisticsPooling</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;SelfAttentivePooling&quot;</span> <span class="ow">or</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;SAP&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">SelfAttentivePooling</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-                <span class="n">output_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">SelfAttentivePooling</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;AttentiveStatisticsPooling&quot;</span> <span class="ow">or</span> <span class="n">pooling_type</span> <span class="o">==</span> <span class="s2">&quot;ASP&quot;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">AttentiveStatisticsPooling</span><span class="p">(</span>
-                <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-                <span class="n">output_size</span><span class="o">=</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">AttentiveStatisticsPooling</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backbone</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> pooling type is not defined&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pooling_type</span><span class="p">))</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="o">.</span><span class="n">output_size</span>
+
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
 <div class="viewcode-block" id="SpeakerEmbeddingExtractor.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SpeakerEmbeddingExtractor.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xlen</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -645,7 +634,7 @@
 
 <div class="viewcode-block" id="SuperbXvector"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SuperbXvector">[docs]</a><span class="k">class</span> <span class="nc">SuperbXvector</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    This has some small differences compared to the original Xvector</span>
+<span class="sd">    The Xvector used in the SUPERB Benchmark with the exact default arguments</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        input_size (int): The input feature size, usually is the output size of upstream models</span>
@@ -681,21 +670,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">affine</span> <span class="o">=</span> <span class="n">_UtteranceExtractor</span><span class="p">(</span><span class="n">latest_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_size</span>
 
-<div class="viewcode-block" id="SuperbXvector.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SuperbXvector.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">x_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
+<div class="viewcode-block" id="SuperbXvector.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.SuperbXvector.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            x (torch.Tensor): size (batch, seq_len, input_size)</span>
-<span class="sd">            x_len (torch.LongTensor): size (batch, )</span>
+<span class="sd">            x (torch.FloatTensor): (batch_size, seq_len, input_size)</span>
+<span class="sd">            x_len (torch.LongTensor): (batch_size, )</span>
+
 <span class="sd">        Returns:</span>
-<span class="sd">            x (torch.Tensor): size (batch, output_size)</span>
+<span class="sd">            torch.FloatTensor:</span>
+
+<span class="sd">            (batch_size, output_size)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">projector</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tdnns</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>

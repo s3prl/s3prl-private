@@ -170,6 +170,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -244,7 +245,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -331,21 +331,21 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 
-<div class="viewcode-block" id="CategoryEncoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoder</span><span class="p">:</span>
+<div class="viewcode-block" id="CategoryEncoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.encoder.CategoryEncoder">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoder</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">category</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CategoryEncoder.encode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoryEncoder.encode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.encoder.CategoryEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CategoryEncoder.decode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoryEncoder.decode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.encoder.CategoryEncoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div></div>
 
 
-<div class="viewcode-block" id="CategoryEncoders"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.category.html#s3prl.dataio.corpus.hear.CategoryEncoders">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoders</span><span class="p">:</span>
+<div class="viewcode-block" id="CategoryEncoders"><a class="viewcode-back" href="../../../../_autosummary/s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.CategoryEncoders">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoders</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">categories</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">categories</span> <span class="o">=</span> <span class="p">[</span><span class="n">CategoryEncoder</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">]</span>
 

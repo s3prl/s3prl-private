@@ -170,6 +170,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -244,7 +245,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -358,7 +358,7 @@
             <span class="p">),</span>
             <span class="n">build_downstream</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
                 <span class="n">hidden_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                <span class="n">pooling</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">,</span>
+                <span class="n">pooling_type</span><span class="o">=</span><span class="s2">&quot;MeanPooling&quot;</span><span class="p">,</span>
             <span class="p">),</span>
             <span class="n">build_model</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
                 <span class="n">upstream_trainable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>

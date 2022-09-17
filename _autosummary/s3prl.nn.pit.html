@@ -171,6 +171,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 current has-children"><a class="reference internal" href="s3prl.nn.html">nn</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.interface.html">interface</a></li>
@@ -245,7 +246,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -335,8 +335,30 @@
 <h2>pit_loss<a class="headerlink" href="#pit-loss" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="s3prl.nn.pit.pit_loss">
-<span class="sig-prename descclassname"><span class="pre">s3prl.nn.pit.</span></span><span class="sig-name descname"><span class="pre">pit_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/nn/pit.html#pit_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/nn/pit.py#L39-L51"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.nn.pit.pit_loss" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">s3prl.nn.pit.</span></span><span class="sig-name descname"><span class="pre">pit_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/nn/pit.html#pit_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/nn/pit.py#L39-L67"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.nn.pit.pit_loss" title="Permalink to this definition">#</a></dt>
+<dd><p>The Permutation Invariant Training loss</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output</strong> (<em>torch.FloatTensor</em>) – prediction in (batch_size, seq_len, num_class)</p></li>
+<li><p><strong>label</strong> (<em>torch.FloatTensor</em>) – label in the same shape as <code class="code docutils literal notranslate"><span class="pre">output</span></code></p></li>
+<li><p><strong>length</strong> (<em>torch.LongTensor</em>) – the valid length of each instance. <code class="code docutils literal notranslate"><span class="pre">output</span></code> and <code class="code docutils literal notranslate"><span class="pre">label</span></code>
+share the same valid length</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ol class="arabic simple">
+<li><p>loss (torch.FloatTensor)</p></li>
+<li><p>min_idx (int): the id with the minimum loss</p></li>
+<li><p>all the permutation</p></li>
+</ol>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
 </section>

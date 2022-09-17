@@ -170,6 +170,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -244,7 +245,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -360,6 +360,22 @@
 
 
 <div class="viewcode-block" id="pit_loss"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pit.html#s3prl.nn.pit.pit_loss">[docs]</a><span class="k">def</span> <span class="nf">pit_loss</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The Permutation Invariant Training loss</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        output (torch.FloatTensor): prediction in (batch_size, seq_len, num_class)</span>
+<span class="sd">        label (torch.FloatTensor): label in the same shape as :code:`output`</span>
+<span class="sd">        length (torch.LongTensor): the valid length of each instance. :code:`output` and :code:`label`</span>
+<span class="sd">            share the same valid length</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple:</span>
+
+<span class="sd">        1. loss (torch.FloatTensor)</span>
+<span class="sd">        2. min_idx (int): the id with the minimum loss</span>
+<span class="sd">        3. all the permutation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">num_output</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">device</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">device</span>
     <span class="n">permute_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_output</span><span class="p">))]</span>

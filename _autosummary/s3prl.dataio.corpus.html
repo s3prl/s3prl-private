@@ -171,6 +171,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul class="current">
 <li class="toctree-l1 has-children"><a class="reference internal" href="s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.nn.interface.html">interface</a></li>
@@ -245,7 +246,6 @@
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">corpus</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -334,31 +334,28 @@
 <tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.fluent_speech_commands.html#module-s3prl.dataio.corpus.fluent_speech_commands" title="s3prl.dataio.corpus.fluent_speech_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.fluent_speech_commands</span></code></a></p></td>
 <td><p>Parse the Fluent Speech Command corpus</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.hear.html#module-s3prl.dataio.corpus.hear" title="s3prl.dataio.corpus.hear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.hear</span></code></a></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.iemocap.html#module-s3prl.dataio.corpus.iemocap" title="s3prl.dataio.corpus.iemocap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.iemocap</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.iemocap.html#module-s3prl.dataio.corpus.iemocap" title="s3prl.dataio.corpus.iemocap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.iemocap</span></code></a></p></td>
 <td><p>Parse the IEMOCAP corpus</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.librilight.html#module-s3prl.dataio.corpus.librilight" title="s3prl.dataio.corpus.librilight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.librilight</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.librilight.html#module-s3prl.dataio.corpus.librilight" title="s3prl.dataio.corpus.librilight"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.librilight</span></code></a></p></td>
 <td><p>Parse the LibriLight corpus</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.librispeech.html#module-s3prl.dataio.corpus.librispeech" title="s3prl.dataio.corpus.librispeech"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.librispeech</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.librispeech.html#module-s3prl.dataio.corpus.librispeech" title="s3prl.dataio.corpus.librispeech"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.librispeech</span></code></a></p></td>
 <td><p>Parse the LibriSpeech corpus</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.quesst14.html#module-s3prl.dataio.corpus.quesst14" title="s3prl.dataio.corpus.quesst14"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.quesst14</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.quesst14.html#module-s3prl.dataio.corpus.quesst14" title="s3prl.dataio.corpus.quesst14"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.quesst14</span></code></a></p></td>
 <td><p>Parse the QUESST14 corpus</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.snips.html#module-s3prl.dataio.corpus.snips" title="s3prl.dataio.corpus.snips"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.snips</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.snips.html#module-s3prl.dataio.corpus.snips" title="s3prl.dataio.corpus.snips"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.snips</span></code></a></p></td>
 <td><p>Parse the Audio SNIPS corpus</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.speech_commands.html#module-s3prl.dataio.corpus.speech_commands" title="s3prl.dataio.corpus.speech_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.speech_commands</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.speech_commands.html#module-s3prl.dataio.corpus.speech_commands" title="s3prl.dataio.corpus.speech_commands"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.speech_commands</span></code></a></p></td>
 <td><p>Parse the Google Speech Commands V1 corpus</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.voxceleb1sid.html#module-s3prl.dataio.corpus.voxceleb1sid" title="s3prl.dataio.corpus.voxceleb1sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.voxceleb1sid</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.voxceleb1sid.html#module-s3prl.dataio.corpus.voxceleb1sid" title="s3prl.dataio.corpus.voxceleb1sid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.voxceleb1sid</span></code></a></p></td>
 <td><p>Parse VoxCeleb1 corpus for classification</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="s3prl.dataio.corpus.voxceleb1sv.html#module-s3prl.dataio.corpus.voxceleb1sv" title="s3prl.dataio.corpus.voxceleb1sv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.voxceleb1sv</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="s3prl.dataio.corpus.voxceleb1sv.html#module-s3prl.dataio.corpus.voxceleb1sv" title="s3prl.dataio.corpus.voxceleb1sv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.dataio.corpus.voxceleb1sv</span></code></a></p></td>
 <td><p>Parse VoxCeleb1 corpus for verification</p></td>
 </tr>
 </tbody>

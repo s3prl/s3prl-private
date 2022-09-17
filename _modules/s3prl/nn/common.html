@@ -170,6 +170,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -244,7 +245,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../../../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -325,14 +325,14 @@
 <span class="sd">Common probing models</span>
 
 <span class="sd">Authors:</span>
-<span class="sd">  * Shu-wen Yang 2022</span>
+<span class="sd">  * Leo 2022</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
 
-<span class="kn">from</span> <span class="nn">s3prl.nn.pooling</span> <span class="kn">import</span> <span class="n">MeanPooling</span>
+<span class="kn">import</span> <span class="nn">s3prl.nn.pooling</span> <span class="k">as</span> <span class="nn">pooling</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s2">&quot;FrameLevel&quot;</span><span class="p">,</span>
@@ -341,16 +341,33 @@
 
 
 <div class="viewcode-block" id="FrameLevel"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.common.html#s3prl.nn.FrameLevel">[docs]</a><span class="k">class</span> <span class="nc">FrameLevel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The common frame-to-frame probing model</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): input size</span>
+<span class="sd">        output_size (int): output size</span>
+<span class="sd">        hidden_sizes (List[int]): a list of hidden layers&#39; hidden size.</span>
+<span class="sd">            by default is [256] to project all different input sizes to the same dimension.</span>
+<span class="sd">            set empty list to use the vanilla single layer linear model</span>
+<span class="sd">        activation_type (str): the activation class name in :obj:`torch.nn`. Set None to</span>
+<span class="sd">            disable activation and the model is pure linear. Default: None</span>
+<span class="sd">        activation_conf (dict): the arguments for initializing the activation class.</span>
+<span class="sd">            Default: empty dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">hidden_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">256</span><span class="p">],</span>
-        <span class="n">activation_cls</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">hidden_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_conf</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="n">output_size</span>
+        <span class="n">hidden_sizes</span> <span class="o">=</span> <span class="n">hidden_sizes</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">256</span><span class="p">]</span>
 
         <span class="n">hidden_sizes</span> <span class="o">=</span> <span class="n">hidden_sizes</span>
         <span class="n">latest_size</span> <span class="o">=</span> <span class="n">input_size</span>
@@ -359,65 +376,109 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">hidden_sizes</span><span class="p">:</span>
                 <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latest_size</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">activation_cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">activation_cls</span><span class="p">())</span>
+                <span class="k">if</span> <span class="n">activation_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">activation_type</span><span class="p">)(</span><span class="o">**</span><span class="p">(</span><span class="n">activation_conf</span> <span class="ow">or</span> <span class="p">{}))</span>
+                    <span class="p">)</span>
                 <span class="n">latest_size</span> <span class="o">=</span> <span class="n">size</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">hidden_layers</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">final_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latest_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
 <div class="viewcode-block" id="FrameLevel.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.common.html#s3prl.nn.FrameLevel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.FloatTensor): (batch_size, seq_len, input_size)</span>
+<span class="sd">            x_len (torch.LongTensor): (batch_size, )</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple</span>
+
+<span class="sd">            1. ys (torch.FloatTensor): (batch_size, seq_len, output_size)</span>
+<span class="sd">            2. ys_len (torch.LongTensor): (batch_size, )</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">ys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_proj</span><span class="p">(</span><span class="n">ys</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ys</span><span class="p">,</span> <span class="n">x_len</span></div></div>
 
 
 <div class="viewcode-block" id="UtteranceLevel"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.common.html#s3prl.nn.UtteranceLevel">[docs]</a><span class="k">class</span> <span class="nc">UtteranceLevel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): input_size</span>
+<span class="sd">        output_size (int): output_size</span>
+<span class="sd">        hidden_sizes (List[int]): a list of hidden layers&#39; hidden size.</span>
+<span class="sd">            by default is [256] to project all different input sizes to the same dimension.</span>
+<span class="sd">            set empty list to use the vanilla single layer linear model</span>
+<span class="sd">        activation_type (str): the activation class name in :obj:`torch.nn`. Set None to</span>
+<span class="sd">            disable activation and the model is pure linear. Default: None</span>
+<span class="sd">        activation_conf (dict): the arguments for initializing the activation class.</span>
+<span class="sd">            Default: empty dict</span>
+<span class="sd">        pooling_type (str): the pooling class name in :obj:`s3prl.nn.pooling`. Default: MeanPooling</span>
+<span class="sd">        pooling_conf (dict): the arguments for initializing the pooling class.</span>
+<span class="sd">            Default: empty dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-        <span class="n">hidden_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">256</span><span class="p">],</span>
-        <span class="n">activation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">pooling_cls</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">MeanPooling</span><span class="p">,</span>
+        <span class="n">hidden_sizes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">activation_conf</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pooling_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;MeanPooling&quot;</span><span class="p">,</span>
         <span class="n">pooling_conf</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="n">output_size</span>
-        <span class="n">latest_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="n">hidden_sizes</span> <span class="o">=</span> <span class="n">hidden_sizes</span> <span class="ow">or</span> <span class="p">[</span><span class="mi">256</span><span class="p">]</span>
 
+        <span class="n">latest_size</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="n">hidden_layers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_sizes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">size</span> <span class="ow">in</span> <span class="n">hidden_sizes</span><span class="p">:</span>
                 <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latest_size</span><span class="p">,</span> <span class="n">size</span><span class="p">))</span>
-                <span class="k">if</span> <span class="n">activation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">activation</span><span class="p">)())</span>
+                <span class="k">if</span> <span class="n">activation_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">hidden_layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">activation_type</span><span class="p">)(</span><span class="o">**</span><span class="p">(</span><span class="n">activation_conf</span> <span class="ow">or</span> <span class="p">{}))</span>
+                    <span class="p">)</span>
                 <span class="n">latest_size</span> <span class="o">=</span> <span class="n">size</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="n">hidden_layers</span><span class="p">)</span>
 
         <span class="n">pooling_conf</span> <span class="o">=</span> <span class="n">pooling_conf</span> <span class="ow">or</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="n">pooling_cls</span><span class="p">(</span><span class="o">**</span><span class="n">pooling_conf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">pooling</span><span class="p">,</span> <span class="n">pooling_type</span><span class="p">)(</span><span class="n">latest_size</span><span class="p">,</span> <span class="o">**</span><span class="n">pooling_conf</span><span class="p">)</span>
+        <span class="n">latest_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="o">.</span><span class="n">output_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">final_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">latest_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">input_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
 <div class="viewcode-block" id="UtteranceLevel.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.common.html#s3prl.nn.UtteranceLevel.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            x (torch.FloatTensor): (batch_size, seq_len, input_size)</span>
+<span class="sd">            x_len (torch.LongTensor): (batch_size, )</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.FloatTensor</span>
+
+<span class="sd">            (batch_size, output_size)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="n">x_pooled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooling</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_len</span><span class="p">)</span>
         <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">final_proj</span><span class="p">(</span><span class="n">x_pooled</span><span class="p">)</span>

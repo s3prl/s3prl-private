@@ -16,7 +16,6 @@ corpus
 
    s3prl.dataio.corpus.base
    s3prl.dataio.corpus.fluent_speech_commands
-   s3prl.dataio.corpus.hear
    s3prl.dataio.corpus.iemocap
    s3prl.dataio.corpus.librilight
    s3prl.dataio.corpus.librispeech

@@ -1,11 +1,9 @@
-hear
-====
+beam\_decoder
+=============
 
-**(s3prl.nn.hear)**
+**(s3prl.nn.beam_decoder)**
 
-.. automodule:: s3prl.nn.hear
-
-
+.. automodule:: s3prl.nn.beam_decoder
 
 
 
@@ -18,10 +16,12 @@ hear
 
 
 
-HearFullyConnectedPrediction
+
+
+BeamDecoder
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autoclass:: HearFullyConnectedPrediction
+.. autoclass:: BeamDecoder
    :member-order: bysource
    :members:
    :undoc-members:

@@ -171,6 +171,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Documentation</span></p>
 <ul>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../_autosummary/s3prl.nn.html">nn</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/s3prl.nn.beam_decoder.html">beam_decoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/s3prl.nn.common.html">common</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/s3prl.nn.hear.html">hear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../_autosummary/s3prl.nn.interface.html">interface</a></li>
@@ -245,7 +246,6 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.html">corpus</a><input class="toctree-checkbox" id="toctree-checkbox-9" name="toctree-checkbox-9" role="switch" type="checkbox"/><label for="toctree-checkbox-9"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.base.html">base</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html">fluent_speech_commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.hear.html">hear</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.iemocap.html">iemocap</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.librilight.html">librilight</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../_autosummary/s3prl.dataio.corpus.librispeech.html">librispeech</a></li>
@@ -323,7 +323,8 @@
         <article role="main">
           <section id="use-problem-module-to-run-customizable-recipes">
 <h1>Use Problem module to run customizable recipes<a class="headerlink" href="#use-problem-module-to-run-customizable-recipes" title="Permalink to this heading">#</a></h1>
-<p>The problem module provides pythonic and customizable recipes</p>
+<p>The <a class="reference internal" href="../_autosummary/s3prl.problem.html#module-s3prl.problem" title="s3prl.problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.problem</span></code></a> module provides customizable recipes in pure python (almost).
+See <a class="reference internal" href="../_autosummary/s3prl.problem.html#module-s3prl.problem" title="s3prl.problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.problem</span></code></a> for all the recipes ready to be ran.</p>
 <section id="usage-1-import-and-run-on-colab">
 <h2>Usage 1. Import and run on Colab<a class="headerlink" href="#usage-1-import-and-run-on-colab" title="Permalink to this heading">#</a></h2>
 <p>All the problem class follows the same usage</p>
@@ -361,10 +362,14 @@
 </div>
 </section>
 <section id="usage-3-run-configure-with-the-unified-s3prl-main">
-<h2>Usage 3. Run &amp; configure with the unified <code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.main</span></code><a class="headerlink" href="#usage-3-run-configure-with-the-unified-s3prl-main" title="Permalink to this heading">#</a></h2>
+<h2>Usage 3. Run &amp; configure with the unified <code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl-main</span></code><a class="headerlink" href="#usage-3-run-configure-with-the-unified-s3prl-main" title="Permalink to this heading">#</a></h2>
 <p>However, this means that for every problem you still need to create a file.
 Hence, we provide an easy helper supporting all the problems in <a class="reference internal" href="../_autosummary/s3prl.problem.html#module-s3prl.problem" title="s3prl.problem"><code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.problem</span></code></a>:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">s3prl</span><span class="o">.</span><span class="n">main</span> <span class="n">SuperbASR</span> <span class="o">--</span><span class="n">target_dir</span> <span class="n">result</span><span class="o">/</span><span class="n">asr_exp</span> <span class="o">--</span><span class="n">prepare_data</span><span class="o">.</span><span class="n">dataset_root</span> <span class="o">/</span><span class="n">corpus</span><span class="o">/</span><span class="n">LibriSpeech</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>or use our CLI entry: <code class="code docutils literal notranslate"><span class="pre">s3prl-main</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s3prl</span><span class="o">-</span><span class="n">main</span> <span class="n">SuperbASR</span> <span class="o">--</span><span class="n">target_dir</span> <span class="n">result</span><span class="o">/</span><span class="n">asr_exp</span> <span class="o">--</span><span class="n">prepare_data</span><span class="o">.</span><span class="n">dataset_root</span> <span class="o">/</span><span class="n">corpus</span><span class="o">/</span><span class="n">LibriSpeech</span><span class="o">/</span>
 </pre></div>
 </div>
 </section>
@@ -489,7 +494,7 @@ setting changes, and then you can follow the first two usages introduced above t
 <li><a class="reference internal" href="#">Use Problem module to run customizable recipes</a><ul>
 <li><a class="reference internal" href="#usage-1-import-and-run-on-colab">Usage 1. Import and run on Colab</a></li>
 <li><a class="reference internal" href="#usage-2-run-configure-from-cli">Usage 2. Run &amp; configure from CLI</a></li>
-<li><a class="reference internal" href="#usage-3-run-configure-with-the-unified-s3prl-main">Usage 3. Run &amp; configure with the unified <code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl.main</span></code></a></li>
+<li><a class="reference internal" href="#usage-3-run-configure-with-the-unified-s3prl-main">Usage 3. Run &amp; configure with the unified <code class="xref py py-obj docutils literal notranslate"><span class="pre">s3prl-main</span></code></a></li>
 <li><a class="reference internal" href="#customization">Customization</a></li>
 </ul>
 </li>
