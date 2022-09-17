@@ -17,6 +17,9 @@ __all__ = [
 
 
 class softmax(nn.Module):
+    """
+    The standard softmax loss in an unified interface for all speaker-related softmax losses
+    """
     def __init__(self, input_size: int, output_size: int):
         super().__init__()
         self._indim = input_size
@@ -55,6 +58,9 @@ class softmax(nn.Module):
 
 
 class amsoftmax(nn.Module):
+    """
+    Am-softmax loss
+    """
     def __init__(
         self, input_size: int, output_size: int, margin: float = 0.2, scale: float = 30
     ):
