@@ -343,6 +343,14 @@
 
 
 <div class="viewcode-block" id="MeanPooling"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.MeanPooling">[docs]</a><span class="k">class</span> <span class="nc">MeanPooling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    MeanPooling</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): The input feature size.</span>
+<span class="sd">        output_size (int): The output feature size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -354,7 +362,16 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span>
 
-<div class="viewcode-block" id="MeanPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.MeanPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MeanPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.MeanPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes Mean Pooling Module</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            xs (torch.Tensor): Input tensor (batch, frames, channels).</span>
+<span class="sd">            xs_len (torch.LongTensor): with the lengths for each sample (batch, ).</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            torch.Tensor: Output tensor (batch, channels)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pooled_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>
             <span class="n">pooled</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="n">x_len</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -363,12 +380,17 @@
 
 
 <div class="viewcode-block" id="TemporalAveragePooling"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalAveragePooling">[docs]</a><span class="k">class</span> <span class="nc">TemporalAveragePooling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TemporalAveragePooling</span>
+<span class="sd">    Paper: Multi-Task Learning with High-Order Statistics for X-vector based Text-Independent Speaker Verification</span>
+<span class="sd">    Link: https://arxiv.org/pdf/1903.12058.pdf</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): The input feature size.</span>
+<span class="sd">        output_size (int): The output feature size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        TemporalAveragePooling</span>
-<span class="sd">        Paper: Multi-Task Learning with High-Order Statistics for X-vector based Text-Independent Speaker Verification</span>
-<span class="sd">        Link: https://arxiv.org/pdf/1903.12058.pdf</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="n">output_size</span>
@@ -381,14 +403,15 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="TemporalAveragePooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalAveragePooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalAveragePooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalAveragePooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes Temporal Average Pooling Module</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            xs (torch.Tensor): Input tensor (#batch, channels, frames).</span>
-<span class="sd">            xs_len: with the lengths for each sample</span>
+<span class="sd">            xs (torch.Tensor): Input tensor (batch, frames, channels).</span>
+<span class="sd">            xs_len (torch.LongTensor): with the lengths for each sample (batch, ).</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Output tensor (#batch, channels)</span>
+<span class="sd">            torch.Tensor: Output tensor (batch, channels)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pooled_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>
@@ -399,12 +422,16 @@
 
 
 <div class="viewcode-block" id="TemporalStatisticsPooling"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalStatisticsPooling">[docs]</a><span class="k">class</span> <span class="nc">TemporalStatisticsPooling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    TemporalStatisticsPooling</span>
+<span class="sd">    Paper: X-vectors: Robust DNN Embeddings for Speaker Recognition</span>
+<span class="sd">    Link： http://www.danielpovey.com/files/2018_icassp_xvectors.pdf</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): The input feature size.</span>
+<span class="sd">        output_size (int): The output feature size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="o">**</span><span class="n">unused</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        TemporalStatisticsPooling</span>
-<span class="sd">        Paper: X-vectors: Robust DNN Embeddings for Speaker Recognition</span>
-<span class="sd">        Link： http://www.danielpovey.com/files/2018_icassp_xvectors.pdf</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">=</span> <span class="n">input_size</span>
 
@@ -416,14 +443,15 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_size</span> <span class="o">*</span> <span class="mi">2</span>
 
-<div class="viewcode-block" id="TemporalStatisticsPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalStatisticsPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="TemporalStatisticsPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.TemporalStatisticsPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes Temporal Statistics Pooling Module</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            xs (torch.Tensor): Input tensor (#batch, channels, frames).</span>
-<span class="sd">            xs_len: with the lengths for each sample</span>
+<span class="sd">            xs (torch.Tensor): Input tensor (batch, frames, channels).</span>
+<span class="sd">            xs_len (torch.LongTensor): with the lengths for each sample (batch, ).</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Output tensor (#batch, channels)</span>
+<span class="sd">            torch.Tensor: Output tensor (batch, channels)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pooled_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>
@@ -435,12 +463,16 @@
 
 
 <div class="viewcode-block" id="SelfAttentivePooling"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.SelfAttentivePooling">[docs]</a><span class="k">class</span> <span class="nc">SelfAttentivePooling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    SelfAttentivePooling</span>
+<span class="sd">    Paper: Self-Attentive Speaker Embeddings for Text-Independent Speaker Verification</span>
+<span class="sd">    Link： https://danielpovey.com/files/2018_interspeech_xvector_attention.pdf</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): The input feature size.</span>
+<span class="sd">        output_size (int): The output feature size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        SelfAttentivePooling</span>
-<span class="sd">        Paper: Self-Attentive Speaker Embeddings for Text-Independent Speaker Verification</span>
-<span class="sd">        Link： https://danielpovey.com/files/2018_interspeech_xvector_attention.pdf</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="n">output_size</span>
@@ -456,14 +488,15 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="SelfAttentivePooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.SelfAttentivePooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SelfAttentivePooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.SelfAttentivePooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes Self-Attentive Pooling Module</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            xs (torch.Tensor): Input tensor (#batch, channels, frames).</span>
-<span class="sd">            xs_len: with the lengths for each sample</span>
+<span class="sd">            xs (torch.Tensor): Input tensor (batch, frames, channels).</span>
+<span class="sd">            xs_len (torch.LongTensor): with the lengths for each sample (batch, ).</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Output tensor (#batch, channels)</span>
+<span class="sd">            torch.Tensor: Output tensor (batch, channels)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pooled_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>
@@ -477,12 +510,16 @@
 
 
 <div class="viewcode-block" id="AttentiveStatisticsPooling"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.AttentiveStatisticsPooling">[docs]</a><span class="k">class</span> <span class="nc">AttentiveStatisticsPooling</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    AttentiveStatisticsPooling</span>
+<span class="sd">    Paper: Attentive Statistics Pooling for Deep Speaker Embedding</span>
+<span class="sd">    Link: https://arxiv.org/pdf/1803.10963.pdf</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        input_size (int): The input feature size.</span>
+<span class="sd">        output_size (int): The output feature size.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">output_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        AttentiveStatisticsPooling</span>
-<span class="sd">        Paper: Attentive Statistics Pooling for Deep Speaker Embedding</span>
-<span class="sd">        Link: https://arxiv.org/pdf/1803.10963.pdf</span>
-<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_indim</span> <span class="o">=</span> <span class="n">input_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span> <span class="o">=</span> <span class="n">output_size</span>
@@ -498,14 +535,15 @@
     <span class="k">def</span> <span class="nf">output_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outdim</span>
 
-<div class="viewcode-block" id="AttentiveStatisticsPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.AttentiveStatisticsPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="AttentiveStatisticsPooling.forward"><a class="viewcode-back" href="../../../_autosummary/s3prl.nn.pooling.html#s3prl.nn.AttentiveStatisticsPooling.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xs</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes Attentive Statistics Pooling Module</span>
+
 <span class="sd">        Args:</span>
-<span class="sd">            xs (torch.Tensor): Input tensor (#batch, channels, frames).</span>
-<span class="sd">            xs_len: with the lengths for each sample</span>
+<span class="sd">            xs (torch.Tensor): Input tensor (batch, frames, channels).</span>
+<span class="sd">            xs_len (torch.LongTensor): with the lengths for each sample (batch, ).</span>
 <span class="sd">        Returns:</span>
-<span class="sd">            torch.Tensor: Output tensor (#batch, channels)</span>
+<span class="sd">            torch.Tensor: Output tensor (batch, channels)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pooled_list</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">x_len</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs_len</span><span class="p">):</span>

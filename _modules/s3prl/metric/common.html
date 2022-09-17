@@ -428,9 +428,16 @@
     <span class="k">return</span> <span class="n">ter</span><span class="p">(</span><span class="n">hyps</span><span class="p">,</span> <span class="n">refs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="compute_eer"><a class="viewcode-back" href="../../../_autosummary/s3prl.metric.common.html#s3prl.metric.compute_eer">[docs]</a><span class="k">def</span> <span class="nf">compute_eer</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    sklearn style compute eer</span>
+<div class="viewcode-block" id="compute_eer"><a class="viewcode-back" href="../../../_autosummary/s3prl.metric.common.html#s3prl.metric.compute_eer">[docs]</a><span class="k">def</span> <span class="nf">compute_eer</span><span class="p">(</span><span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;Compute equal error rate.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (List[float]): List of hypotheses.</span>
+<span class="sd">        labels (List[int]): List of references.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        eer (float): Equal error rate.</span>
+<span class="sd">        treshold (float): The treshold to accept a target trial.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">eer</span> <span class="o">=</span> <span class="n">brentq</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">x</span> <span class="o">-</span> <span class="n">interp1d</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">)(</span><span class="n">x</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
@@ -438,11 +445,27 @@
     <span class="k">return</span> <span class="n">eer</span><span class="p">,</span> <span class="n">threshold</span></div>
 
 
-<div class="viewcode-block" id="compute_minDCF"><a class="viewcode-back" href="../../../_autosummary/s3prl.metric.common.html#s3prl.metric.compute_minDCF">[docs]</a><span class="k">def</span> <span class="nf">compute_minDCF</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">p_target</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">c_miss</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">c_fa</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    MinDCF</span>
+<div class="viewcode-block" id="compute_minDCF"><a class="viewcode-back" href="../../../_autosummary/s3prl.metric.common.html#s3prl.metric.compute_minDCF">[docs]</a><span class="k">def</span> <span class="nf">compute_minDCF</span><span class="p">(</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> 
+        <span class="n">scores</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> 
+        <span class="n">p_target</span><span class="p">:</span> <span class="nb">float</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> 
+        <span class="n">c_miss</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+        <span class="n">c_fa</span><span class="p">:</span> <span class="nb">int</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute MinDCF.</span>
 <span class="sd">    Computes the minimum of the detection cost function.  The comments refer to</span>
 <span class="sd">    equations in Section 3 of the NIST 2016 Speaker Recognition Evaluation Plan.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        scores (List[float]): List of hypotheses.</span>
+<span class="sd">        labels (List[int]): List of references.</span>
+<span class="sd">        p (float): The prior probability of positive class.</span>
+<span class="sd">        c_miss (int): The cost of miss.</span>
+<span class="sd">        c_fa (int): The cost of false alarm.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        min_dcf (float): The calculated min_dcf.</span>
+<span class="sd">        min_c_det_threshold (float): The treshold to calculate min_dcf.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">scores</span><span class="p">,</span> <span class="n">pos_label</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">fnr</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">tpr</span>
