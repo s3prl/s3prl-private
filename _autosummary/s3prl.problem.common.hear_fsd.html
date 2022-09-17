@@ -234,8 +234,8 @@
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -1170,110 +1170,6 @@ labels: List[str]</p>
 </dd></dl>
 
 </section>
-<section id="hearscenepredictiontask">
-<h2>HearScenePredictionTask<a class="headerlink" href="#hearscenepredictiontask" title="Permalink to this heading">#</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3prl.problem.common.hear_fsd.</span></span><span class="sig-name descname"><span class="pre">HearScenePredictionTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.category.CategoryEncoder" title="s3prl.dataio.encoder.category.CategoryEncoder"><span class="pre">CategoryEncoder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/hear_scene.html#HearScenePredictionTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/hear_scene.py#L24-L130"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <a class="reference internal" href="s3prl.task.base.html#s3prl.task.base.Task" title="s3prl.task.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
-<p>Prediction model with simple scoring over entire audio scenes.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.predict">
-<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/hear_scene.html#HearScenePredictionTask.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/hear_scene.py#L58-L61"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.predict" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.forward">
-<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/hear_scene.html#HearScenePredictionTask.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/hear_scene.py#L63-L76"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.forward" title="Permalink to this definition">#</a></dt>
-<dd><p>Defines the computation performed at every call.</p>
-<p>Should be overridden by all subclasses.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Although the recipe for forward pass needs to be defined within
-this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
-instead of this since the former takes care of running the
-registered hooks while the latter silently ignores them.</p>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.dump_patches">
-<span class="sig-name descname"><span class="pre">dump_patches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/problem/common/hear_fsd.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.dump_patches" title="Permalink to this definition">#</a></dt>
-<dd><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>. In
-<code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code>, the version number will be saved as in the attribute
-<cite>_metadata</cite> of the returned state dict, and thus pickled. <cite>_metadata</cite> is a
-dictionary with keys that follow the naming convention of state dict. See
-<code class="docutils literal notranslate"><span class="pre">_load_from_state_dict</span></code> on how to use this information in loading.</p>
-<p>If new parameters/buffers are added/removed from a module, this number shall
-be bumped, and the module’s <cite>_load_from_state_dict</cite> method can compare the
-version number and do appropriate changes if the state dict is from before
-the change.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.get_state">
-<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L21-L23"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.get_state" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.log_scores">
-<span class="sig-name descname"><span class="pre">log_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/hear_scene.html#HearScenePredictionTask.log_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/hear_scene.py#L78-L100"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.log_scores" title="Permalink to this definition">#</a></dt>
-<dd><p>Logs the metric score value for each score defined for the model</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.parse_cached_results">
-<span class="sig-name descname"><span class="pre">parse_cached_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L28-L38"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.parse_cached_results" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.set_state">
-<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L25-L26"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.set_state" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L70-L72"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L58-L60"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L62-L64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L50-L52"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_reduction">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L66-L68"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_step">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L54-L56"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_step" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.training">
-<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/problem/common/hear_fsd.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.training" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.HearScenePredictionTask.reduction">
-<span class="sig-name descname"><span class="pre">reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/hear_scene.html#HearScenePredictionTask.reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/hear_scene.py#L102-L130"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.HearScenePredictionTask.reduction" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
 <section id="ordereddict">
 <h2>OrderedDict<a class="headerlink" href="#ordereddict" title="Permalink to this heading">#</a></h2>
 <dl class="py class">
@@ -1749,6 +1645,109 @@ string, remove the suffix from the path.</p>
 <dd><p>Return a new path with expanded ~ and ~user constructs
 (as returned by os.path.expanduser)</p>
 </dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="scenepredictiontask">
+<h2>ScenePredictionTask<a class="headerlink" href="#scenepredictiontask" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">s3prl.problem.common.hear_fsd.</span></span><span class="sig-name descname"><span class="pre">ScenePredictionTask</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="s3prl.dataio.encoder.category.html#s3prl.dataio.encoder.category.CategoryEncoder" title="s3prl.dataio.encoder.category.CategoryEncoder"><span class="pre">CategoryEncoder</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">prediction_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/scene_prediction.html#ScenePredictionTask"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/scene_prediction.py#L26-L128"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference internal" href="s3prl.task.base.html#s3prl.task.base.Task" title="s3prl.task.base.Task"><code class="xref py py-class docutils literal notranslate"><span class="pre">Task</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/scene_prediction.html#ScenePredictionTask.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/scene_prediction.py#L56-L59"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.predict" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_len</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/scene_prediction.html#ScenePredictionTask.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/scene_prediction.py#L61-L74"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.forward" title="Permalink to this definition">#</a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.dump_patches">
+<span class="sig-name descname"><span class="pre">dump_patches</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/problem/common/hear_fsd.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.dump_patches" title="Permalink to this definition">#</a></dt>
+<dd><p>This allows better BC support for <code class="xref py py-meth docutils literal notranslate"><span class="pre">load_state_dict()</span></code>. In
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">state_dict()</span></code>, the version number will be saved as in the attribute
+<cite>_metadata</cite> of the returned state dict, and thus pickled. <cite>_metadata</cite> is a
+dictionary with keys that follow the naming convention of state dict. See
+<code class="docutils literal notranslate"><span class="pre">_load_from_state_dict</span></code> on how to use this information in loading.</p>
+<p>If new parameters/buffers are added/removed from a module, this number shall
+be bumped, and the module’s <cite>_load_from_state_dict</cite> method can compare the
+version number and do appropriate changes if the state dict is from before
+the change.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.get_state">
+<span class="sig-name descname"><span class="pre">get_state</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L21-L23"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.get_state" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.log_scores">
+<span class="sig-name descname"><span class="pre">log_scores</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/scene_prediction.html#ScenePredictionTask.log_scores"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/scene_prediction.py#L76-L98"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.log_scores" title="Permalink to this definition">#</a></dt>
+<dd><p>Logs the metric score value for each score defined for the model</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.parse_cached_results">
+<span class="sig-name descname"><span class="pre">parse_cached_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L28-L38"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.parse_cached_results" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.set_state">
+<span class="sig-name descname"><span class="pre">set_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L25-L26"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.set_state" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.test_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L70-L72"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.test_reduction" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.test_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">test_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L58-L60"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.test_step" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.train_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L62-L64"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.train_reduction" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.train_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">train_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L50-L52"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.train_step" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_reduction">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_reduction</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L66-L68"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_reduction" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_step">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">valid_step</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/base.py#L54-L56"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_step" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/problem/common/hear_fsd.py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.training" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="s3prl.problem.common.hear_fsd.ScenePredictionTask.reduction">
+<span class="sig-name descname"><span class="pre">reduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cached_results</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_dump_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/s3prl/task/scene_prediction.html#ScenePredictionTask.reduction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="reference external" href="https://github.com/s3prl/s3prl/blob/v0.4.2 /s3prl/task/scene_prediction.py#L100-L128"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#s3prl.problem.common.hear_fsd.ScenePredictionTask.reduction" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -2666,9 +2665,9 @@ not be assigned to after instance creation.</p>
 <li><a class="reference internal" href="#hearfsd">HearFSD</a></li>
 <li><a class="reference internal" href="#hearfullyconnectedprediction">HearFullyConnectedPrediction</a></li>
 <li><a class="reference internal" href="#hearscenepipe">HearScenePipe</a></li>
-<li><a class="reference internal" href="#hearscenepredictiontask">HearScenePredictionTask</a></li>
 <li><a class="reference internal" href="#ordereddict">OrderedDict</a></li>
 <li><a class="reference internal" href="#path">Path</a></li>
+<li><a class="reference internal" href="#scenepredictiontask">ScenePredictionTask</a></li>
 <li><a class="reference internal" href="#superbsid">SuperbSID</a></li>
 <li><a class="reference internal" href="#defaultdict">defaultdict</a></li>
 <li><a class="reference internal" href="#dataclass">dataclass</a></li>

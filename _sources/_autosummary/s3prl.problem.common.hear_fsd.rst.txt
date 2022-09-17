@@ -68,16 +68,6 @@ HearScenePipe
    :inherited-members: torch.nn.Module,nn.Module,Module
    :show-inheritance:
 
-HearScenePredictionTask
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: HearScenePredictionTask
-   :member-order: bysource
-   :members:
-   :undoc-members:
-   :inherited-members: torch.nn.Module,nn.Module,Module
-   :show-inheritance:
-
 OrderedDict
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -92,6 +82,16 @@ Path
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: Path
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
+ScenePredictionTask
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: ScenePredictionTask
    :member-order: bysource
    :members:
    :undoc-members:

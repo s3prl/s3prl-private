@@ -18,6 +18,16 @@ hear\_dcase\_2016\_task2
 
 
 
+EventPredictionTask
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autoclass:: EventPredictionTask
+   :member-order: bysource
+   :members:
+   :undoc-members:
+   :inherited-members: torch.nn.Module,nn.Module,Module
+   :show-inheritance:
+
 FixedBatchSizeBatchSampler
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,16 +52,6 @@ HearDcase2016Task2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: HearDcase2016Task2
-   :member-order: bysource
-   :members:
-   :undoc-members:
-   :inherited-members: torch.nn.Module,nn.Module,Module
-   :show-inheritance:
-
-HearEventPredictionTask
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autoclass:: HearEventPredictionTask
    :member-order: bysource
    :members:
    :undoc-members:

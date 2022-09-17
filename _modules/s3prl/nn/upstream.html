@@ -233,8 +233,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../_autosummary/s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -359,6 +359,10 @@
 <span class="sd">            If false, only downlaod checkpoint if not yet downloaded before.</span>
 <span class="sd">            If true, force to re-download the checkpoint.</span>
 
+<span class="sd">        **extra_args:</span>
+<span class="sd">            The extra arguments for each specific upstream, the available options are</span>
+<span class="sd">            shown in each upstream section</span>
+
 <span class="sd">    .. note::</span>
 
 <span class="sd">        When using **S3PRLUpstream** with :code:`refresh=True` and multiprocessing (e.g. DDP),</span>
@@ -401,9 +405,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">hub</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">only_registered_ckpt</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_or_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">path_or_url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">refresh</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">extra_args</span><span class="p">,</span>
+    <span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">upstream</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hub</span><span class="p">,</span> <span class="n">name</span><span class="p">)(</span><span class="n">ckpt</span><span class="o">=</span><span class="n">path_or_url</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="n">refresh</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">upstream</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">hub</span><span class="p">,</span> <span class="n">name</span><span class="p">)(</span>
+            <span class="n">ckpt</span><span class="o">=</span><span class="n">path_or_url</span><span class="p">,</span> <span class="n">refresh</span><span class="o">=</span><span class="n">refresh</span><span class="p">,</span> <span class="o">**</span><span class="n">extra_args</span>
+        <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">upstream</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
@@ -451,11 +463,11 @@
         <span class="n">xs_max_len</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">xs_max_len</span> <span class="o">&gt;</span> <span class="n">target_max_len</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">xs_max_len</span> <span class="o">//</span> <span class="n">target_max_len</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">xs_max_len</span> <span class="o">//</span> <span class="n">target_max_len</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">xs_max_len</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">target_max_len</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[:,</span> <span class="p">:</span><span class="n">target_max_len</span><span class="p">,</span> <span class="p">:]</span>
 
         <span class="k">elif</span> <span class="n">xs_max_len</span> <span class="o">&lt;</span> <span class="n">target_max_len</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">target_max_len</span> <span class="o">//</span> <span class="n">xs_max_len</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">assert</span> <span class="n">target_max_len</span> <span class="o">//</span> <span class="n">xs_max_len</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">target_max_len</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">xs_max_len</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="n">xs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xs</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">target_max_len</span> <span class="o">-</span> <span class="n">xs_max_len</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span>
             <span class="p">)</span>
@@ -483,7 +495,9 @@
 
         <span class="n">hidden_states</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">upstream</span><span class="p">(</span><span class="n">wavs_list</span><span class="p">)[</span><span class="s2">&quot;hidden_states&quot;</span><span class="p">]</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span>
-        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="k">assert</span> <span class="p">(</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="n">max_wav_len</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">wavs_len</span><span class="p">))</span>
         <span class="n">all_hs</span> <span class="o">=</span> <span class="p">[]</span>

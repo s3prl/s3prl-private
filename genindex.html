@@ -232,8 +232,8 @@
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="_autosummary/s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -343,8 +343,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.absolute">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.absolute">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.interface.html#s3prl.nn.interface.AbsUpstream">AbsUpstream (class in s3prl.nn.interface)</a>
 </li>
@@ -356,10 +354,10 @@
           <li><a href="_autosummary/s3prl.metric.common.html#s3prl.metric.common.accuracy">(in module s3prl.metric.common)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.activation">activation (s3prl.task.hear_scene.HearScenePredictionTask attribute)</a>
+        <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.activation">activation (s3prl.task.event_prediction.EventPredictionTask attribute)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.activation">(s3prl.task.hear_timestamp.HearEventPredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.activation">(s3prl.task.scene_prediction.ScenePredictionTask attribute)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.base.html#s3prl.dataio.corpus.base.Corpus.all_data">all_data (s3prl.dataio.corpus.base.Corpus property)</a>
@@ -417,8 +415,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.anchor">(s3prl.problem.common.hear_maestro.Path property)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.anchor">(s3prl.task.hear_timestamp.Path property)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.SpecAug.apply_specaug">apply_specaug() (s3prl.nn.specaug.SpecAug method)</a>
 </li>
@@ -433,8 +429,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.as_posix">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.as_posix">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.as_uri">as_uri() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -446,8 +440,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.as_uri">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.as_uri">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.as_uri">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR">ASR (class in s3prl.problem.asr.run)</a>
@@ -2599,10 +2591,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.CategoryEncoder">(class in s3prl.problem.common.hear_fsd)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.CategoryEncoder">(class in s3prl.task.hear_scene)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.CategoryEncoder">(class in s3prl.task.hear_timestamp)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.CategoryEncoders">CategoryEncoders (class in s3prl.dataio.encoder)</a>
 
@@ -2639,8 +2627,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.chmod">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.chmod">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.clear">clear() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
 
@@ -2661,15 +2647,9 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.clear">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.clear">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.clear">(s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.close">close() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         <li><a href="_autosummary/s3prl.problem.common.run.html#s3prl.problem.common.run.Common">Common (class in s3prl.problem.common.run)</a>
 </li>
         <li><a href="_autosummary/s3prl.metric.html#s3prl.metric.compute_eer">compute_eer() (in module s3prl.metric)</a>
@@ -2703,14 +2683,10 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.copy">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.copy">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.base.html#s3prl.dataio.corpus.base.Corpus">Corpus (class in s3prl.dataio.corpus.base)</a>
 </li>
         <li><a href="_autosummary/s3prl.dataio.encoder.vocabulary.html#s3prl.dataio.encoder.vocabulary.Counter">Counter (class in s3prl.dataio.encoder.vocabulary)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.create_events_from_prediction">create_events_from_prediction() (in module s3prl.task.hear_timestamp)</a>
 </li>
         <li><a href="_autosummary/s3prl.problem.diarization.util.html#s3prl.problem.diarization.util.csv_to_kaldi_dir">csv_to_kaldi_dir() (in module s3prl.problem.diarization.util)</a>
 </li>
@@ -2724,8 +2700,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.cwd">(s3prl.problem.common.hear_fsd.Path class method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.cwd">(s3prl.problem.common.hear_maestro.Path class method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.cwd">(s3prl.task.hear_timestamp.Path class method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -2894,10 +2868,6 @@
           <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.WordTokenizer.decode">(s3prl.dataio.encoder.WordTokenizer method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.CategoryEncoder.decode">(s3prl.problem.common.hear_fsd.CategoryEncoder method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.CategoryEncoder.decode">(s3prl.task.hear_scene.CategoryEncoder method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.CategoryEncoder.decode">(s3prl.task.hear_timestamp.CategoryEncoder method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.deepcopy">deepcopy() (in module s3prl.problem.common.hear_dcase_2016_task2)</a>
@@ -3103,8 +3073,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.default_factory">(s3prl.problem.common.hear_maestro.defaultdict attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.default_factory">(s3prl.task.hear_timestamp.defaultdict attribute)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.tokenizer.default_phoneme_tokenizer">default_phoneme_tokenizer() (in module s3prl.dataio.encoder.tokenizer)</a>
 </li>
@@ -3119,8 +3087,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict">(class in s3prl.problem.common.hear_maestro)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict">(class in s3prl.task.hear_timestamp)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.diarization.run.html#s3prl.problem.diarization.run.Diarization">Diarization (class in s3prl.problem.diarization.run)</a>
 </li>
@@ -3130,8 +3096,6 @@
           <li><a href="_autosummary/s3prl.task.diarization.html#s3prl.task.diarization.DiarizationPIT">(class in s3prl.task.diarization)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.display">display() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.sampler.html#s3prl.dataio.sampler.DistributedBatchSamplerWrapper">DistributedBatchSamplerWrapper (class in s3prl.dataio.sampler)</a>
 
         <ul>
@@ -3204,8 +3168,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.drive">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.drive">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.drive">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.amsoftmax.dump_patches">dump_patches (s3prl.nn.amsoftmax attribute)</a>
@@ -3297,11 +3259,11 @@
 </li>
           <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.XVectorBackbone.dump_patches">(s3prl.nn.XVectorBackbone attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.dump_patches">(s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.dump_patches">(s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearFullyConnectedPrediction.dump_patches">(s3prl.problem.common.hear_fsd.HearFullyConnectedPrediction attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.dump_patches">(s3prl.problem.common.hear_fsd.HearScenePredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.dump_patches">(s3prl.problem.common.hear_fsd.ScenePredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.dump_patches">(s3prl.task.base.Task attribute)</a>
 </li>
@@ -3313,17 +3275,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.dump_patches">(s3prl.task.DumpFeature attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.dump_patches">(s3prl.task.hear_scene.HearScenePredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.dump_patches">(s3prl.task.event_prediction.EventPredictionTask attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.OneHotToCrossEntropyLoss.dump_patches">(s3prl.task.hear_scene.OneHotToCrossEntropyLoss attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.dump_patches">(s3prl.task.hear_scene.Task attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.dump_patches">(s3prl.task.hear_timestamp.HearEventPredictionTask attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss.dump_patches">(s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.dump_patches">(s3prl.task.hear_timestamp.Task attribute)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.dump_patches">(s3prl.task.scene_prediction.ScenePredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerClassifier.dump_patches">(s3prl.task.speaker_verification_task.SpeakerClassifier attribute)</a>
 </li>
@@ -3403,10 +3357,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.CategoryEncoder.encode">(s3prl.problem.common.hear_fsd.CategoryEncoder method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.CategoryEncoder.encode">(s3prl.task.hear_scene.CategoryEncoder method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.CategoryEncoder.encode">(s3prl.task.hear_timestamp.CategoryEncoder method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.BertTokenizer.eos_idx">eos_idx (s3prl.dataio.encoder.BertTokenizer property)</a>
 
@@ -3440,10 +3390,10 @@
           <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.WordTokenizer.eos_idx">(s3prl.dataio.encoder.WordTokenizer property)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.eval_reduction">eval_reduction() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.eval_reduction">eval_reduction() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.eval_reduction">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.eval_reduction">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR.evaluate">evaluate() (s3prl.problem.asr.run.ASR method)</a>
@@ -3642,6 +3592,12 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask">EventPredictionTask (class in s3prl.problem.common.hear_dcase_2016_task2)</a>
+
+        <ul>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask">(class in s3prl.task.event_prediction)</a>
+</li>
+        </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.exists">exists() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -3652,8 +3608,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.exists">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.exists">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.exists">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.expanduser">expanduser() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -3667,11 +3621,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.expanduser">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.expanduser">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.external_write_mode">external_write_mode() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -3704,22 +3654,12 @@
           <li><a href="_autosummary/s3prl.dataio.corpus.fluent_speech_commands.html#s3prl.dataio.corpus.fluent_speech_commands.FluentSpeechCommands">(class in s3prl.dataio.corpus.fluent_speech_commands)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.format_dict">format_dict (s3prl.task.hear_timestamp.tqdm property)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.format_interval">format_interval() (s3prl.task.hear_timestamp.tqdm static method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.format_meter">format_meter() (s3prl.task.hear_timestamp.tqdm static method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.format_num">format_num() (s3prl.task.hear_timestamp.tqdm static method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.html#s3prl.dataio.corpus.VoxCeleb1SV.format_path">format_path() (s3prl.dataio.corpus.VoxCeleb1SV static method)</a>
 
         <ul>
           <li><a href="_autosummary/s3prl.dataio.corpus.voxceleb1sv.html#s3prl.dataio.corpus.voxceleb1sv.VoxCeleb1SV.format_path">(s3prl.dataio.corpus.voxceleb1sv.VoxCeleb1SV static method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.format_sizeof">format_sizeof() (s3prl.task.hear_timestamp.tqdm static method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.html#s3prl.dataio.corpus.VoxCeleb1SV.format_test_trials">format_test_trials() (s3prl.dataio.corpus.VoxCeleb1SV class method)</a>
 
         <ul>
@@ -3815,7 +3755,7 @@
 </li>
           <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.XVectorBackbone.forward">(s3prl.nn.XVectorBackbone method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.forward">(s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.forward">(s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearTimestampDatapipe.forward">(s3prl.problem.common.hear_dcase_2016_task2.HearTimestampDatapipe method)</a>
 </li>
@@ -3823,7 +3763,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePipe.forward">(s3prl.problem.common.hear_fsd.HearScenePipe method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.forward">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.forward">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.forward">(s3prl.task.base.Task method)</a>
 </li>
@@ -3835,17 +3775,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.forward">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.forward">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.forward">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.OneHotToCrossEntropyLoss.forward">(s3prl.task.hear_scene.OneHotToCrossEntropyLoss method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.forward">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.forward">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss.forward">(s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.forward">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.forward">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerClassifier.forward">(s3prl.task.speaker_verification_task.SpeakerClassifier method)</a>
 </li>
@@ -3903,8 +3835,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.fromkeys">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.fromkeys">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.common.superb_ic.html#s3prl.problem.common.superb_ic.fsc_for_multi_classification">fsc_for_multi_classification() (in module s3prl.problem.common.superb_ic)</a>
 </li>
@@ -3958,8 +3888,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.OrderedDict.get">(s3prl.problem.common.hear_fsd.OrderedDict method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.get">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.get">(s3prl.task.hear_timestamp.defaultdict method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR.get_class_from_name">get_class_from_name() (s3prl.problem.asr.run.ASR class method)</a>
@@ -4166,8 +4094,6 @@
         </ul></li>
         <li><a href="_autosummary/s3prl.util.download.html#s3prl.util.download.get_dir">get_dir() (in module s3prl.util.download)</a>
 </li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.get_events_for_all_files">get_events_for_all_files() (in module s3prl.task.hear_timestamp)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.sampler.max_timestamp_batch_sampler.html#s3prl.dataio.sampler.max_timestamp_batch_sampler.MaxTimestampBatchSampler.get_length">get_length() (s3prl.dataio.sampler.max_timestamp_batch_sampler.MaxTimestampBatchSampler static method)</a>
 
         <ul>
@@ -4182,8 +4108,6 @@
           <li><a href="_autosummary/s3prl.dataio.sampler.html#s3prl.dataio.sampler.SortedSliceSampler.get_length">(s3prl.dataio.sampler.SortedSliceSampler static method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.get_lock">get_lock() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
         <li><a href="_autosummary/s3prl.util.pseudo_data.html#s3prl.util.pseudo_data.get_pseudo_wavs">get_pseudo_wavs() (in module s3prl.util.pseudo_data)</a>
 </li>
         <li><a href="_autosummary/s3prl.dataio.corpus.html#s3prl.dataio.corpus.IEMOCAP.get_session_with_act">get_session_with_act() (s3prl.dataio.corpus.IEMOCAP method)</a>
@@ -4192,10 +4116,10 @@
           <li><a href="_autosummary/s3prl.dataio.corpus.iemocap.html#s3prl.dataio.corpus.iemocap.IEMOCAP.get_session_with_act">(s3prl.dataio.corpus.iemocap.IEMOCAP method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.get_state">get_state() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.get_state">get_state() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.get_state">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.get_state">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.get_state">(s3prl.task.base.Task method)</a>
 </li>
@@ -4207,13 +4131,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.get_state">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.get_state">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.get_state">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.get_state">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.get_state">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.get_state">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.get_state">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.get_state">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -4255,8 +4175,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.glob">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.glob">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.group">group() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4268,8 +4186,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.group">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.group">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.group">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.sampler.html#s3prl.dataio.sampler.GroupSameItemSampler">GroupSameItemSampler (class in s3prl.dataio.sampler)</a>
@@ -4356,12 +4272,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_vox_lingual.html#s3prl.problem.common.hear_vox_lingual.HearESC50">(class in s3prl.problem.common.hear_vox_lingual)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask">HearEventPredictionTask (class in s3prl.problem.common.hear_dcase_2016_task2)</a>
-
-        <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask">(class in s3prl.task.hear_timestamp)</a>
-</li>
-        </ul></li>
         <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.HearFSD">HearFSD (class in s3prl.problem)</a>
 
         <ul>
@@ -4392,6 +4302,8 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_gsc5hr.html#s3prl.problem.common.hear_gsc5hr.HearGSC5hr">(class in s3prl.problem.common.hear_gsc5hr)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.HearGtzan">HearGtzan (class in s3prl.problem)</a>
 
         <ul>
@@ -4400,8 +4312,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_gtzan.html#s3prl.problem.common.hear_gtzan.HearGtzan">(class in s3prl.problem.common.hear_gtzan)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.HearGtzanMusicSpeech">HearGtzanMusicSpeech (class in s3prl.problem)</a>
 
         <ul>
@@ -4444,12 +4354,6 @@
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePipe">HearScenePipe (class in s3prl.problem.common.hear_fsd)</a>
 </li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask">HearScenePredictionTask (class in s3prl.problem.common.hear_fsd)</a>
-
-        <ul>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask">(class in s3prl.task.hear_scene)</a>
-</li>
-        </ul></li>
         <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.HearStroke">HearStroke (class in s3prl.problem)</a>
 
         <ul>
@@ -4502,8 +4406,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.home">(s3prl.problem.common.hear_fsd.Path class method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.home">(s3prl.problem.common.hear_maestro.Path class method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.home">(s3prl.task.hear_timestamp.Path class method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -4641,9 +4543,9 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_absolute">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_absolute">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_block_device">is_block_device() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -4655,11 +4557,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_block_device">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_block_device">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_char_device">is_char_device() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -4670,8 +4568,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.is_char_device">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_char_device">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_char_device">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_dir">is_dir() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -4685,8 +4581,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_dir">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_dir">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_fifo">is_fifo() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4698,8 +4592,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.is_fifo">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_fifo">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_fifo">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_file">is_file() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -4713,8 +4605,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_file">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_file">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_mount">is_mount() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4726,8 +4616,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.is_mount">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_mount">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_mount">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_reserved">is_reserved() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -4741,8 +4629,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_reserved">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_reserved">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_socket">is_socket() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4755,8 +4641,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_socket">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_socket">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.is_symlink">is_symlink() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4768,8 +4652,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.is_symlink">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.is_symlink">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.is_symlink">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.items">items() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
@@ -4791,8 +4673,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.items">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.items">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.iterdir">iterdir() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -4804,8 +4684,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.iterdir">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.iterdir">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.iterdir">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -4826,8 +4704,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.joinpath">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.joinpath">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.joinpath">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -4861,8 +4737,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.keys">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.keys">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -4872,8 +4746,6 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.label_vocab_nlabels">label_vocab_nlabels() (in module s3prl.task.hear_timestamp)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.lchmod">lchmod() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -4884,8 +4756,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.lchmod">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.lchmod">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.lchmod">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.html#s3prl.dataio.corpus.LibriLight">LibriLight (class in s3prl.dataio.corpus)</a>
@@ -4910,8 +4780,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.link_to">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.link_to">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.link_to">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.speech_commands.html#s3prl.dataio.corpus.speech_commands.SpeechCommandsV1.list_to_dict">list_to_dict() (s3prl.dataio.corpus.speech_commands.SpeechCommandsV1 class method)</a>
@@ -5538,14 +5406,14 @@
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.tokenizer.load_tokenizer">load_tokenizer() (in module s3prl.dataio.encoder.tokenizer)</a>
 </li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.log_scores">log_scores() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.log_scores">log_scores() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.log_scores">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.log_scores">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.log_scores">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.log_scores">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.log_scores">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.log_scores">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.loss">loss (s3prl.task.speaker_verification_task.SpeakerVerification attribute)</a>
@@ -5560,8 +5428,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.lstat">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.lstat">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.lstat">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -5779,8 +5645,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.match">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.match">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.sampler.html#s3prl.dataio.sampler.MaxTimestampBatchSampler">MaxTimestampBatchSampler (class in s3prl.dataio.sampler)</a>
 
@@ -5796,16 +5660,14 @@
           <li><a href="_autosummary/s3prl.nn.pooling.html#s3prl.nn.pooling.MeanPooling">(class in s3prl.nn.pooling)</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.MeanPoolingLinear">MeanPoolingLinear (class in s3prl.nn)</a>
 
         <ul>
           <li><a href="_autosummary/s3prl.nn.linear.html#s3prl.nn.linear.MeanPoolingLinear">(class in s3prl.nn.linear)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.median_filter">median_filter() (in module s3prl.task.hear_timestamp)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.mkdir">mkdir() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -5816,8 +5678,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.mkdir">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.mkdir">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.mkdir">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.specaug.html#s3prl.nn.specaug.ModelWithSpecaug">ModelWithSpecaug (class in s3prl.nn.specaug)</a>
@@ -5988,9 +5848,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.dump_feature.html#module-s3prl.task.dump_feature">s3prl.task.dump_feature</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#module-s3prl.task.hear_scene">s3prl.task.hear_scene</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#module-s3prl.task.event_prediction">s3prl.task.event_prediction</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#module-s3prl.task.hear_timestamp">s3prl.task.hear_timestamp</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#module-s3prl.task.scene_prediction">s3prl.task.scene_prediction</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#module-s3prl.task.speaker_verification_task">s3prl.task.speaker_verification_task</a>
 </li>
@@ -6011,10 +5871,6 @@
           <li><a href="_autosummary/s3prl.util.seed.html#module-s3prl.util.seed">s3prl.util.seed</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.monitor">monitor (s3prl.task.hear_timestamp.tqdm attribute)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.monitor_interval">monitor_interval (s3prl.task.hear_timestamp.tqdm attribute)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.encoder.vocabulary.html#s3prl.dataio.encoder.vocabulary.Counter.most_common">most_common() (s3prl.dataio.encoder.vocabulary.Counter method)</a>
 </li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.move_to_end">move_to_end() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
@@ -6025,8 +5881,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.OrderedDict.move_to_end">(s3prl.problem.common.hear_fsd.OrderedDict method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.moveto">moveto() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
     </ul></td>
   </tr></table>
 </section>
@@ -6045,8 +5899,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.name">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.name">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.name">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -6069,12 +5921,6 @@
   <h2>O</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.OneHotToCrossEntropyLoss">OneHotToCrossEntropyLoss (class in s3prl.task.hear_scene)</a>
-
-        <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss">(class in s3prl.task.hear_timestamp)</a>
-</li>
-        </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.open">open() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -6085,8 +5931,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.open">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.open">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.open">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict">OrderedDict (class in s3prl.dataio.corpus.hear)</a>
@@ -6208,8 +6052,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.owner">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.owner">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -6251,10 +6093,6 @@
           <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.WordTokenizer.pad_idx">(s3prl.dataio.encoder.WordTokenizer property)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.pandas">pandas() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.ParameterGrid">ParameterGrid (class in s3prl.task.hear_timestamp)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.parent">parent (s3prl.dataio.corpus.hear.Path property)</a>
 
         <ul>
@@ -6265,8 +6103,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.parent">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.parent">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.parent">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.parents">parents (s3prl.dataio.corpus.hear.Path property)</a>
@@ -6280,13 +6116,11 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.parents">(s3prl.problem.common.hear_maestro.Path property)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.parents">(s3prl.task.hear_timestamp.Path property)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.parse_cached_results">parse_cached_results() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.parse_cached_results">parse_cached_results() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.parse_cached_results">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.parse_cached_results">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.parse_cached_results">(s3prl.task.base.Task method)</a>
 </li>
@@ -6298,13 +6132,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.parse_cached_results">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.parse_cached_results">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.parse_cached_results">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.parse_cached_results">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.parse_cached_results">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.parse_cached_results">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.parse_cached_results">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.parse_cached_results">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -6350,8 +6180,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.parts">(s3prl.problem.common.hear_maestro.Path property)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.parts">(s3prl.task.hear_timestamp.Path property)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path">Path (class in s3prl.dataio.corpus.hear)</a>
 
@@ -6363,8 +6191,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path">(class in s3prl.problem.common.hear_fsd)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path">(class in s3prl.problem.common.hear_maestro)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path">(class in s3prl.task.hear_timestamp)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.html#s3prl.dataio.corpus.VoxCeleb1SV.path2data">path2data() (s3prl.dataio.corpus.VoxCeleb1SV class method)</a>
@@ -6414,8 +6240,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.pop">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.pop">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.popitem">popitem() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
 
@@ -6436,13 +6260,11 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.popitem">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.popitem">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.predict">predict() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.predict">predict() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.predict">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.predict">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.predict">(s3prl.task.base.Task method)</a>
 </li>
@@ -6454,13 +6276,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.predict">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.predict">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.predict">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.predict">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.predict">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.predict">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.predict">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.predict">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -6479,10 +6297,10 @@
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.UtteranceMultiClassClassificationTask.predict">(s3prl.task.UtteranceMultiClassClassificationTask method)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.prepare_common_tokenizer">prepare_common_tokenizer() (in module s3prl.problem.asr.superb_asr)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.problem.asr.superb_asr.html#s3prl.problem.asr.superb_asr.SuperbASR.prepare_data">prepare_data() (s3prl.problem.asr.superb_asr.SuperbASR method)</a>
 
         <ul>
@@ -6730,8 +6548,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.read_bytes">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.read_bytes">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.g2p.html#s3prl.dataio.encoder.g2p.read_lexicon_files">read_lexicon_files() (in module s3prl.dataio.encoder.g2p)</a>
 </li>
@@ -6746,13 +6562,11 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.read_text">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.read_text">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.reduction">reduction() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.reduction">reduction() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.reduction">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.reduction">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.reduction">(s3prl.task.base.Task method)</a>
 </li>
@@ -6764,13 +6578,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.reduction">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.reduction">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.reduction">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.reduction">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.reduction">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.reduction">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.reduction">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.reduction">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -6789,8 +6599,6 @@
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.UtteranceMultiClassClassificationTask.reduction">(s3prl.task.UtteranceMultiClassClassificationTask method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.refresh">refresh() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.relative_to">relative_to() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -6801,8 +6609,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.relative_to">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.relative_to">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.relative_to">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.rename">rename() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -6816,8 +6622,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.rename">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.rename">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.replace">replace() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -6830,11 +6634,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.replace">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.replace">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.reset">reset() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.resolve">resolve() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -6845,8 +6645,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.resolve">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.resolve">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.resolve">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.rglob">rglob() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -6860,8 +6658,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.rglob">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.rglob">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.rmdir">rmdir() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -6873,8 +6669,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.rmdir">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.rmdir">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.rmdir">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.RNNEncoder">RNNEncoder (class in s3prl.nn)</a>
@@ -6893,8 +6687,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.root">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.root">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.root">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR.run">run() (s3prl.problem.asr.run.ASR method)</a>
@@ -7665,17 +7457,17 @@
 </li>
         </ul></li>
         <li>
-    s3prl.task.hear_scene
+    s3prl.task.event_prediction
 
         <ul>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#module-s3prl.task.hear_scene">module</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#module-s3prl.task.event_prediction">module</a>
 </li>
         </ul></li>
         <li>
-    s3prl.task.hear_timestamp
+    s3prl.task.scene_prediction
 
         <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#module-s3prl.task.hear_timestamp">module</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#module-s3prl.task.scene_prediction">module</a>
 </li>
         </ul></li>
         <li>
@@ -7757,8 +7549,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.samefile">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.samefile">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.samefile">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR.save_model">save_model() (s3prl.problem.asr.run.ASR method)</a>
@@ -8151,6 +7941,12 @@
           <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.SuperbSID.save_task">(s3prl.problem.SuperbSID method)</a>
 </li>
         </ul></li>
+        <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask">ScenePredictionTask (class in s3prl.problem.common.hear_fsd)</a>
+
+        <ul>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask">(class in s3prl.task.scene_prediction)</a>
+</li>
+        </ul></li>
         <li><a href="_autosummary/s3prl.problem.diarization.run.html#s3prl.problem.diarization.run.Diarization.scoring">scoring() (s3prl.problem.diarization.run.Diarization method)</a>
 
         <ul>
@@ -8162,10 +7958,6 @@
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.pooling.html#s3prl.nn.pooling.SelfAttentivePooling">SelfAttentivePooling (class in s3prl.nn.pooling)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.set_description">set_description() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.set_description_str">set_description_str() (s3prl.task.hear_timestamp.tqdm method)</a>
 </li>
         <li><a href="_autosummary/s3prl.util.download.html#s3prl.util.download.set_dir">set_dir() (in module s3prl.util.download)</a>
 </li>
@@ -8205,16 +7997,10 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.FixedBatchSizeBatchSampler.set_epoch">(s3prl.problem.common.hear_fsd.FixedBatchSizeBatchSampler method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.set_lock">set_lock() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.set_postfix">set_postfix() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.set_postfix_str">set_postfix_str() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.set_state">set_state() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.set_state">set_state() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.set_state">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.set_state">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.set_state">(s3prl.task.base.Task method)</a>
 </li>
@@ -8226,13 +8012,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.set_state">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.set_state">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.set_state">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.set_state">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.set_state">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.set_state">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.set_state">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.set_state">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -8269,8 +8051,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.OrderedDict.setdefault">(s3prl.problem.common.hear_fsd.OrderedDict method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.setdefault">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.setdefault">(s3prl.task.hear_timestamp.defaultdict method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.metric.html#s3prl.metric.slot_edit_f1">slot_edit_f1() (in module s3prl.metric)</a>
@@ -8364,11 +8144,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.stat">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.stat">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.status_printer">status_printer() (s3prl.task.hear_timestamp.tqdm static method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.stem">stem (s3prl.dataio.corpus.hear.Path property)</a>
 
         <ul>
@@ -8379,8 +8155,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.stem">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.stem">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.stem">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.vocabulary.html#s3prl.dataio.encoder.vocabulary.Counter.subtract">subtract() (s3prl.dataio.encoder.vocabulary.Counter method)</a>
@@ -8408,8 +8182,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.suffix">(s3prl.problem.common.hear_maestro.Path property)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.suffix">(s3prl.task.hear_timestamp.Path property)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.suffixes">suffixes (s3prl.dataio.corpus.hear.Path property)</a>
 
@@ -8421,8 +8193,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.suffixes">(s3prl.problem.common.hear_fsd.Path property)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.suffixes">(s3prl.problem.common.hear_maestro.Path property)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.suffixes">(s3prl.task.hear_timestamp.Path property)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.problem.html#s3prl.problem.SuperbASR">SuperbASR (class in s3prl.problem)</a>
@@ -8522,8 +8292,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.symlink_to">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.symlink_to">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -8537,10 +8305,6 @@
 
         <ul>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task">(class in s3prl.task.base)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task">(class in s3prl.task.hear_scene)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task">(class in s3prl.task.hear_timestamp)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.speaker_model.html#s3prl.nn.speaker_model.TDNN">TDNN (class in s3prl.nn.speaker_model)</a>
@@ -8571,10 +8335,10 @@
           <li><a href="_autosummary/s3prl.dataio.corpus.quesst14.html#s3prl.dataio.corpus.quesst14.Quesst14.test_queries">(s3prl.dataio.corpus.quesst14.Quesst14 property)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.test_reduction">test_reduction() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.test_reduction">test_reduction() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_reduction">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.test_reduction">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.test_reduction">(s3prl.task.base.Task method)</a>
 </li>
@@ -8586,13 +8350,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.test_reduction">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.test_reduction">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.test_reduction">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.test_reduction">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.test_reduction">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.test_reduction">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.test_reduction">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.test_reduction">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -8611,10 +8371,10 @@
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.UtteranceMultiClassClassificationTask.test_reduction">(s3prl.task.UtteranceMultiClassClassificationTask method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.test_step">test_step() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.test_step">test_step() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.test_step">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.test_step">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.test_step">(s3prl.task.base.Task method)</a>
 </li>
@@ -8626,13 +8386,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.test_step">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.test_step">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.test_step">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.test_step">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.test_step">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.test_step">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.test_step">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.test_step">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -8700,11 +8456,7 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.touch">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.touch">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm">tqdm (class in s3prl.task.hear_timestamp)</a>
-</li>
         <li><a href="_autosummary/s3prl.problem.asr.run.html#s3prl.problem.asr.run.ASR.train">train() (s3prl.problem.asr.run.ASR method)</a>
 
         <ul>
@@ -8901,10 +8653,10 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.train_reduction">train_reduction() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.train_reduction">train_reduction() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_reduction">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.train_reduction">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.train_reduction">(s3prl.task.base.Task method)</a>
 </li>
@@ -8916,13 +8668,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.train_reduction">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.train_reduction">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.train_reduction">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.train_reduction">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.train_reduction">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.train_reduction">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.train_reduction">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.train_reduction">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -8941,10 +8689,10 @@
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.UtteranceMultiClassClassificationTask.train_reduction">(s3prl.task.UtteranceMultiClassClassificationTask method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.train_step">train_step() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.train_step">train_step() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.train_step">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.train_step">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.train_step">(s3prl.task.base.Task method)</a>
 </li>
@@ -8956,13 +8704,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.train_step">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.train_step">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.train_step">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.train_step">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.train_step">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.train_step">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.train_step">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.train_step">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -9070,11 +8814,11 @@
 </li>
           <li><a href="_autosummary/s3prl.nn.html#s3prl.nn.XVectorBackbone.training">(s3prl.nn.XVectorBackbone attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.training">(s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.training">(s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearFullyConnectedPrediction.training">(s3prl.problem.common.hear_fsd.HearFullyConnectedPrediction attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.training">(s3prl.problem.common.hear_fsd.HearScenePredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.training">(s3prl.problem.common.hear_fsd.ScenePredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.training">(s3prl.task.base.Task attribute)</a>
 </li>
@@ -9086,17 +8830,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.training">(s3prl.task.DumpFeature attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.training">(s3prl.task.hear_scene.HearScenePredictionTask attribute)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.training">(s3prl.task.event_prediction.EventPredictionTask attribute)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.OneHotToCrossEntropyLoss.training">(s3prl.task.hear_scene.OneHotToCrossEntropyLoss attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.training">(s3prl.task.hear_scene.Task attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.training">(s3prl.task.hear_timestamp.HearEventPredictionTask attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss.training">(s3prl.task.hear_timestamp.OneHotToCrossEntropyLoss attribute)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.training">(s3prl.task.hear_timestamp.Task attribute)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.training">(s3prl.task.scene_prediction.ScenePredictionTask attribute)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerClassifier.training">(s3prl.task.speaker_verification_task.SpeakerClassifier attribute)</a>
 </li>
@@ -9172,13 +8908,9 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.unlink">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.unlink">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.unpause">unpause() (s3prl.task.hear_timestamp.tqdm method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.update">update() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
 
         <ul>
@@ -9197,10 +8929,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.OrderedDict.update">(s3prl.problem.common.hear_fsd.OrderedDict method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.update">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.update">(s3prl.task.hear_timestamp.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.update">(s3prl.task.hear_timestamp.tqdm method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.nn.upstream.html#s3prl.nn.upstream.UpstreamDownstreamModel">UpstreamDownstreamModel (class in s3prl.nn.upstream)</a>
@@ -9237,10 +8965,10 @@
           <li><a href="_autosummary/s3prl.dataio.corpus.quesst14.html#s3prl.dataio.corpus.quesst14.Quesst14.valid_queries">(s3prl.dataio.corpus.quesst14.Quesst14 property)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.valid_reduction">valid_reduction() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.valid_reduction">valid_reduction() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_reduction">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_reduction">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.valid_reduction">(s3prl.task.base.Task method)</a>
 </li>
@@ -9252,13 +8980,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.valid_reduction">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.valid_reduction">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.valid_reduction">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.valid_reduction">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.valid_reduction">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.valid_reduction">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.valid_reduction">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.valid_reduction">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -9277,10 +9001,10 @@
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.UtteranceMultiClassClassificationTask.valid_reduction">(s3prl.task.UtteranceMultiClassClassificationTask method)</a>
 </li>
         </ul></li>
-        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask.valid_step">valid_step() (s3prl.problem.common.hear_dcase_2016_task2.HearEventPredictionTask method)</a>
+        <li><a href="_autosummary/s3prl.problem.common.hear_dcase_2016_task2.html#s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask.valid_step">valid_step() (s3prl.problem.common.hear_dcase_2016_task2.EventPredictionTask method)</a>
 
         <ul>
-          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.HearScenePredictionTask.valid_step">(s3prl.problem.common.hear_fsd.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.ScenePredictionTask.valid_step">(s3prl.problem.common.hear_fsd.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.base.html#s3prl.task.base.Task.valid_step">(s3prl.task.base.Task method)</a>
 </li>
@@ -9292,13 +9016,9 @@
 </li>
           <li><a href="_autosummary/s3prl.task.html#s3prl.task.DumpFeature.valid_step">(s3prl.task.DumpFeature method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.HearScenePredictionTask.valid_step">(s3prl.task.hear_scene.HearScenePredictionTask method)</a>
+          <li><a href="_autosummary/s3prl.task.event_prediction.html#s3prl.task.event_prediction.EventPredictionTask.valid_step">(s3prl.task.event_prediction.EventPredictionTask method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.Task.valid_step">(s3prl.task.hear_scene.Task method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.HearEventPredictionTask.valid_step">(s3prl.task.hear_timestamp.HearEventPredictionTask method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Task.valid_step">(s3prl.task.hear_timestamp.Task method)</a>
+          <li><a href="_autosummary/s3prl.task.scene_prediction.html#s3prl.task.scene_prediction.ScenePredictionTask.valid_step">(s3prl.task.scene_prediction.ScenePredictionTask method)</a>
 </li>
           <li><a href="_autosummary/s3prl.task.speaker_verification_task.html#s3prl.task.speaker_verification_task.SpeakerVerification.valid_step">(s3prl.task.speaker_verification_task.SpeakerVerification method)</a>
 </li>
@@ -9319,12 +9039,6 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_scene.html#s3prl.task.hear_scene.validate_score_return_type">validate_score_return_type() (in module s3prl.task.hear_scene)</a>
-
-        <ul>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.validate_score_return_type">(in module s3prl.task.hear_timestamp)</a>
-</li>
-        </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.OrderedDict.values">values() (s3prl.dataio.corpus.hear.OrderedDict method)</a>
 
         <ul>
@@ -9343,8 +9057,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.OrderedDict.values">(s3prl.problem.common.hear_fsd.OrderedDict method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.defaultdict.values">(s3prl.problem.common.hear_maestro.defaultdict method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.defaultdict.values">(s3prl.task.hear_timestamp.defaultdict method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.BertTokenizer.vocab_size">vocab_size (s3prl.dataio.encoder.BertTokenizer property)</a>
@@ -9434,8 +9146,6 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.with_name">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.with_name">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.with_suffix">with_suffix() (s3prl.dataio.corpus.hear.Path method)</a>
 
@@ -9448,21 +9158,15 @@
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.with_suffix">(s3prl.problem.common.hear_maestro.Path method)</a>
 </li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.with_suffix">(s3prl.task.hear_timestamp.Path method)</a>
-</li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="_autosummary/s3prl.dataio.encoder.html#s3prl.dataio.encoder.WordTokenizer">WordTokenizer (class in s3prl.dataio.encoder)</a>
 
         <ul>
           <li><a href="_autosummary/s3prl.dataio.encoder.tokenizer.html#s3prl.dataio.encoder.tokenizer.WordTokenizer">(class in s3prl.dataio.encoder.tokenizer)</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.wrapattr">wrapattr() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
-        <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.tqdm.write">write() (s3prl.task.hear_timestamp.tqdm class method)</a>
-</li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.write_bytes">write_bytes() (s3prl.dataio.corpus.hear.Path method)</a>
 
         <ul>
@@ -9473,8 +9177,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.write_bytes">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.write_bytes">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.write_bytes">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
         <li><a href="_autosummary/s3prl.dataio.corpus.hear.html#s3prl.dataio.corpus.hear.Path.write_text">write_text() (s3prl.dataio.corpus.hear.Path method)</a>
@@ -9487,8 +9189,6 @@
           <li><a href="_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.problem.common.hear_fsd.Path.write_text">(s3prl.problem.common.hear_fsd.Path method)</a>
 </li>
           <li><a href="_autosummary/s3prl.problem.common.hear_maestro.html#s3prl.problem.common.hear_maestro.Path.write_text">(s3prl.problem.common.hear_maestro.Path method)</a>
-</li>
-          <li><a href="_autosummary/s3prl.task.hear_timestamp.html#s3prl.task.hear_timestamp.Path.write_text">(s3prl.task.hear_timestamp.Path method)</a>
 </li>
         </ul></li>
     </ul></td>

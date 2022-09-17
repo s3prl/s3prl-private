@@ -233,8 +233,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -329,7 +329,7 @@
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">s3prl.nn.hear</span> <span class="kn">import</span> <span class="n">HearFullyConnectedPrediction</span>
-<span class="kn">from</span> <span class="nn">s3prl.task.hear_scene</span> <span class="kn">import</span> <span class="n">HearScenePredictionTask</span>
+<span class="kn">from</span> <span class="nn">s3prl.task.scene_prediction</span> <span class="kn">import</span> <span class="n">ScenePredictionTask</span>
 <span class="kn">from</span> <span class="nn">s3prl.dataio.encoder</span> <span class="kn">import</span> <span class="n">CategoryEncoder</span>
 <span class="kn">from</span> <span class="nn">s3prl.dataio.sampler</span> <span class="kn">import</span> <span class="n">FixedBatchSizeBatchSampler</span>
 <span class="kn">from</span> <span class="nn">s3prl.dataset.utterance_classification_pipe</span> <span class="kn">import</span> <span class="n">HearScenePipe</span>
@@ -539,7 +539,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="HearFSD.build_task"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_nsynth5hr.html#s3prl.problem.HearFSD.build_task">[docs]</a>    <span class="k">def</span> <span class="nf">build_task</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">build_task</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span> <span class="n">encoder</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">HearScenePredictionTask</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="o">**</span><span class="n">build_task</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="n">ScenePredictionTask</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">encoder</span><span class="p">,</span> <span class="o">**</span><span class="n">build_task</span><span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>

@@ -233,8 +233,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -331,17 +331,17 @@
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
 
 
-<div class="viewcode-block" id="CategoryEncoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.task.hear_timestamp.html#s3prl.dataio.corpus.hear.CategoryEncoder">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoder</span><span class="p">:</span>
+<div class="viewcode-block" id="CategoryEncoder"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder">[docs]</a><span class="k">class</span> <span class="nc">CategoryEncoder</span><span class="p">:</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">category</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">category</span><span class="p">)))</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">)</span>
 
-<div class="viewcode-block" id="CategoryEncoder.encode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.task.hear_timestamp.html#s3prl.dataio.corpus.hear.CategoryEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoryEncoder.encode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder.encode">[docs]</a>    <span class="k">def</span> <span class="nf">encode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">label</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="CategoryEncoder.decode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.task.hear_timestamp.html#s3prl.dataio.corpus.hear.CategoryEncoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<div class="viewcode-block" id="CategoryEncoder.decode"><a class="viewcode-back" href="../../../../_autosummary/s3prl.problem.common.hear_fsd.html#s3prl.dataio.corpus.hear.CategoryEncoder.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span><span class="p">[</span><span class="n">index</span><span class="p">]</span></div></div>
 
 

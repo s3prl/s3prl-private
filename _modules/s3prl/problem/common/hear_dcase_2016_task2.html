@@ -233,8 +233,8 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.base.html">base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.diarization.html">diarization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.dump_feature.html">dump_feature</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_scene.html">hear_scene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.hear_timestamp.html">hear_timestamp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.event_prediction.html">event_prediction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.scene_prediction.html">scene_prediction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speaker_verification_task.html">speaker_verification_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.speech2text_ctc_task.html">speech2text_ctc_task</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../../_autosummary/s3prl.task.utterance_classification_task.html">utterance_classification_task</a></li>
@@ -334,7 +334,7 @@
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span> <span class="nn">omegaconf</span> <span class="kn">import</span> <span class="n">MISSING</span>
 
-<span class="kn">from</span> <span class="nn">s3prl.task.hear_timestamp</span> <span class="kn">import</span> <span class="n">HearEventPredictionTask</span>
+<span class="kn">from</span> <span class="nn">s3prl.task.event_prediction</span> <span class="kn">import</span> <span class="n">EventPredictionTask</span>
 <span class="kn">from</span> <span class="nn">s3prl.dataset.hear_timestamp</span> <span class="kn">import</span> <span class="n">HearTimestampDatapipe</span>
 <span class="kn">from</span> <span class="nn">s3prl.dataio.sampler</span> <span class="kn">import</span> <span class="n">GroupSameItemSampler</span><span class="p">,</span> <span class="n">FixedBatchSizeBatchSampler</span>
 
@@ -562,7 +562,7 @@
         <span class="n">valid_events</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">valid_df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">df_to_events</span><span class="p">(</span><span class="n">valid_df</span><span class="p">)</span>
         <span class="n">test_events</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">test_df</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">df_to_events</span><span class="p">(</span><span class="n">test_df</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">HearEventPredictionTask</span><span class="p">(</span>
+        <span class="k">return</span> <span class="n">EventPredictionTask</span><span class="p">(</span>
             <span class="n">model</span><span class="p">,</span>
             <span class="n">encoder</span><span class="p">,</span>
             <span class="n">valid_target_events</span><span class="o">=</span><span class="n">valid_events</span><span class="p">,</span>
