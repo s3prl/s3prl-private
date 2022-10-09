@@ -1,12 +1,10 @@
 import os
-import re
-import sys
 import yaml
 import glob
 import torch
 import random
+import time
 import argparse
-import importlib
 import torchaudio
 import numpy as np
 from argparse import Namespace
@@ -23,7 +21,7 @@ def get_downstream_args():
     parser = argparse.ArgumentParser()
 
     # train or test for this experiment
-    parser.add_argument('-m', '--mode', choices=['train', 'evaluate', 'inference'], required=True)
+    parser.add_argument('-m', '--mode', choices=['train', 'evaluate', 'inference', 'extract'], required=True)
     parser.add_argument('-t', '--evaluate_split', default='test')
     parser.add_argument('-o', '--override', help='Used to override args and config, this is at the highest priority')
 
@@ -94,11 +92,10 @@ def get_downstream_args():
     if args.expdir is None:
         args.expdir = f'result/downstream/{args.expname}'
 
-    if args.auto_resume:
-        if os.path.isdir(args.expdir):
-            ckpt_pths = glob.glob(f'{args.expdir}/states-*.ckpt')
-            if len(ckpt_pths) > 0:
-                args.past_exp = args.expdir
+    if args.auto_resume and os.path.isdir(args.expdir):
+        ckpt_pths = glob.glob(f'{args.expdir}/states-*.ckpt')
+        if len(ckpt_pths) > 0:
+            args.past_exp = args.expdir
 
     if args.past_exp:
         # determine checkpoint path
@@ -153,6 +150,8 @@ def get_downstream_args():
 
 
 def main():
+    start_time = time.time()
+
     torch.multiprocessing.set_sharing_strategy('file_system')
     torchaudio.set_audio_backend('sox_io')
     hack_isinstance()
@@ -211,9 +210,18 @@ def main():
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
+    if (config['downstream_expert']['datarc'].get("use_extracted_feature") and
+        args.mode != "extract" and
+        not os.path.exists(os.path.join(args.expdir, "extracted_feats/"))
+    ):
+        mode = args.mode
+        args.mode = "extract"
+        Runner(args, config).extract()
+        args.mode = mode
     runner = Runner(args, config)
     eval(f'runner.{args.mode}')()
-
+    total_time = time.time() - start_time
+    print('Execution time:', total_time)
 
 if __name__ == '__main__':
     main()
