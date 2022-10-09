@@ -88,3 +88,15 @@ def distilmelhubert_t_cont_init_teacher_tr3(*args, **kwargs):
     kwargs["config"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilmelhubert_t_cont_init_teacher_tr3/config_model.yaml")
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs)
+
+def distilw2v2(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilw2v2/dev-dis-best.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)
+
+def distilwavlm_base_plus_init_enc_f_student_hubert(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilwavlm_base_plus_init_enc_f_student_hubert/dev-dis-best.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)

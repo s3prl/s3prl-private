@@ -39,7 +39,7 @@ class DistillerBuilder(nn.Module):
         if config is not None:
             self.config = yaml.load(open(config, "r"), Loader=yaml.FullLoader)
         else:
-            self.config = self.all_states["Config"]
+            self.config = self.all_states.get("Up_Config", self.all_states.get("Config"))
 
         # parse the options dict
         self.load = bool(strtobool(options["load_pretrain"]))

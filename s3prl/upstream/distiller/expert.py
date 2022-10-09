@@ -4,7 +4,6 @@
 """
 
 import yaml
-import torch
 from ..interfaces import UpstreamBase
 from .builder import PretrainedDistiller
 
@@ -42,11 +41,13 @@ class UpstreamExpert(UpstreamBase):
         return 320
 
     def forward(self, wavs, no_pred=False):
-        _, feat_final, pred, pad_mask, layer_hidden = self.model(
+        feat_final, pred, pad_mask, layer_hidden = self.model(
             wavs, get_hidden=True, no_pred=no_pred or self.no_pred
-        )
+        )[1:5]
         # pred: B x N x T x D
         if not (no_pred or self.no_pred):
+            if type(pred) is list:
+                pred = sum(pred) / len(pred)
             hidden_feats = pred.transpose(0, 1).split(1, 0)
             hidden_feats = [hid.squeeze(0) for hid in hidden_feats]
         else:
