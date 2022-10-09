@@ -210,7 +210,7 @@ def main():
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
-    if (config['downstream_expert']['datarc'].get("use_extracted_feature") and
+    if (config['downstream_expert'].get('datarc', {}).get("use_extracted_feature") and
         args.mode != "extract" and
         not os.path.exists(os.path.join(args.expdir, "extracted_feats/"))
     ):

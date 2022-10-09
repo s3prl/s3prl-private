@@ -116,7 +116,7 @@ class Runner():
         if config["downstream_expert"]["datarc"].get("use_extracted_feature") and args.mode != "extract":
             self.all_entries = [self.featurizer, self.downstream]
             del self.upstream
-            torch.set_num_threads(config["downstream_expert"]['datarc']["num_workers"])
+            torch.set_num_threads(config["downstream_expert"].get('datarc', {})["num_workers"])
         else:
             self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
@@ -294,7 +294,7 @@ class Runner():
                     # to cpu
                     time_axis_mean = lambda f: f.mean(dim=1, keepdim=True)
                     to_cpu = lambda f: f.cpu()
-                    if self.config['downstream_expert']['datarc'].get("extract_scene_feature"):
+                    if self.config['downstream_expert'].get('datarc', {}).get("extract_scene_feature"):
                         if isinstance(selected_features, (tuple, list)):
                             selected_features = map(time_axis_mean, selected_features)
                             selected_features = map(to_cpu, selected_features)
@@ -310,11 +310,11 @@ class Runner():
 
                     # save feature
                     for data in zip(selected_features, *others):
-                        if self.config['downstream_expert']['datarc'].get("extract_to_single_file"):
+                        if self.config['downstream_expert'].get('datarc', {}).get("extract_to_single_file"):
                             all_data[data[-1]] = data
                         else:
                             torch.save(data, os.path.join(self.args.expdir, "extracted_feats/", split, f"{data[-1]}.ckpt"))
-            if self.config['downstream_expert']['datarc'].get("extract_to_single_file"):
+            if self.config['downstream_expert'].get('datarc', {}).get("extract_to_single_file"):
                 torch.save(all_data, os.path.join(self.args.expdir, "extracted_feats/", split, f"all_data.ckpt"))
 
     def train(self):
