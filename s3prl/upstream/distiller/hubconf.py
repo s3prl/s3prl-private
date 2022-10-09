@@ -74,3 +74,30 @@ def chimera_melhubert(*args, **kwargs):
     )
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs)
+
+def distilmelhubert_t_cont_init_mel_tr3(*args, **kwargs):
+
+    kwargs["ckpt"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/distilmelhubert_t_cont_init_mel_tr3/dev-dis-best.ckpt"
+    kwargs["config"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/distilmelhubert_t_cont_init_mel_tr3/config_model.yaml"
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)
+
+def distilmelhubert_t_cont_init_teacher_tr3(*args, **kwargs):
+
+    kwargs["ckpt"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/distilmelhubert_t_cont_init_teacher_tr3/dev-dis-best.ckpt" 
+    kwargs["config"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/distilmelhubert_t_cont_init_teacher_tr3/config_model.yaml"
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)
+
+def setup2_2_dis_t_cont_init_mel_tr3(*args, **kwargs):
+
+    kwargs["ckpt"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/setup2_2-dis_t_cont_init_mel_tr3/dev-dis-best.ckpt"
+    kwargs["config"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/setup2_2-dis_t_cont_init_mel_tr3/config_model.yaml"
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)
+
+def setup2_2_dis_t_cont_init_teacher_tr3(*args, **kwargs):
+    kwargs["ckpt"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/setup2_2-dis_t_cont_init_teacher_tr3/dev-dis-best.ckpt"
+    kwargs["config"] = "/work/gerber68/chimera-s3prl/s3prl/result/pretrain/5e-5/setup2_2-dis_t_cont_init_teacher_tr3/config_model.yaml"
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs)
