@@ -113,7 +113,7 @@ class Runner():
         self.upstream = self._get_upstream()
         self.featurizer = self._get_featurizer()
         self.downstream = self._get_downstream()
-        if config["downstream_expert"]["datarc"].get("use_extracted_feature") and args.mode != "extract":
+        if config["downstream_expert"].get('datarc', {}).get("use_extracted_feature") and args.mode != "extract":
             self.all_entries = [self.featurizer, self.downstream]
             del self.upstream
             torch.set_num_threads(config["downstream_expert"].get('datarc', {})["num_workers"])
@@ -376,7 +376,7 @@ class Runner():
                     if pbar.n >= pbar.total:
                         break
                     global_step = pbar.n + 1
-                    if self.config["downstream_expert"]["datarc"].get("use_extracted_feature"):
+                    if self.config["downstream_expert"].get('datarc', {}).get("use_extracted_feature"):
                         if isinstance(wavs[0], (tuple, list)):
                             feature_lengths = [wav[0].size(0) for wav in wavs]
                             features = {
@@ -560,7 +560,7 @@ class Runner():
                 break
 
             with torch.no_grad():
-                if self.config["downstream_expert"]["datarc"].get("use_extracted_feature"):
+                if self.config["downstream_expert"].get('datarc', {}).get("use_extracted_feature"):
                     if isinstance(wavs[0], (tuple, list)):
                         feature_lengths = list(map(lambda x: x[0].size(0), wavs))
                         # bz, layer, time, feature dim
