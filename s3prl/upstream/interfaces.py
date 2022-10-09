@@ -278,8 +278,11 @@ class Featurizer(nn.Module):
     def tolist(self, paired_wavs: List[Tensor], paired_feature: Tensor, cif_lengths=None):
         assert paired_feature.dim() == 3, "(batch_size, max_seq_len, feat_dim)"
 
-        if cif_lengths is not None:
-            feature_len = cif_lengths.tolist()
+        if cif_lengths:
+            if isinstance(cif_lengths, torch.Tensor):
+                feature_len = cif_lengths.tolist()
+            else:
+                feature_len = cif_lengths
         elif isinstance(self.downsample_rate, (int, float)):
             a = paired_feature.size(1)
             b = round(max([len(wav) for wav in paired_wavs]) / self.downsample_rate)

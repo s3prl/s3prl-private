@@ -3,8 +3,6 @@
     Author: Heng-Jui Chang (https://github.com/vectominist)
 """
 
-import math
-import numpy as np
 import torch
 from torch import nn
 from fairseq.models.wav2vec.wav2vec2 import ConvFeatureExtractionModel
@@ -26,6 +24,14 @@ class DistillerConfig:
                 "[(512,10,5)] + [(512,3,2)] * 4 + [(512,2,2)] * 2",
             )
         )
+        if config.get("wav_rct", 1.0) > 0.0:
+            from .module import ReconstructionModel
+            self.reconstuctor_convtrans_feature_layers = str(
+                config.get(
+                    "reconstuctor_convtrans_feature_layers",
+                    "[(512,10,5)] + [(512,3,2)] * 4 + [(512,2,2)] * 2",
+                )
+            )
         self.extractor_dropout = float(config.get("extractor_dropout", 0.0))
         self.feature_grad_mult = float(config.get("feature_grad_mult", 1.0))
 
@@ -61,11 +67,14 @@ class DistillerConfig:
         self.loss_type = str(config.get("loss_type", "l1"))
         self.feat_pen_loss = float(config.get("feat_pen_loss", 0.0))
         self.cosine_loss = float(config.get("cosine_loss", 0.0))
+        self.wav_rct = float(config.get("wav_rct", 0.0))
 
         # When task_emb_type == 'expand-last' only
         self.pred_layer_id = list(
             config.get("pred_layer_id", range(1, self.n_tasks + 1))
         )
+
+        self.multi_pred_head = int(config.get("multi_pred_head", 1))
 
         # Initialization
         self.init_teacher_conv_layers = bool(
@@ -173,15 +182,33 @@ class DistillerModel(nn.Module):
         if config.out_layer_type == "expand-last":
             assert self.task_emb_type == "expand-last"
             print(f"[DistillerModel] - Inter dim = {inter_dim}")
-            self.output_layer = nn.Sequential(
-                nn.Linear(final_emb_size, inter_dim * self.n_tasks),
-                nn.GELU(),
-                SplitLinear(inter_dim, self.n_tasks, config.final_dim),
-            )
+            if hasattr(config, 'multi_pred_head') and config.multi_pred_head > 1:
+                # different pred heads for each teacher model
+                # out: B x T x N_task x final_dim
+                for idx in range(config.multi_pred_head):
+                    output_layer = nn.Sequential(
+                        nn.Linear(final_emb_size, inter_dim * self.n_tasks),
+                        nn.GELU(),
+                        SplitLinear(inter_dim, self.n_tasks, config.final_dim),
+                    )
+                    setattr(self, 'output_layer{}'.format(idx), output_layer)
+            else:
+                # out: B x T x N_task x final_dim
+                self.output_layer = nn.Sequential(
+                    nn.Linear(final_emb_size, inter_dim * self.n_tasks),
+                    nn.GELU(),
+                    SplitLinear(inter_dim, self.n_tasks, config.final_dim),
+                )
         elif config.out_layer_type in {"none", "self-hidden"}:
             self.output_layer = None
         else:
             raise NotImplementedError(f"Unknown out layer type {config.out_layer_type}")
+
+        if config.wav_rct:
+            self.pre_rct_proj = nn.Linear(config.encoder_embed_dim, feat_emb_dim)
+            self.reconstuctor_convtrans_feature_layers = eval(config.reconstuctor_convtrans_feature_layers)
+            self.reconstruct_module = ReconstructionModel(self.reconstuctor_convtrans_feature_layers)
+
 
     def forward_feature(self, wave, pad_mask):
         """Forward feature extractor"""
@@ -207,6 +234,11 @@ class DistillerModel(nn.Module):
         pad_mask = self.cal_pad_mask(pad_mask, feat.shape[1])
 
         return feat, pad_mask
+
+    def forward_rct(self, hidden):
+        hidden = self.pre_rct_proj(hidden)
+        rct_wavs = self.reconstruct_module(hidden.transpose(1, 2))
+        return rct_wavs
 
     def forward(self, wave, pad_mask, task_id=None, get_hidden=False, no_pred=False):
         """
@@ -276,6 +308,12 @@ class DistillerModel(nn.Module):
         if not no_pred:
             if self.task_emb_type == "self-hidden":
                 pred = torch.stack([feat_final] + layer_hiddens, dim=1)
+            elif self.config.multi_pred_head > 1:
+                pred_list = []
+                for idx in range(self.config.multi_pred_head):
+                    pred_list.append(
+                        getattr(self, 'output_layer{}'.format(idx))(hidden).reshape(b_sz, n_sz, t_sz, -1)
+                    )
             else:
                 pred = self.output_layer(hidden).reshape(b_sz, n_sz, t_sz, -1)
             # B x N x T x D
@@ -284,17 +322,23 @@ class DistillerModel(nn.Module):
 
         if (not no_pred) and self.task_emb_type == "expand-last":
             assert n_sz == 1, n_sz
-            pred = (
-                pred.squeeze(1)
-                .reshape(b_sz, t_sz, self.n_tasks, -1)
-                .permute(0, 2, 1, 3)
-            )
-            # B x N x T x D
-
+            if self.config.multi_pred_head > 1:
+                pred_list = [pred.squeeze(1).reshape(b_sz, t_sz, self.n_tasks, -1).permute(0, 2, 1, 3) for pred in pred_list]
+                pred = pred_list
+            else:
+                pred = (
+                    pred.squeeze(1)
+                    .reshape(b_sz, t_sz, self.n_tasks, -1)
+                    .permute(0, 2, 1, 3)
+                )
+                # B x N x T x D
+        ret = [feat, feat_final, pred, pad_mask]
         if get_hidden:
-            return feat, feat_final, pred, pad_mask, layer_hiddens
-        else:
-            return feat, feat_final, pred, pad_mask
+            ret.append(layer_hiddens)
+        if self.config.wav_rct:
+            rct_wavs = self.forward_rct(hidden)
+            ret.append(rct_wavs)
+        return ret
 
     def cal_pad_mask(self, pad_mask, max_len):
         """Calculates pad mask after conv."""

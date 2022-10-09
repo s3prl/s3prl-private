@@ -14,7 +14,6 @@ from torch.nn.utils.rnn import pad_sequence
 from .model import MelHuBERTConfig, MelHuBERTModel
 from .audio import create_transform
 import s3prl.optimizers
-from s3prl.utility import prune
  
 class MelHuBERTBuilder(nn.Module):
 
@@ -55,17 +54,7 @@ class MelHuBERTBuilder(nn.Module):
     def load_model(self, model, state_dict, verbose=False):
         try:
             tmp = "".join(state_dict.keys())
-            if "_orig" in tmp and "_mask" in tmp:
-                params_to_prune, _ = model.get_params_to_prune()
-                prune.global_unstructured(
-                    params_to_prune,
-                    pruning_method=prune.Identity,
-                )
-                model.load_state_dict(state_dict)
-                for module, name in params_to_prune:
-                    prune.remove(module, name)
-            else:
-                model.load_state_dict(state_dict)
+            model.load_state_dict(state_dict)
             if verbose:
                 print("[MelHuBERTBuilder] - Pre-trained weights loaded!")
             return model

@@ -6,7 +6,6 @@ import uuid
 import shutil
 import random
 import tempfile
-import importlib
 from pathlib import Path
 
 import torch
@@ -14,6 +13,7 @@ import torchaudio
 import numpy as np
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
+from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DistributedSampler
 from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import is_initialized, get_rank, get_world_size
@@ -113,7 +113,12 @@ class Runner():
         self.upstream = self._get_upstream()
         self.featurizer = self._get_featurizer()
         self.downstream = self._get_downstream()
-        self.all_entries = [self.upstream, self.featurizer, self.downstream]
+        if config["downstream_expert"]["datarc"].get("use_extracted_feature") and args.mode != "extract":
+            self.all_entries = [self.featurizer, self.downstream]
+            del self.upstream
+            torch.set_num_threads(config["downstream_expert"]['datarc']["num_workers"])
+        else:
+            self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
         if args.mode == "train":
             wandb.init(
@@ -251,6 +256,66 @@ class Runner():
         with open(os.path.join(path, "README.md"), "w") as f:
             f.write(model_card)
 
+    def extract(self):
+        epoch = self.init_ckpt.get('Epoch', 0)
+        
+        # convert to eval mode
+        for entry in self.all_entries:
+            entry.model.eval()   
+            
+        # progress bar
+        tqdm_file = sys.stderr if is_leader_process() else open(os.devnull, 'w')
+        
+        # iter all splits
+        for split in (self.config['runner'].get("train_dataloader", "train"), *self.config['runner']['eval_dataloaders']):
+            # create dir
+            os.makedirs(os.path.join(self.args.expdir, "extracted_feats/", split), exist_ok=True)
+            # create dataloader
+            try:
+                dataloader = self.downstream.model.get_dataloader(split, epoch=epoch, batch_size=1)
+            except TypeError as e:
+                if "unexpected keyword argument 'epoch'" in str(e):
+                    dataloader = self.downstream.model.get_dataloader(split, batch_size=1)
+                    if hasattr(dataloader, "sampler") and isinstance(dataloader.sampler, DistributedSampler):
+                        dataloader.sampler.set_epoch(epoch)
+                else:
+                    raise
+            
+            assert not dataloader.drop_last, "Use drop_last may cause missing some feature!" 
+
+            with torch.no_grad():
+                all_data = {}
+                print(f"[Runner] - Extract features from {split} split.")
+                for wavs, *others in tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file):
+                    wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in wavs]
+                    features = self.upstream.model(wavs)
+                    selected_features = features.get(self.args.upstream_feature_selection, features["hidden_states"])
+
+                    # to cpu
+                    time_axis_mean = lambda f: f.mean(dim=1, keepdim=True)
+                    to_cpu = lambda f: f.cpu()
+                    if self.config['downstream_expert']['datarc'].get("extract_scene_feature"):
+                        if isinstance(selected_features, (tuple, list)):
+                            selected_features = map(time_axis_mean, selected_features)
+                            selected_features = map(to_cpu, selected_features)
+                            selected_features = [data for data in zip(*selected_features)]
+                        else:
+                            selected_features = selected_features.mean(dim=1, keepdim=True).cpu()
+                    else:
+                        if isinstance(selected_features, (tuple, list)):
+                            selected_features = map(to_cpu, selected_features)
+                            selected_features = [data for data in zip(*selected_features)]
+                        else:
+                            selected_features = selected_features.cpu()
+
+                    # save feature
+                    for data in zip(selected_features, *others):
+                        if self.config['downstream_expert']['datarc'].get("extract_to_single_file"):
+                            all_data[data[-1]] = data
+                        else:
+                            torch.save(data, os.path.join(self.args.expdir, "extracted_feats/", split, f"{data[-1]}.ckpt"))
+            if self.config['downstream_expert']['datarc'].get("extract_to_single_file"):
+                torch.save(all_data, os.path.join(self.args.expdir, "extracted_feats/", split, f"all_data.ckpt"))
 
     def train(self):
         # trainable parameters and train/eval mode
@@ -311,17 +376,34 @@ class Runner():
                     if pbar.n >= pbar.total:
                         break
                     global_step = pbar.n + 1
-
-                    wavs = [torch.FloatTensor(wav).to(self.args.device) for wav in wavs]
-                    if self.upstream.trainable:
-                        features = self.upstream.model(wavs)
+                    if self.config["downstream_expert"]["datarc"].get("use_extracted_feature"):
+                        if isinstance(wavs[0], (tuple, list)):
+                            feature_lengths = [wav[0].size(0) for wav in wavs]
+                            features = {
+                                self.args.upstream_feature_selection: [pad_sequence(
+                                [wav[l] for wav in wavs],
+                                batch_first=True,
+                                ).to(self.args.device) for l in range(len(wavs[0]))]
+                            }
+                        else:
+                            feature_lengths = [wav.size(0) for wav in wavs]
+                            features = {
+                                self.args.upstream_feature_selection: pad_sequence(
+                                wavs,
+                                batch_first=True,
+                                ).to(self.args.device)
+                            }
                     else:
-                        with torch.no_grad():
+                        feature_lengths = None
+                        wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in wavs]
+                        if self.upstream.trainable:
                             features = self.upstream.model(wavs)
+                        else:
+                            with torch.no_grad():
+                                features = self.upstream.model(wavs)
 
-                    cif_lengths = features.get("feature_lengths")
-
-                    features = self.featurizer.model(wavs, features, cif_lengths)
+                    feature_lengths = features.get("feature_lengths", feature_lengths)
+                    features = self.featurizer.model(wavs, features, feature_lengths)
 
                     if specaug:
                         features, _ = specaug(features)
@@ -455,7 +537,7 @@ class Runner():
         random.seed(self.args.seed)
         np.random.seed(self.args.seed)
         torch.manual_seed(self.args.seed)
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and self.args.device != "cpu":
             torch.cuda.manual_seed_all(self.args.seed)
             with torch.cuda.device(self.args.device):
                 torch.cuda.empty_cache()
@@ -477,11 +559,32 @@ class Runner():
             if batch_id > evaluate_steps:
                 break
 
-            wavs = [torch.FloatTensor(wav).to(self.args.device) for wav in wavs]
             with torch.no_grad():
-                features = self.upstream.model(wavs)
-                cif_lengths = features.get("feature_lengths")
-                features = self.featurizer.model(wavs, features, cif_lengths)
+                if self.config["downstream_expert"]["datarc"].get("use_extracted_feature"):
+                    if isinstance(wavs[0], (tuple, list)):
+                        feature_lengths = list(map(lambda x: x[0].size(0), wavs))
+                        # bz, layer, time, feature dim
+                        features = {
+                            "hidden_states": [pad_sequence(
+                            [wav[l] for wav in wavs],
+                            batch_first=True,
+                            ).to(self.args.device) for l in range(len(wavs[0]))]
+                        }
+                    else:
+                        feature_lengths = list(map(lambda x: x.size(0), wavs))
+                        features = {
+                            "hidden_states": pad_sequence(
+                            wavs,
+                            batch_first=True,
+                            ).to(self.args.device)
+                        }
+                else:
+                    feature_lengths = None
+                    wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in wavs]
+                    features = self.upstream.model(wavs)
+                    
+                feature_lengths = features.get("feature_lengths", feature_lengths)
+                features = self.featurizer.model(wavs, features, feature_lengths)
                 self.downstream.model(
                     split,
                     features, *others,
@@ -502,7 +605,7 @@ class Runner():
         records = defaultdict(list)
 
         # prepare back to training
-        if torch.cuda.is_available():
+        if torch.cuda.is_available() and self.args.device != "cpu":
             with torch.cuda.device(self.args.device):
                 torch.cuda.empty_cache()
 

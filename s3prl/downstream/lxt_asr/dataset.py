@@ -62,7 +62,7 @@ class LxtAsrDataset(Dataset):
     def __getitem__(self, index):
         audio_path, label, _ = self.pairs[index]
         wav = self.load_audio(audio_path)
-        return wav, label, audio_path.stem
+        return wav, label, audio_path.stem, index
 
     def collate_fn(self, items):
         return zip(*items)
@@ -121,7 +121,7 @@ class LibriAsrDataset(Dataset):
     def __getitem__(self, index):
         audio_path, label, _ = self.pairs[index]
         wav = self.load_audio(audio_path)
-        return wav, label, audio_path.stem
+        return wav, label, audio_path.stem, index
 
     def collate_fn(self, items):
         return zip(*items)

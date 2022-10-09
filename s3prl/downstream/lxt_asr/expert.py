@@ -14,7 +14,7 @@ from torch.nn.utils.rnn import pad_sequence
 from .model import *
 from .dictionary import Dictionary
 from .dataset import LxtAsrDataset, LibriAsrDataset
-from s3prl.utility.data import DistributedMaxFramesBatchSampler
+from s3prl.utility.data import get_extracted_dataset
 
 
 def token_to_word(text):
@@ -50,7 +50,7 @@ class DownstreamExpert(nn.Module):
     """
 
     def __init__(
-        self, upstream_dim, upstream_rate, downstream_expert, expdir, **kwargs
+        self, upstream_dim, upstream_rate, downstream_expert, expdir, extracted, downstream, **kwargs
     ):
         """
         Args:
@@ -85,6 +85,8 @@ class DownstreamExpert(nn.Module):
         self.datarc = downstream_expert["datarc"]
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
+        self.extracted = extracted
+        self.downstream = downstream
         self.dictionary = Dictionary.load(self.datarc["dict_path"])
 
         self.projector = nn.Linear(upstream_dim, self.modelrc["project_dim"])
@@ -104,7 +106,7 @@ class DownstreamExpert(nn.Module):
         self.decoder = get_decoder(decoder_args, self.dictionary)
         self.register_buffer("best_score", torch.ones(1) * (1<<31))
 
-    def get_dataloader(self, split, epoch=0):
+    def get_dataloader(self, split, epoch=0, batch_size=None):
         if not hasattr(self, f"{split}_dataset"):
             if "lxt" in split:
                 dataset_cls = LxtAsrDataset
@@ -112,8 +114,15 @@ class DownstreamExpert(nn.Module):
                 dataset_cls = LibriAsrDataset
             else:
                 raise ValueError
+            
+            if self.extracted:
+                assert os.path.exists(os.path.join(self.expdir, "extracted_feats/")), "You should extract your features first!"
+                dataset_cls = get_extracted_dataset(dataset_cls, split)
+                
+            if batch_size:
+                self.datarc['train_batch_size'] = batch_size
 
-            dataset = dataset_cls(split, self.dictionary, **self.datarc)
+            dataset = dataset_cls(split, self.dictionary, extracted=self.extracted, downstream=self.downstream, expdir=self.expdir, **self.datarc)
             setattr(self, f"{split}_dataset", dataset)
 
         dataset = getattr(self, f"{split}_dataset")
@@ -220,7 +229,7 @@ class DownstreamExpert(nn.Module):
         return hyps
 
     # Interface
-    def forward(self, split, features, labels, utterance_id, records, **kwargs):
+    def forward(self, split, features, labels, utterance_id, data_id, records, **kwargs):
         """
         Args:
             split: string

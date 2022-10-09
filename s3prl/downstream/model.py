@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
 def get_downstream_model(input_dim, output_dim, config):
@@ -69,12 +68,8 @@ class MeanPooling(nn.Module):
             feature_BxTxH - [BxTxH]   Acoustic feature with shape 
             features_len  - [B] of feature length
         '''
-        agg_vec_list = []
-        for i in range(len(feature_BxTxH)):
-            agg_vec = torch.mean(feature_BxTxH[i][:features_len[i]], dim=0)
-            agg_vec_list.append(agg_vec)
-
-        return torch.stack(agg_vec_list), torch.ones(len(feature_BxTxH)).long()
+        agg_vec_list = [f[:l].mean(dim=0) for f, l in zip(feature_BxTxH, features_len)]
+        return torch.stack(agg_vec_list), torch.ones(len(feature_BxTxH), dtype=torch.long)
 
 
 class AttentivePooling(nn.Module):
