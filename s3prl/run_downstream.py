@@ -85,6 +85,8 @@ def get_downstream_args():
     parser.add_argument('--cache_dir', help='The cache directory for pretrained model downloading')
     parser.add_argument('--verbose', action='store_true', help='Print model infomation')
     parser.add_argument('--disable_cudnn', action='store_true', help='Disable CUDNN')
+    parser.add_argument('--disable_wandb', action="store_true", help='Disable wandb')
+    
 
     args = parser.parse_args()
     backup_files = []

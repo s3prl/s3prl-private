@@ -120,7 +120,7 @@ class Runner():
         else:
             self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
-        if args.mode == "train":
+        if args.mode == "train" and not args.disable_wandb:
             wandb.init(
                 project=args.upstream.replace("/", "--"),
                 name="{}-{:.1E}".format(args.upstream_feature_selection, config.get('optimizer', {}).get('lr', 1))
@@ -352,7 +352,7 @@ class Runner():
 
         # Tensorboard logging
         if is_leader_process():
-            logger = Logger(self.args.expdir, True)
+            logger = Logger(self.args.expdir, not self.args.disable_wandb)
 
         batch_ids = []
         backward_steps = 0
