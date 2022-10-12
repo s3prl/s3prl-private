@@ -18,7 +18,6 @@ echo "1. excute"
 declare -a path=(lxt_pr lxt_sid4 lxt_emotion lxt_asr lxt_dtw lxt_sv diarization enhancement_stft separation_stft speech_translation)
 declare -a name=(PR SID ER ASR QBE ASV SD SE SS ST)
 
-hub=huggingface
 org=MelHuBERT
 repo=MelHuBERT
 revision=5310237480676916aaaf83215c4c00bb4db9ddb6
@@ -26,18 +25,15 @@ model_name=MelHuBERT-Stage-360
 task=$1
 lr=$2
 
+# args="${org} ${repo} ${revision}"
+args="${model_name}"
 for i in {0..9}
 do
     if [ $task == "all" ] || [ $task == ${name[i]} ]
     then
         echo start task: ${name[i]}
         start=$(date +%s)
-        if [ $hub == "huggingface" ]
-        then
-            bash downstream/${path[i]}/run_hug.sh $org $repo $revision /work/twsacsq997/joseph1227/$model_name/${name[i]} $lr
-        else
-            bash downstream/${path[i]}/run.sh $model_name /work/twsacsq997/joseph1227/$model_name/${name[i]} $lr
-        fi
+        bash downstream/${path[i]}/run.sh $args /work/twsacsq997/joseph1227/$model_name/${name[i]} $lr
 
         end=$(date +%s)
         echo $model_name,${name[i]},$((end - start)),sec >> /work/twsacsq997/joseph1227/runtime.log
