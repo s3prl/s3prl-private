@@ -11,30 +11,28 @@ from torch.utils.data import Dataset, DistributedSampler
 T_co = TypeVar("T_co", covariant=True)
 
 
-def get_extracted_dataset(dataset_cls, use_single_file=False, keep_split=False, device="cuda"):
+def get_extracted_dataset(dataset_cls, extract_to_single_file=False, device="cuda"):
         
     class ExtractedDataset(dataset_cls):
         def __init__(self, *args, **kwargs):
-            self._expdir = kwargs.pop("expdir")
-            self._use_single_file = use_single_file
-            if keep_split:
-                self._split = kwargs.get("split")
-            else:
-                self._split = kwargs.pop("split")
-            if use_single_file:
-                self._all_data = torch.load(os.path.join(self._expdir, "extracted_feats/", self._split, "all_data.ckpt"), map_location="cpu")
-                # if device != "cpu":
-                #     for key in self._all_data:
-                #         if isinstance(self._all_data[key][0], (tuple, list)):
-                #             self._all_data[key] = (tuple((t.to(device) for t in self._all_data[key][0])), *self._all_data[key][1:])
-                #         else:
-                #             self._all_data[key][0] = self._all_data[key][0].to(device)
+            self._split = kwargs.pop("split_name")
+            self._extracted_path = kwargs.pop("extracted_path")
+            self._use_single_file = extract_to_single_file
+
+            if self._use_single_file:
+                self._all_data = torch.load(os.path.join(self._extracted_path, "extracted_feats/", self._split, "all_data.ckpt"), map_location="cpu")
             super().__init__(*args, **kwargs)
         def __getitem__(self, index):
             if self._use_single_file:
-                return self._all_data[index]
+                # copy to avoid memory leakage
+                feature = self._all_data[index][0]
+                if isinstance(feature, (list, tuple)):
+                    feature = tuple(f.clone() for f in feature)
+                elif isinstance(feature, torch.Tensor):
+                    feature = feature.clone()
+                return feature, *self._all_data[index][1:]
             else:
-                return torch.load(os.path.join(self._expdir, "extracted_feats/", self._split, f"{index}.ckpt"), map_location="cpu")
+                return torch.load(os.path.join(self._extracted_path, "extracted_feats/", self._split, f"{index}.ckpt"), map_location="cpu")
     
     return ExtractedDataset
 

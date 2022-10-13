@@ -88,6 +88,12 @@ def get_downstream_args():
     parser.add_argument('--disable_cudnn', action='store_true', help='Disable CUDNN')
     parser.add_argument('--disable_wandb', action="store_true", help='Disable wandb')
     
+    # extract mode
+    parser.add_argument('--use_extracted_feature', action='store_true', help='Extract features first, then train.')
+    parser.add_argument('--extracted_path', help="The path to put 'extracted_feats/'")
+    parser.add_argument('--extract_scene_feature', action='store_true', help='Aggregate feature along time axis. ')
+    parser.add_argument('--scene_method', choices=["mean"], default="mean", help="The method to aggregate feature along time axis.")
+    parser.add_argument('--extract_to_single_file', action='store_true', help='This mode will save features to a single file and load it to memory during training.')
 
     args = parser.parse_args()
     backup_files = []
@@ -151,6 +157,21 @@ def get_downstream_args():
         override(args.override, args, config)
     
     os.makedirs(args.expdir, exist_ok=True)
+    
+    # extract mode
+    assert (
+        # TODO (Joseph Feng): could only apply on SID and ASV (SID, ASV is not supported yet)
+        (not args.extract_scene_feature or args.downstream in []) and
+        # TODO (Joseph Feng): only implement SID
+        (not args.use_extracted_feature or args.downstream in ("lxt_pr",))
+    )
+    if args.mode == "extract" and args.evaluate_split == "all":
+        args.evaluate_split = (config['runner'].get("train_dataloader", "train"), *config['runner']['eval_dataloaders'])
+    else:
+        args.evaluate_split = re.split(r"[, ]+", args.evaluate_split)
+    
+    if args.extracted_path is None:
+        args.extracted_path = args.expdir
     
     return args, config, backup_files
 

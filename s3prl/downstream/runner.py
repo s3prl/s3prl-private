@@ -113,10 +113,11 @@ class Runner():
         self.upstream = self._get_upstream()
         self.featurizer = self._get_featurizer()
         self.downstream = self._get_downstream()
-        if config["downstream_expert"].get('datarc', {}).get("use_extracted_feature") and args.mode != "extract":
+        if self.args.use_extracted_feature and args.mode != "extract":
             self.all_entries = [self.featurizer, self.downstream]
             del self.upstream
-            torch.set_num_threads(config["downstream_expert"].get('datarc', {})["num_workers"])
+            if "num_workers" in config["downstream_expert"].get('datarc', {}):
+                torch.set_num_threads(config["downstream_expert"]['datarc']["num_workers"])
         else:
             self.all_entries = [self.upstream, self.featurizer, self.downstream]
 
@@ -267,9 +268,9 @@ class Runner():
         tqdm_file = sys.stderr if is_leader_process() else open(os.devnull, 'w')
         
         # iter all splits
-        for split in (self.config['runner'].get("train_dataloader", "train"), *self.config['runner']['eval_dataloaders']):
+        for split in self.args.evaluate_split:
             # create dir
-            os.makedirs(os.path.join(self.args.expdir, "extracted_feats/", split), exist_ok=True)
+            os.makedirs(os.path.join(self.args.extracted_path, "extracted_feats/", split), exist_ok=True)
             # create dataloader
             try:
                 dataloader = self.downstream.model.get_dataloader(split, epoch=epoch, batch_size=1)
@@ -294,7 +295,7 @@ class Runner():
                     # to cpu
                     time_axis_mean = lambda f: f.mean(dim=1, keepdim=True)
                     to_cpu = lambda f: f.cpu()
-                    if self.config['downstream_expert'].get('datarc', {}).get("extract_scene_feature"):
+                    if self.args.extract_scene_feature:
                         if isinstance(selected_features, (tuple, list)):
                             selected_features = map(time_axis_mean, selected_features)
                             selected_features = map(to_cpu, selected_features)
@@ -310,12 +311,12 @@ class Runner():
 
                     # save feature
                     for data in zip(selected_features, *others):
-                        if self.config['downstream_expert'].get('datarc', {}).get("extract_to_single_file"):
+                        if self.args.extract_to_single_file:
                             all_data[data[-1]] = data
                         else:
-                            torch.save(data, os.path.join(self.args.expdir, "extracted_feats/", split, f"{data[-1]}.ckpt"))
-            if self.config['downstream_expert'].get('datarc', {}).get("extract_to_single_file"):
-                torch.save(all_data, os.path.join(self.args.expdir, "extracted_feats/", split, f"all_data.ckpt"))
+                            torch.save(data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"{data[-1]}.ckpt"))
+            if self.args.extract_to_single_file:
+                torch.save(all_data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"all_data.ckpt"))
 
     def train(self):
         # trainable parameters and train/eval mode
@@ -376,11 +377,11 @@ class Runner():
                     if pbar.n >= pbar.total:
                         break
                     global_step = pbar.n + 1
-                    if self.config["downstream_expert"].get('datarc', {}).get("use_extracted_feature"):
+                    if self.args.use_extracted_feature:
                         if isinstance(wavs[0], (tuple, list)):
                             feature_lengths = [wav[0].size(0) for wav in wavs]
                             features = {
-                                self.args.upstream_feature_selection: [pad_sequence(
+                                "hidden_states": [pad_sequence(
                                 [wav[l] for wav in wavs],
                                 batch_first=True,
                                 ).to(self.args.device) for l in range(len(wavs[0]))]
@@ -388,7 +389,7 @@ class Runner():
                         else:
                             feature_lengths = [wav.size(0) for wav in wavs]
                             features = {
-                                self.args.upstream_feature_selection: pad_sequence(
+                                "hidden_states": pad_sequence(
                                 wavs,
                                 batch_first=True,
                                 ).to(self.args.device)
@@ -531,7 +532,8 @@ class Runner():
         # When this member function is called directly by command line
         not_during_training = split is None and logger is None and global_step == 0
         if not_during_training:
-            split = self.args.evaluate_split
+            assert len(self.args.evaluate_split) == 1, "Not support evaluating two splits at the same run."
+            split = self.args.evaluate_split[0]
             tempdir = tempfile.mkdtemp()
             logger = Logger(tempdir, False)
 
@@ -562,7 +564,7 @@ class Runner():
                 break
 
             with torch.no_grad():
-                if self.config["downstream_expert"].get('datarc', {}).get("use_extracted_feature"):
+                if self.args.use_extracted_feature:
                     if isinstance(wavs[0], (tuple, list)):
                         feature_lengths = list(map(lambda x: x[0].size(0), wavs))
                         # bz, layer, time, feature dim

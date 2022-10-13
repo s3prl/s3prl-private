@@ -94,7 +94,7 @@ class LxtPhoneDataset(Dataset):
             return [(f_path, txt) for f_path, txt in
                     zip(self.file_list[index:index+self.bucket_size], self.text[index:index+self.bucket_size])]
         else:
-            return self.file_list[index], self.text[index]
+            return self.file_list[index], self.text[index], index
 
     def __len__(self):
         return len(self.file_list)

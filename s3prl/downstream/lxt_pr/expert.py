@@ -28,6 +28,7 @@ class DownstreamExpert(nn.Module):
         self.expdir = expdir
         self.upstream_dim = upstream_dim
         self.corpus = downstream_expert["corpus"]
+        self.kwargs = kwargs
 
         # Text tokenizer
         self.tokenizer = load_text_encoder(**downstream_expert["text"])
@@ -74,7 +75,7 @@ class DownstreamExpert(nn.Module):
         
 
     # Interface
-    def forward(self, split, features, labels, filenames, records, **kwargs):
+    def forward(self, split, features, labels, filenames, index, records, **kwargs):
         device = features[0].device
         labels = [torch.LongTensor(label) for label in labels]
         features_len = torch.IntTensor([len(feat) for feat in features])
