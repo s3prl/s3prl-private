@@ -190,8 +190,8 @@ def distilhubertwavlmb_plus_concat_300k(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
-def distilhubertwavlmb_plus_concat_300k_with_head(*args, **kwargs):
+def distilhubertmgwhamrbp(*args, **kwargs):
 
-    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_concat/dev-dis-best-300000.ckpt")
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertmgwhamrbp/dev-dis-best.ckpt")
     assert os.path.isfile(kwargs["ckpt"])
-    return _UpstreamExpert(*args, **kwargs)
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
