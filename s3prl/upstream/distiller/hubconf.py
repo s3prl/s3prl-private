@@ -172,6 +172,12 @@ def distilhubertwavlmb_plus_multi_pred_260k_with_head(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs)
 
+def distilhubertwavlmb_plus_multi_pred_260k_with_second_head(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred/dev-dis-best-260000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred_list=[0])
+
 def distilhubertwavlmb_plus_multi_pred_with_second_pred(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred/dev-dis-best-200000.ckpt")
