@@ -11,8 +11,9 @@
 # IMPORTATION #
 ###############
 import os
-import random
-
+import yaml
+import pickle
+from pathlib import Path
 import numpy as np
 
 import torch
@@ -20,6 +21,9 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data.dataset import Dataset
 
 import librosa
+import s3prl
+
+s3prl_path = Path(s3prl.__path__[0])
 
 SAMPLE_RATE = 16000
 
@@ -27,6 +31,7 @@ class SeparationDataset(Dataset):
     def __init__(
         self,
         data_dir,
+        split=None,
         rate=16000,
         src=['mix_clean'],
         tgt=['s1', 's2'],
@@ -35,12 +40,17 @@ class SeparationDataset(Dataset):
         win_length=512,
         window='hann', 
         center=True,
+        use_cache=True,
+        **kwargs,
     ):
         super(SeparationDataset, self).__init__()
         """
         Args:
             data_dir (str):
                 prepared data directory
+                
+            split (str):
+                dataset split
 
             rate (int):
                 audio sample rate
@@ -71,6 +81,7 @@ class SeparationDataset(Dataset):
         """
 
         self.data_dir = data_dir
+        self.split = split
         self.rate = rate
         self.src = src
         self.tgt = tgt
@@ -80,6 +91,7 @@ class SeparationDataset(Dataset):
         self.window = window
         self.center = center
         self.n_srcs = len(self.tgt)
+        self.use_cache = use_cache
 
         assert len(self.src) == 1 and len(self.tgt) == 1
 
@@ -101,14 +113,33 @@ class SeparationDataset(Dataset):
                     reco2path[uttname] = {}
                 reco2path[uttname][cond] = path
         self.reco2path = reco2path
-
-        self.recolist = list(self.reco2path.keys())
-        self.recolist.sort()
+        self.recolist = list(sorted(self.reco2path.keys()))
+        
+        cache_path = s3prl_path / "data/enhancement_stft" / str(hop_length)
+        self.cache_path = cache_path
+        if os.path.exists(cache_path / "0.pkl"):
+            with open(cache_path / "datarc.yaml", 'r') as f:
+                datarc = yaml.load(f, Loader=yaml.FullLoader)
+                assert (
+                    datarc['rate'] == rate and
+                    datarc['src'] == src and
+                    datarc['tgt'] == tgt and
+                    datarc['n_fft'] == n_fft and
+                    datarc['win_length'] == win_length and
+                    datarc['window'] == window and
+                    datarc['center'] == center
+                ), "config differs with preprocessed data, please preprocess again."
+            
+            
 
     def __len__(self):
         return len(self.recolist)
 
     def __getitem__(self, i):
+        if self.use_cache:
+            with open(self.cache_path / self.split / f"{i}.pkl", 'rb') as f:
+                return pickle.load(f)
+        
         reco = self.recolist[i]
         src_path = self.reco2path[reco][self.src[0]]
         src_samp, rate = librosa.load(src_path, sr=SAMPLE_RATE)
@@ -153,40 +184,34 @@ class SeparationDataset(Dataset):
 
     def collate_fn(self, batch):
         sorted_batch = sorted(batch, key=lambda x: -x[1].shape[0])
-        bs = len(sorted_batch)
-        uttname_list = [sorted_batch[i][0] for i in range(bs)]
+        uttname_list = [sample[0] for sample in sorted_batch]
 
-        # Store the magnitude, phase for the mixture in source_attr
-        source_attr = {}
-        mix_magnitude_list = [torch.from_numpy(np.abs(sorted_batch[i][2])) for i in range(bs)]
-        mix_phase_list = [torch.from_numpy(np.angle(sorted_batch[i][2])) for i in range(bs)]
-        mix_stft_list = [torch.from_numpy(sorted_batch[i][2]) for i in range(bs)]
-        mix_magnitude = pad_sequence(mix_magnitude_list, batch_first=True)
-        mix_phase = pad_sequence(mix_phase_list, batch_first=True)
-        mix_stft = pad_sequence(mix_stft_list, batch_first=True)
-        source_attr["magnitude"] = mix_magnitude
-        source_attr["phase"] = mix_phase
-        source_attr["stft"] = mix_stft
-
-        target_attr = {}
-        target_attr["magnitude"] = []
-        target_attr["phase"] = []
-        for j in range(self.n_srcs):
-            tgt_magnitude_list = [torch.from_numpy(np.abs(sorted_batch[i][4][j])) for i in range(bs)]
-            tgt_phase_list = [torch.from_numpy(np.angle(sorted_batch[i][4][j])) for i in range(bs)]
-            tgt_magnitude = pad_sequence(tgt_magnitude_list, batch_first=True)
-            tgt_phase = pad_sequence(tgt_phase_list, batch_first=True)
-            target_attr["magnitude"].append(tgt_magnitude)
-            target_attr["phase"].append(tgt_phase)
-
-        wav_length = torch.from_numpy(np.array([len(sorted_batch[i][1]) for i in range(bs)]))
-        source_wav_list = [torch.from_numpy(sorted_batch[i][1]) for i in range(bs)]
+        if self.use_cache:
+            mix_stft_list = [sample[2] for sample in sorted_batch]
+            source_wav_list = [sample[1] for sample in sorted_batch]
+            target_wav_list = [pad_sequence([sample[3][j] for sample in sorted_batch], batch_first=True) for j in range(self.n_srcs)]
+        else:
+            mix_stft_list = [torch.from_numpy(sample[2]) for sample in sorted_batch]
+            source_wav_list = [torch.from_numpy(sample[1]) for sample in sorted_batch]
+            target_wav_list = [pad_sequence([torch.from_numpy(sample[3][j]) for sample in sorted_batch], batch_first=True) for j in range(self.n_srcs)]
+        source_stft = pad_sequence(mix_stft_list, batch_first=True)
         source_wav = pad_sequence(source_wav_list, batch_first=True)
-        target_wav_list = []
-        for j in range(self.n_srcs):
-            target_wav_list.append(pad_sequence([torch.from_numpy(sorted_batch[i][3][j]) for i in range(bs)], batch_first=True))
 
-        feat_length = torch.from_numpy(np.array([stft.size(0) for stft in mix_stft_list]))
+        target_attr = {
+            "magnitude": [],
+            "phase": [],
+        }
+        for j in range(self.n_srcs):
+            if self.use_cache:
+                target_stft_list = [sample[4][j] for sample in sorted_batch]
+            else:
+                target_stft_list = [torch.from_numpy(sample[4][j]) for sample in sorted_batch]
+            target_stft = pad_sequence(target_stft_list, batch_first=True)
+            target_attr["magnitude"].append(target_stft.abs())
+            target_attr["phase"].append(target_stft.angle())
+
+        wav_length = torch.IntTensor([len(sample[1]) for sample in sorted_batch])
+        feat_length = torch.IntTensor([stft.size(0) for stft in mix_stft_list])
         """
         source_wav_list (list(tensor)):
             list of audio samples for the source
@@ -194,8 +219,8 @@ class SeparationDataset(Dataset):
         uttname_list (list(str)):
             list of utterance names
 
-        source_attr (dict):
-            dictionary containing magnitude and phase information for the sources
+        source_stft (tensor):
+            sources stft
 
         source_wav (tensor):
             padded version of source_wav_list, with size [bs, max_T]
@@ -209,4 +234,4 @@ class SeparationDataset(Dataset):
         wav_length (tensor):
             number of samples in each utterance
         """
-        return source_wav_list, uttname_list, source_attr, source_wav, target_attr, target_wav_list, feat_length, wav_length
+        return source_wav_list, uttname_list, source_stft, source_wav, target_attr, target_wav_list, feat_length, wav_length

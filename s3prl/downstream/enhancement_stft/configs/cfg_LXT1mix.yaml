@@ -32,6 +32,7 @@ downstream_expert:
     train_dir: ./downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat/wav16k/min/train
     dev_dir: ./downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat/wav16k/min/dev
     test_dir: ./downstream/enhancement_stft/datasets/LXT1Mix5hr2repeat/wav16k/min/test
+    preprocess_data_dir: ./data/enhancement_stft
   
   modelrc: 
     model: SepRNN

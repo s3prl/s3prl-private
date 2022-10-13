@@ -33,11 +33,11 @@ class MSELoss(object):
         self.mask_type = mask_type
         assert self.mask_type in ["AM", "PSM", "NPSM"]
 
-    def compute_loss(self, masks, feat_length, source_attr, target_attr):
+    def compute_loss(self, masks, feat_length, source_stft, target_attr):
         feat_length = feat_length.to(device)
-        mixture_spect = source_attr["magnitude"].to(device)
+        mixture_spect = source_stft.abs()
         targets_spect = [t.to(device) for t in target_attr["magnitude"]]
-        mixture_phase = source_attr["phase"].to(device)
+        mixture_phase = source_stft.angle()
         targets_phase = [t.to(device) for t in target_attr["phase"]]
 
         def loss(permute):
@@ -77,13 +77,12 @@ class SISDRLoss(object):
         self.center = center
         self.loss = PITLossWrapper(PairwiseNegSDR("sisdr"), pit_from="pw_mtx")
 
-    def compute_loss(self, masks, feat_length, source_attr, wav_length, target_wav_list):
-        mixture_stft = source_attr["stft"].to(device)
-        bs = mixture_stft.size(0)
+    def compute_loss(self, masks, feat_length, source_stft, wav_length, target_wav_list):
+        bs = source_stft.size(0)
         est_targets = torch.zeros(bs, self.num_srcs, max(wav_length)).to(device)
         targets = torch.stack(target_wav_list, dim=1).to(device)
         for i in range(bs):
-            mix_stft_utt = mixture_stft[i, :feat_length[i], :]
+            mix_stft_utt = source_stft[i, :feat_length[i], :]
             est_src_list = []
             for j in range(self.num_srcs):
                 mask_utt = masks[j][i, :feat_length[i], :]
