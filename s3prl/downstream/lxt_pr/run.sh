@@ -27,22 +27,40 @@ else
     lrs=($*)
 fi
 
+# extract
+if [ ! -d "$expdir_root/$upstream/extracted_feats/" ]; then
+    python3 run_downstream.py \
+    --use_extracted_feature \
+    -m extract -s PR -d lxt_pr $args \
+    -p $expdir_root/$upstream
+fi
 for lr in ${lrs[@]};
 do
     expdir=$expdir_root/$upstream/lr$lr
+    # train
     python3 run_downstream.py \
     --upstream_feature_normalize \
-    -a -m train \
-    $args \
-    -s PR -d lxt_pr \
+    --use_extracted_feature \
+    --extracted_path $expdir_root/$upstream \
+    -a -m train -s PR -d lxt_pr $args \
     -o config.optimizer.lr=$lr \
     -p $expdir
 
     dev_ckpt=$(ls -t $expdir | grep -P ".*dev.*\.ckpt" | head -n 1)  # take the best checkpoint on dev
-    python3 run_downstream.py \
-    -m evaluate -e $expdir/$dev_ckpt \
-    -t dev > $expdir/dev.result
-    python3 run_downstream.py \
-    -m evaluate -e $expdir/$dev_ckpt \
-    -t test > $expdir/test.result
+    # dev
+    if [ ! -e "$expdir/dev.result" ]; then
+        python3 run_downstream.py \
+        -m evaluate -e $expdir/$dev_ckpt \
+        -t dev > $expdir/dev.result
+    fi
+    # test
+    if [ ! -e "$expdir/test.result" ]; then
+        python3 run_downstream.py \
+        -m evaluate -e $expdir/$dev_ckpt \
+        -o "args.use_extracted_feature=False" \
+        -t test > $expdir/test.result
+    fi
+    if [ -e "$expdir/dev.result" && -e "$expdir/test.result" ]; then
+        rm -r $expdir_root/$upstream
+    fi
 done
