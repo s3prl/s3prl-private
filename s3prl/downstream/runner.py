@@ -281,7 +281,7 @@ class Runner():
                 else:
                     raise
             
-            assert not dataloader.drop_last, "Use drop_last may cause missing some feature!" 
+            assert not dataloader.drop_last, "Use drop_last may cause missing of some feature!" 
 
             with torch.no_grad():
                 all_data = {}
@@ -404,6 +404,7 @@ class Runner():
 
                     feature_lengths = features.get("feature_lengths", feature_lengths)
                     features = self.featurizer.model(wavs, features, feature_lengths)
+                    del wavs
 
                     if specaug:
                         features, _ = specaug(features)
@@ -413,6 +414,7 @@ class Runner():
                         features, *others,
                         records = records,
                     )
+                    del features
                     batch_ids.append(batch_id)
 
                     gradient_accumulate_steps = self.config['runner'].get('gradient_accumulate_steps')

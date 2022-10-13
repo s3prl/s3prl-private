@@ -27,14 +27,12 @@ def collect_audio_batch(batch, split, half_batch_size_wav_len=300000):
             batch = batch[:len(batch)//2]
 
     # Read batch
-    file, audio_feat, audio_len, text = [], [], [], []
     with torch.no_grad():
-        for b in batch:
-            file.append(str(b[0]).split('/')[-1].split('.')[0])
-            feat = audio_reader(str(b[0])).numpy()
-            audio_feat.append(feat)
-            audio_len.append(len(feat))
-            text.append(torch.LongTensor(b[1]).numpy())
+        file = map(lambda b: str(b[0]).split('/')[-1].split('.')[0], batch)
+        audio_feat = list(map(lambda b: audio_reader(str(b[0])).numpy(), batch))
+        audio_len = map(lambda feat: len(feat), audio_feat)
+        text = map(lambda b: torch.LongTensor(b[1]).numpy(), batch)
+        index = map(lambda b: b[-1], batch)
 
     # Descending audio length within each batch
     audio_len, file, audio_feat, text = zip(*[(feat_len, f_name, feat, txt)
@@ -71,7 +69,7 @@ def load_dataset(split, tokenizer, corpus):
     if split == 'train':
         sampler = DistributedSampler(dataset) if is_initialized() else None
         dataloader = DataLoader(dataset, batch_size=loader_bs, shuffle=(sampler is None),
-                                sampler=sampler, collate_fn=collate_fn, num_workers=num_workers)
+                                sampler=sampler, collate_fn=collate_fn, num_workers=num_workers, pin_memory=True)
     else:
         dataloader = DataLoader(dataset, batch_size=loader_bs, shuffle=False,
                                 collate_fn=collate_fn, num_workers=num_workers)

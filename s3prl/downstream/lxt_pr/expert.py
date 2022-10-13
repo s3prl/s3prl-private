@@ -58,13 +58,20 @@ class DownstreamExpert(nn.Module):
         self.register_buffer(
             "best_score", torch.ones(1) * (-1 << 31 if self.metric_higher_better else 1 << 31)
         )
+        
+        self.dataloader = {}
 
     def _get_task_name(self):
         return f'ctc-{self.corpus["name"].lower()}'
 
     # Interface
-    def get_dataloader(self, split):
-        return load_dataset(split, self.tokenizer, self.corpus)
+    def get_dataloader(self, split, batch_size=None):
+        if split not in self.dataloader:
+            if batch_size is not None:
+                self.corpus["batch_size"] = batch_size
+            self.dataloader[split] = load_dataset(split, self.tokenizer, self.corpus, **self.kwargs)
+        return self.dataloader[split]
+        
 
     # Interface
     def forward(self, split, features, labels, filenames, records, **kwargs):

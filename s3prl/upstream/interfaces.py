@@ -209,7 +209,7 @@ class Featurizer(nn.Module):
             )
 
     def _select_feature(self, features):
-        feature = features.get(self.feature_selection)
+        feature = features[self.feature_selection]
 
         if isinstance(feature, dict):
             feature = list(feature.values())

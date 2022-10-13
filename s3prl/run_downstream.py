@@ -1,4 +1,5 @@
 import os
+import re
 import yaml
 import glob
 import torch
@@ -22,7 +23,7 @@ def get_downstream_args():
 
     # train or test for this experiment
     parser.add_argument('-m', '--mode', choices=['train', 'evaluate', 'inference', 'extract'], required=True)
-    parser.add_argument('-t', '--evaluate_split', default='test')
+    parser.add_argument('-t', '--evaluate_split', default='all')
     parser.add_argument('-o', '--override', help='Used to override args and config, this is at the highest priority')
 
     # distributed training
@@ -91,6 +92,9 @@ def get_downstream_args():
     args = parser.parse_args()
     backup_files = []
 
+    if args.mode != "train":
+        args.disable_wandb = True
+
     if args.expdir is None:
         args.expdir = f'result/downstream/{args.expname}'
 
@@ -126,7 +130,7 @@ def get_downstream_args():
         # overwrite args
         cannot_overwrite_args = [
             'mode', 'evaluate_split', 'override',
-            'backend', 'local_rank', 'past_exp',
+            'backend', 'local_rank', 'past_exp', 'device'
         ]
         args = update_args(args, ckpt['Args'], preserve_list=cannot_overwrite_args)
         args.init_ckpt = ckpt_pth
@@ -190,7 +194,7 @@ def main():
         print(f"Logged into Hugging Face Hub with user: {hf_user}")
     
     # Save command
-    if is_leader_process():
+    if is_leader_process() and args.mode == "train":
         with open(os.path.join(args.expdir, f'args_{get_time_tag()}.yaml'), 'w') as file:
             yaml.dump(vars(args), file)
 
@@ -212,14 +216,6 @@ def main():
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
 
-    if (config['downstream_expert'].get('datarc', {}).get("use_extracted_feature") and
-        args.mode != "extract" and
-        not os.path.exists(os.path.join(args.expdir, "extracted_feats/"))
-    ):
-        mode = args.mode
-        args.mode = "extract"
-        Runner(args, config).extract()
-        args.mode = mode
     runner = Runner(args, config)
     eval(f'runner.{args.mode}')()
     total_time = time.time() - start_time
