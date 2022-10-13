@@ -24,7 +24,7 @@ class DistillerConfig:
                 "[(512,10,5)] + [(512,3,2)] * 4 + [(512,2,2)] * 2",
             )
         )
-        if config.get("wav_rct", 1.0) > 0.0:
+        if config.get("wav_rct", .0) > 0.0:
             from .module import ReconstructionModel
             self.reconstuctor_convtrans_feature_layers = str(
                 config.get(
