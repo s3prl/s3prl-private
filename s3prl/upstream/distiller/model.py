@@ -240,7 +240,7 @@ class DistillerModel(nn.Module):
         rct_wavs = self.reconstruct_module(hidden.transpose(1, 2))
         return rct_wavs
 
-    def forward(self, wave, pad_mask, task_id=None, get_hidden=False, no_pred=False):
+    def forward(self, wave, pad_mask, task_id=None, get_hidden=False, no_pred=False, no_pred_list=[]):
         """
         Forward function
         Input:
@@ -311,6 +311,8 @@ class DistillerModel(nn.Module):
             elif self.config.multi_pred_head > 1:
                 pred_list = []
                 for idx in range(self.config.multi_pred_head):
+                    if idx in no_pred_list:
+                        continue
                     pred_list.append(
                         getattr(self, 'output_layer{}'.format(idx))(hidden).reshape(b_sz, n_sz, t_sz, -1)
                     )

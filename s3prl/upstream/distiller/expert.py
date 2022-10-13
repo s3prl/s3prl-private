@@ -13,10 +13,11 @@ class UpstreamExpert(UpstreamBase):
     The Distiller wrapper
     """
 
-    def __init__(self, ckpt, model_config=None, feature_selection=None, no_pred=False, **kwargs):
+    def __init__(self, ckpt, model_config=None, feature_selection=None, no_pred=False, no_pred_list=[], **kwargs):
         super().__init__(**kwargs)
         self.feature_selection = feature_selection
         self.no_pred = no_pred
+        self.no_pred_list = no_pred_list
         if model_config is not None:
             print(
                 "[UpstreamExpert] - Using upstream expert config file from:",
@@ -42,7 +43,7 @@ class UpstreamExpert(UpstreamBase):
 
     def forward(self, wavs, no_pred=False):
         feat_final, pred, pad_mask, layer_hidden = self.model(
-            wavs, get_hidden=True, no_pred=no_pred or self.no_pred
+            wavs, get_hidden=True, no_pred=no_pred or self.no_pred, no_pred_list=self.no_pred_list
         )[1:5]
         # pred: B x N x T x D
         if not (no_pred or self.no_pred):
