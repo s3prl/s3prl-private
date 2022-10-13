@@ -30,7 +30,7 @@ fi
 # extract
 if [ ! -d "$expdir_root/$upstream/extracted_feats/" ]; then
     python3 run_downstream.py \
-    --use_extracted_feature \
+    --use_extracted_feature --extract_to_single_file \
     -m extract -s PR -d lxt_pr $args \
     -p $expdir_root/$upstream
 fi
@@ -40,7 +40,7 @@ do
     # train
     python3 run_downstream.py \
     --upstream_feature_normalize \
-    --use_extracted_feature \
+    --use_extracted_feature --extract_to_single_file \
     --extracted_path $expdir_root/$upstream \
     -a -m train -s PR -d lxt_pr $args \
     -o config.optimizer.lr=$lr \
@@ -61,6 +61,6 @@ do
         -t test > $expdir/test.result
     fi
     if [ -e "$expdir/dev.result" && -e "$expdir/test.result" ]; then
-        rm -r $expdir_root/$upstream
+        rm -r $expdir_root/$upstream/extracted_feats
     fi
 done
