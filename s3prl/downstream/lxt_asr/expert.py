@@ -50,7 +50,7 @@ class DownstreamExpert(nn.Module):
     """
 
     def __init__(
-        self, upstream_dim, upstream_rate, downstream_expert, expdir, extracted, downstream, **kwargs
+        self, upstream_dim, upstream_rate, downstream_expert, expdir, **kwargs
     ):
         """
         Args:
@@ -85,8 +85,9 @@ class DownstreamExpert(nn.Module):
         self.datarc = downstream_expert["datarc"]
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
-        self.extracted = extracted
-        self.downstream = downstream
+        self.extract_kwargs = {
+            key: kwargs[key] for key in ["use_extracted_feature", "extracted_path", "extract_to_single_file", "mode"]
+        }
         self.dictionary = Dictionary.load(self.datarc["dict_path"])
 
         self.projector = nn.Linear(upstream_dim, self.modelrc["project_dim"])
@@ -105,47 +106,53 @@ class DownstreamExpert(nn.Module):
         decoder_args = self.datarc.get("decoder_args")
         self.decoder = get_decoder(decoder_args, self.dictionary)
         self.register_buffer("best_score", torch.ones(1) * (1<<31))
+        
+        self.dataloader = {}
 
     def get_dataloader(self, split, epoch=0, batch_size=None):
-        if not hasattr(self, f"{split}_dataset"):
-            if "lxt" in split:
-                dataset_cls = LxtAsrDataset
-            elif "libri" in split:
-                dataset_cls = LibriAsrDataset
-            else:
-                raise ValueError
-            
-            if self.extracted:
-                assert os.path.exists(os.path.join(self.expdir, "extracted_feats/")), "You should extract your features first!"
-                dataset_cls = get_extracted_dataset(dataset_cls, split)
+        self.extract_kwargs['split_name'] = split
+        if split not in self.dataloader:
+            if not hasattr(self, f"{split}_dataset"):
+                if "lxt" in split:
+                    dataset_cls = LxtAsrDataset
+                elif "libri" in split:
+                    dataset_cls = LibriAsrDataset
+                else:
+                    raise ValueError
                 
-            if batch_size:
-                self.datarc['train_batch_size'] = batch_size
+                if self.extract_kwargs["use_extracted_feature"] and self.extract_kwargs["mode"] != 'extract':
+                    dataset_cls = get_extracted_dataset(dataset_cls, self.extract_kwargs['extract_to_single_file'])
+                    
+                if batch_size:
+                    self.datarc['train_batch_size'] = batch_size
 
-            dataset = dataset_cls(split, self.dictionary, extracted=self.extracted, downstream=self.downstream, expdir=self.expdir, **self.datarc)
-            setattr(self, f"{split}_dataset", dataset)
+                dataset = dataset_cls(split, self.dictionary, **self.datarc, **self.extract_kwargs)
+                setattr(self, f"{split}_dataset", dataset)
 
-        dataset = getattr(self, f"{split}_dataset")
+            dataset = getattr(self, f"{split}_dataset")
 
-        if "train" in split:
-            from s3prl.utility.data import get_ddp_sampler
-            sampler = get_ddp_sampler(dataset, epoch)
-            return DataLoader(
-                dataset,
-                batch_size=self.datarc['train_batch_size'], 
-                shuffle=(sampler is None),
-                sampler=sampler,
-                num_workers=self.datarc['num_workers'],
-                collate_fn=dataset.collate_fn
-            )
-        else:
-            return DataLoader(
-                dataset,
-                batch_size=1,
-                shuffle=False,
-                num_workers=self.datarc["num_workers"],
-                collate_fn=dataset.collate_fn,
-            )
+            if "train" in split:
+                from s3prl.utility.data import get_ddp_sampler
+                sampler = get_ddp_sampler(dataset, epoch)
+                self.dataloader[split] = DataLoader(
+                    dataset,
+                    batch_size=self.datarc['train_batch_size'],
+                    shuffle=(sampler is None),
+                    sampler=sampler,
+                    num_workers=self.datarc['num_workers'],
+                    collate_fn=dataset.collate_fn,
+                    pin_memory = True,
+                )
+            else:
+                self.dataloader[split] = DataLoader(
+                    dataset,
+                    batch_size=1,
+                    shuffle=False,
+                    num_workers=self.datarc["num_workers"],
+                    collate_fn=dataset.collate_fn,
+                )
+            
+        return self.dataloader[split]
 
     def _compute_metrics(
         self, pred_tokens_all, pred_words_all, target_tokens_all, target_words_all

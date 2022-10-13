@@ -50,21 +50,21 @@ def create_dataset(split, tokenizer, name, bucketing, batch_size, **kwargs):
 
     # Recognize corpus
     if name.lower() == 'lxtphone':
-        from .lxtphone import LxtPhoneDataset as Dataset
+        from .lxtphone import LxtPhoneDataset as dataset_cls
     else:
         raise NotImplementedError
     
     if kwargs["use_extracted_feature"] and kwargs["mode"] != 'extract':
-        Dataset = get_extracted_dataset(Dataset, kwargs['extract_to_single_file'], device=kwargs['device'])
+        dataset_cls = get_extracted_dataset(dataset_cls, kwargs['extract_to_single_file'])
 
     kwargs['split_name'] = split
     if split == 'train':
         loader_bs = 1 if bucketing else batch_size
         bucket_size = batch_size if bucketing else 1
-        dataset = Dataset(kwargs['train'], kwargs["transcriptions"]["train"], tokenizer, bucket_size, **kwargs)
+        dataset = dataset_cls(kwargs['train'], kwargs["transcriptions"]["train"], tokenizer, bucket_size, **kwargs)
     else:
         loader_bs = EVAL_BATCH_SIZE
-        dataset = Dataset(kwargs[split], kwargs["transcriptions"][split], tokenizer, 1, **kwargs)
+        dataset = dataset_cls(kwargs[split], kwargs["transcriptions"][split], tokenizer, 1, **kwargs)
 
     return dataset, loader_bs
 
@@ -73,7 +73,7 @@ def load_dataset(split, tokenizer, corpus, **kwargs):
     ''' Prepare dataloader for training/validation'''
     num_workers = corpus.pop('num_workers', 12)
     dataset, loader_bs = create_dataset(split, tokenizer, num_workers=num_workers, **corpus, **kwargs)
-    collate_fn = partial(collect_audio_batch, split=split, use_extracted_feature=kwargs['use_extracted_feature'] and kwargs['mode'] == 'train')
+    collate_fn = partial(collect_audio_batch, split=split, use_extracted_feature=kwargs['use_extracted_feature'] and kwargs['mode'] != 'extract')
     if split == 'train':
         sampler = DistributedSampler(dataset) if is_initialized() else None
         dataloader = DataLoader(dataset, batch_size=loader_bs, shuffle=(sampler is None),

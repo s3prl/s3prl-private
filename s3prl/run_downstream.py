@@ -162,8 +162,8 @@ def get_downstream_args():
     assert (
         # TODO (Joseph Feng): could only apply on SID and ASV (SID, ASV is not supported yet)
         (not args.extract_scene_feature or args.downstream in []) and
-        # TODO (Joseph Feng): only implement SID
-        (not args.use_extracted_feature or args.downstream in ("lxt_pr",))
+        # TODO (Joseph Feng): hidden set only implement PR, ASR
+        (not args.use_extracted_feature or args.downstream in ("lxt_pr", "lxt_asr"))
     )
     if args.mode == "extract" and args.evaluate_split == "all":
         args.evaluate_split = (config['runner'].get("train_dataloader", "train"), *config['runner']['eval_dataloaders'])

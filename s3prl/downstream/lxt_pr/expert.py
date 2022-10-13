@@ -28,7 +28,9 @@ class DownstreamExpert(nn.Module):
         self.expdir = expdir
         self.upstream_dim = upstream_dim
         self.corpus = downstream_expert["corpus"]
-        self.kwargs = kwargs
+        self.extract_kwargs = {
+            key: kwargs[key] for key in ["use_extracted_feature", "extracted_path", "extract_to_single_file", "mode"]
+        }
 
         # Text tokenizer
         self.tokenizer = load_text_encoder(**downstream_expert["text"])
@@ -70,7 +72,7 @@ class DownstreamExpert(nn.Module):
         if split not in self.dataloader:
             if batch_size is not None:
                 self.corpus["batch_size"] = batch_size
-            self.dataloader[split] = load_dataset(split, self.tokenizer, self.corpus, **self.kwargs)
+            self.dataloader[split] = load_dataset(split, self.tokenizer, self.corpus, **self.extract_kwargs)
         return self.dataloader[split]
         
 

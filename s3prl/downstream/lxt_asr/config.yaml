@@ -4,7 +4,7 @@ runner:
   gradient_accumulate_steps: 1
   log_step: 100
   eval_step: 2000
-  save_step: 100
+  save_step: 2000
   max_keep: 1
   train_dataloader: lxt_train_2hr
   eval_dataloaders:
@@ -40,19 +40,8 @@ downstream_expert:
     lxt_audio: data/superb_all/1.1_distributed/audio
     lxt_text: data/superb_all/1.1_distributed/normalized_transcription.txt
     lxt_train_2hr: data/superb_all/1.1_distributed/train_2hr/train/utt2spk
-    # lxt_train_1hr: data/superb_all/1.1_distributed/train_1hr/train/utt2spk
     lxt_dev: data/superb_all/1.1_distributed/train_2hr/dev/utt2spk
     lxt_test: data/superb_all/1.1_distributed/train_2hr/test/utt2spk
-
-    # libri_root: /work/leo19941227/datasets/LibriSpeech
-    # libri_train_360hr: ["train-clean-360"]
-    # libri_train_100hr: ["train-clean-100"]
-    # libri_train_10hr: ["1h", "9h"]
-    # libri_train_1hr: ["1h"]
-    # libri_test_clean: ["test-clean"]
-    # libri_test_other: ["test-other"]
-    # libri_dev_clean: ["dev-clean"]
-    # libri_dev_other: ["dev-other"]
 
     train_batch_size: 16
     num_workers: 12

@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DistributedSampler
 T_co = TypeVar("T_co", covariant=True)
 
 
-def get_extracted_dataset(dataset_cls, extract_to_single_file=False, device="cuda"):
+def get_extracted_dataset(dataset_cls, extract_to_single_file=False):
         
     class ExtractedDataset(dataset_cls):
         def __init__(self, *args, **kwargs):
