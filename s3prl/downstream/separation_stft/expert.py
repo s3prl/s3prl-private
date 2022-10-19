@@ -94,6 +94,9 @@ class DownstreamExpert(nn.Module):
         self.loaderrc = downstream_expert["loaderrc"]
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
+        self.extract_kwargs = {
+            key: kwargs[key] for key in ["use_extracted_feature", "extracted_path", "extract_to_single_file", "mode"]
+        }
 
         self.dataset_fn = lambda data_dir, split: SeparationDataset(
             data_dir,
@@ -102,6 +105,7 @@ class DownstreamExpert(nn.Module):
             split_name=split,
             sr=None,
             num_spks=2,
+            task_name="separation_stft",
             **self.datarc,
             **self.extract_kwargs
         )
@@ -162,7 +166,7 @@ class DownstreamExpert(nn.Module):
             collate_fn=self.datasets[split].collate_fn,
         )
 
-    def forward(self, mode, features, uttname_list, source_attr, source_wav, target_attr, target_wav_list, feat_length, wav_length, records, **kwargs):
+    def forward(self, mode, features, uttname_list, source_stft, source_wav, target_attr, target_wav_list, feat_length, wav_length, records, **kwargs):
         """
         Args:
             mode: string
@@ -176,12 +180,9 @@ class DownstreamExpert(nn.Module):
             uttname_list:
                 list of utterance names
 
-            source_attr:
-                source_attr is a dict containing the STFT information 
-                for the mixture. source_attr['magnitude'] stores the STFT
-                magnitude, source_attr['phase'] stores the STFT phase and
-                source_attr['stft'] stores the raw STFT feature. The shape
-                is [bs, max_length, feat_dim]
+            source_stft:
+                source_stft is a tensor storing the STFT information 
+                for the mixture. The shape is [bs, max_length, feat_dim]
 
             source_wav:
                 source_wav contains the raw waveform for the mixture,
@@ -223,7 +224,7 @@ class DownstreamExpert(nn.Module):
         if mode == 'dev' or mode == 'test':
             if mode in ['dev', 'test']:
                 COMPUTE_METRICS = ["si_sdr"]
-            predict_stfts = [torch.squeeze(m * source_attr['stft'].to(device)) for m in mask_list]
+            predict_stfts = [torch.squeeze(m * source_stft.to(device)) for m in mask_list]
             predict_stfts_np = [np.transpose(s.data.cpu().numpy()) for s in predict_stfts]
 
             assert len(wav_length) == 1
@@ -268,9 +269,9 @@ class DownstreamExpert(nn.Module):
                 records['uttname'].append(uttname_list[0])
 
         if self.loss_type == "MSE": # mean square loss
-            loss = self.objective.compute_loss(mask_list, feat_length, source_attr, target_attr)
+            loss = self.objective.compute_loss(mask_list, feat_length, source_stft, target_attr)
         elif self.loss_type == "SISDR": # end-to-end SI-SNR loss
-            loss = self.objective.compute_loss(mask_list, feat_length, source_attr, wav_length, target_wav_list)
+            loss = self.objective.compute_loss(mask_list, feat_length, source_stft, wav_length, target_wav_list)
         else:
             raise ValueError("Loss type not defined.")
 

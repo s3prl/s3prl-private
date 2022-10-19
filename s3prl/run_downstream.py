@@ -173,6 +173,7 @@ def get_downstream_args():
     if args.extracted_path is None:
         args.extracted_path = args.expdir
     
+    args.disable_wandb = True
     return args, config, backup_files
 
 

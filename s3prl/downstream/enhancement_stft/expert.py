@@ -96,6 +96,9 @@ class DownstreamExpert(nn.Module):
         self.loaderrc = downstream_expert["loaderrc"]
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
+        self.extract_kwargs = {
+            key: kwargs[key] for key in ["use_extracted_feature", "extracted_path", "extract_to_single_file", "mode"]
+        }
         
         self.dataset_fn = lambda data_dir, split: SeparationDataset(
             data_dir,
@@ -103,6 +106,7 @@ class DownstreamExpert(nn.Module):
             split=split,
             split_name=split,
             addition_cond=["noisy", "clean"],
+            task_name="enhancement_stft",
             **self.datarc,
             **self.extract_kwargs
         )

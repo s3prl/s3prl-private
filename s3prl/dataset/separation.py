@@ -39,6 +39,7 @@ class SeparationDataset(Dataset):
         window='hann', 
         center=True,
         use_cache=True,
+        task_name="",
         sr=16000,
         num_spks=1,
         addition_cond=[],
@@ -118,7 +119,7 @@ class SeparationDataset(Dataset):
 
         self.recolist = sorted(self.reco2path.keys())
         
-        cache_path = s3prl_path / "data/enhancement_stft" / str(hop_length)
+        cache_path = s3prl_path / f"data/{task_name}" / str(hop_length)
         self.cache_path = cache_path
         if os.path.exists(cache_path / "0.pkl"):
             with open(cache_path / "datarc.yaml", 'r') as f:
