@@ -1,38 +1,46 @@
-import os
 import math
+from pathlib import Path
 from typing import Optional, Iterator, TypeVar
 
 import torch
 import torch.distributed as dist
-from torch.utils.data import Sampler, Dataset
-from torch.distributed import is_initialized
-from torch.utils.data import Dataset, DistributedSampler
+from torch.utils.data import Sampler, Dataset, DistributedSampler
 
 T_co = TypeVar("T_co", covariant=True)
 
 
-def get_extracted_dataset(dataset_cls, extract_to_single_file=False):
+def get_extracted_dataset(dataset_cls, extract_to_single_file=False, feature_only=False):
         
     class ExtractedDataset(dataset_cls):
         def __init__(self, *args, **kwargs):
             self._split = kwargs.pop("split_name")
-            self._extracted_path = kwargs.pop("extracted_path")
+            self._extracted_path = Path(kwargs["extracted_path"]) / f"extracted_feats/{self._split}"
             self._use_single_file = extract_to_single_file
+            self._feature_only = feature_only
 
             if self._use_single_file:
-                self._all_data = torch.load(os.path.join(self._extracted_path, "extracted_feats/", self._split, "all_data.ckpt"), map_location="cpu")
+                self._all_data = torch.load(self._extracted_path / "all_data.ckpt", "cpu")
             super().__init__(*args, **kwargs)
         def __getitem__(self, index):
+            if self._feature_only:
+                others = super().__getitem__(index)[1:]
             if self._use_single_file:
+                if self._feature_only:
+                    feature = self._all_data[index]
+                else:
+                    feature, *others = self._all_data[index]
                 # copy to avoid memory leakage
-                feature = self._all_data[index][0]
                 if isinstance(feature, (list, tuple)):
                     feature = tuple(f.clone() for f in feature)
                 elif isinstance(feature, torch.Tensor):
                     feature = feature.clone()
-                return feature, *self._all_data[index][1:]
+                return feature, *others
             else:
-                return torch.load(os.path.join(self._extracted_path, "extracted_feats/", self._split, f"{index}.ckpt"), map_location="cpu")
+                path = self._extracted_path / f"{index}.ckpt"
+                if self._feature_only:
+                    return torch.load(path, "cpu"), others
+                else:
+                    torch.load(path, "cpu")
     
     return ExtractedDataset
 
@@ -42,7 +50,7 @@ def get_ddp_sampler(dataset: Dataset, epoch: int):
     This function will create a DistributedSampler if DDP is initialized,
     and will just return None if DDP is not initialized.
     """
-    if is_initialized():
+    if dist.is_initialized():
         sampler = DistributedSampler(dataset)
         sampler.set_epoch(epoch)
     else:

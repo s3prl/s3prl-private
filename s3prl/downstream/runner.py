@@ -287,7 +287,7 @@ class Runner():
             with torch.no_grad():
                 all_data = {}
                 print(f"[Runner] - Extract features from {split} split.")
-                for wavs, *others in tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file):
+                for i, (wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
                     wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in wavs]
                     features = self.upstream.model(wavs)
                     selected_features = features.get(self.args.upstream_feature_selection, features["hidden_states"])
@@ -312,9 +312,9 @@ class Runner():
                     # save feature
                     for data in zip(selected_features, *others):
                         if self.args.extract_to_single_file:
-                            all_data[data[-1]] = data
+                            all_data[i] = data
                         else:
-                            torch.save(data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"{data[-1]}.ckpt"))
+                            torch.save(data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"{i}.ckpt"))
             if self.args.extract_to_single_file:
                 torch.save(all_data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"all_data.ckpt"))
 
