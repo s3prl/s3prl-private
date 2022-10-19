@@ -36,7 +36,6 @@ class MSELoss(object):
     def compute_loss(self, masks, feat_length, source_stft, target_attr):
         feat_length = feat_length.to(device)
         source_stft = source_stft.to(device)
-        input(len(source_stft))
         mixture_spect = source_stft.abs()
         targets_spect = [t.to(device) for t in target_attr["magnitude"]]
         mixture_phase = source_stft.angle()
