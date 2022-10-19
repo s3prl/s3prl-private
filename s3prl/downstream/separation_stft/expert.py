@@ -10,25 +10,19 @@
 ###############
 # IMPORTATION #
 ###############
-import os
-import math
-import random
-import h5py
 import numpy as np
 from pathlib import Path
-from collections import defaultdict
 import librosa
 
 # -------------#
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from torch.nn.utils.rnn import pack_sequence, pad_sequence
-import torch.nn.functional as F
+from torch.nn.utils.rnn import pack_sequence
 
 # -------------#
 from .model import SepRNN
-from .dataset import SeparationDataset
+from ...dataset.separation import SeparationDataset
 from asteroid.metrics import get_metrics
 from .loss import MSELoss, SISDRLoss
 
@@ -101,39 +95,17 @@ class DownstreamExpert(nn.Module):
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
 
-        self.train_dataset = SeparationDataset(
-                data_dir=self.loaderrc["train_dir"],
-                rate=self.datarc['rate'],
-                src=self.datarc['src'],
-                tgt=self.datarc['tgt'],
-                n_fft=self.datarc['n_fft'],
-                hop_length=self.upstream_rate,
-                win_length=self.datarc['win_length'],
-                window=self.datarc['window'],
-                center=self.datarc['center'],
-            )
-        self.dev_dataset = SeparationDataset(
-                data_dir=self.loaderrc["dev_dir"],
-                rate=self.datarc['rate'],
-                src=self.datarc['src'],
-                tgt=self.datarc['tgt'],
-                n_fft=self.datarc['n_fft'],
-                hop_length=self.upstream_rate,
-                win_length=self.datarc['win_length'],
-                window=self.datarc['window'],
-                center=self.datarc['center'],
+        self.dataset_fn = lambda data_dir, split: SeparationDataset(
+            data_dir,
+            hop_length=self.upstream_rate,
+            split=split,
+            split_name=split,
+            sr=None,
+            num_spks=2,
+            **self.datarc,
+            **self.extract_kwargs
         )
-        self.test_dataset = SeparationDataset(
-                data_dir=self.loaderrc["test_dir"],
-                rate=self.datarc['rate'],
-                src=self.datarc['src'],
-                tgt=self.datarc['tgt'],
-                n_fft=self.datarc['n_fft'],
-                hop_length=self.upstream_rate,
-                win_length=self.datarc['win_length'],
-                window=self.datarc['window'],
-                center=self.datarc['center'],
-        )
+        self.datasets = {}
 
         if self.modelrc["model"] == "SepRNN":
             self.model = SepRNN(
@@ -155,42 +127,17 @@ class DownstreamExpert(nn.Module):
             self.objective = MSELoss(self.datarc['num_speakers'], self.modelrc["mask_type"])
         elif self.modelrc["loss_type"] == "SISDR":
             self.objective = SISDRLoss(self.datarc['num_speakers'], 
-                    n_fft=self.datarc['n_fft'], 
                     hop_length=self.upstream_rate,
-                    win_length=self.datarc['win_length'], 
-                    window=self.datarc['window'], 
-                    center=self.datarc['center'])
+                    **self.datarc)
         else:
             raise ValueError("Loss type not defined.")
         
         self.register_buffer("best_score", torch.ones(1) * -10000)
 
-    def _get_train_dataloader(self, dataset):
-        return DataLoader(
-            dataset,
-            batch_size=self.loaderrc["train_batchsize"],
-            shuffle=True,
-            num_workers=self.loaderrc["num_workers"],
-            drop_last=False,
-            pin_memory=True,
-            collate_fn=dataset.collate_fn,
-        )
-
-    def _get_eval_dataloader(self, dataset):
-        return DataLoader(
-            dataset,
-            batch_size=self.loaderrc["eval_batchsize"],
-            shuffle=False,
-            num_workers=self.loaderrc["num_workers"],
-            drop_last=False,
-            pin_memory=True,
-            collate_fn=dataset.collate_fn,
-        )
-
-    def get_dataloader(self, mode):
+    def get_dataloader(self, split, batch_size=None):
         """
         Args:
-            mode: string
+            split: string
                 'train', 'dev' or 'test'
         Return:
             a torch.utils.data.DataLoader returning each batch in the format of:
@@ -201,12 +148,19 @@ class DownstreamExpert(nn.Module):
                 2. sample_rate == 16000
                 3. directly loaded by torchaudio
         """
-        if mode == "train":
-            return self._get_train_dataloader(self.train_dataset)
-        elif mode == "dev":
-            return self._get_eval_dataloader(self.dev_dataset)
-        elif mode == "test":
-            return self._get_eval_dataloader(self.test_dataset)
+        if split not in self.datasets:
+            self.datasets[split] = self.dataset_fn(self.loaderrc[f"{split}_dir"], split)
+        istrain = split == "train"
+        if not batch_size:
+            batch_size = self.loaderrc["train_batchsize"] if istrain else self.loaderrc["eval_batchsize"]
+        return DataLoader(
+            self.datasets[split],
+            batch_size=batch_size,
+            shuffle=istrain,
+            num_workers=self.loaderrc["num_workers"],
+            pin_memory=True,
+            collate_fn=self.datasets[split].collate_fn,
+        )
 
     def forward(self, mode, features, uttname_list, source_attr, source_wav, target_attr, target_wav_list, feat_length, wav_length, records, **kwargs):
         """
@@ -267,9 +221,7 @@ class DownstreamExpert(nn.Module):
 
         # evaluate the separation quality of predict sources
         if mode == 'dev' or mode == 'test':
-            if mode == 'dev':
-                COMPUTE_METRICS = ["si_sdr"]
-            elif mode == 'test':
+            if mode in ['dev', 'test']:
                 COMPUTE_METRICS = ["si_sdr"]
             predict_stfts = [torch.squeeze(m * source_attr['stft'].to(device)) for m in mask_list]
             predict_stfts_np = [np.transpose(s.data.cpu().numpy()) for s in predict_stfts]
@@ -295,22 +247,18 @@ class DownstreamExpert(nn.Module):
                 compute_permutation=True,
             )
 
-            try:
-                for metric in COMPUTE_METRICS:
-                    input_metric = "input_" + metric
-                    assert metric in utt_metrics and input_metric in utt_metrics
-                    imp = utt_metrics[metric] - utt_metrics[input_metric]
-                    if metric not in records:
-                        records[metric] = []
-                    if metric == "si_sdr":
-                        records[metric].append(imp)
-                    elif metric == "stoi" or metric == "pesq":
-                        records[metric].append(utt_metrics[metric])
-                    else:
-                        raise ValueError("Metric type not defined.")
-            except:
-                from ipdb import set_trace
-                set_trace()
+            for metric in COMPUTE_METRICS:
+                input_metric = "input_" + metric
+                assert metric in utt_metrics and input_metric in utt_metrics
+                imp = utt_metrics[metric] - utt_metrics[input_metric]
+                if metric not in records:
+                    records[metric] = []
+                if metric == "si_sdr":
+                    records[metric].append(imp)
+                elif metric == "stoi" or metric == "pesq":
+                    records[metric].append(utt_metrics[metric])
+                else:
+                    raise ValueError("Metric type not defined.")
 
             assert 'batch_id' in kwargs
             if kwargs['batch_id'] % 1000 == 0: # Save the prediction every 1000 examples
@@ -373,9 +321,7 @@ class DownstreamExpert(nn.Module):
             )
             return []
         else:
-            if mode == 'dev':
-                COMPUTE_METRICS = ["si_sdr"]
-            elif mode == 'test':
+            if mode in ['dev', 'test']:
                 COMPUTE_METRICS = ["si_sdr"]
             avg_loss = np.mean(records["loss"])
             logger.add_scalar(

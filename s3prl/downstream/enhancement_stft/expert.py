@@ -22,7 +22,7 @@ from torch.nn.utils.rnn import pack_sequence
 
 # -------------#
 from .model import SepRNN
-from .dataset import SeparationDataset
+from ...dataset.separation import SeparationDataset
 from asteroid.metrics import get_metrics
 from .loss import MSELoss, SISDRLoss
 
@@ -97,15 +97,16 @@ class DownstreamExpert(nn.Module):
         self.modelrc = downstream_expert["modelrc"]
         self.expdir = expdir
         
-        dataset_cls = lambda data_dir, split: SeparationDataset(
+        self.dataset_fn = lambda data_dir, split: SeparationDataset(
             data_dir,
             hop_length=self.upstream_rate,
             split=split,
+            split_name=split,
+            addition_cond=["noisy", "clean"],
             **self.datarc,
+            **self.extract_kwargs
         )
-        self.datasets = {
-            split: dataset_cls(self.loaderrc[f"{split}_dir"], split) for split in ["train", "dev", "test"]
-        }
+        self.datasets = {}
 
         if self.modelrc["model"] == "SepRNN":
             self.model = SepRNN(
@@ -134,7 +135,7 @@ class DownstreamExpert(nn.Module):
         
         self.register_buffer("best_score", torch.ones(1) * -10000)
 
-    def get_dataloader(self, split):
+    def get_dataloader(self, split, batch_size=None):
         """
         Args:
             split: string
@@ -148,10 +149,14 @@ class DownstreamExpert(nn.Module):
                 2. sample_rate == 16000
                 3. directly loaded by torchaudio
         """
+        if split not in self.datasets:
+            self.datasets[split] = self.dataset_fn(self.loaderrc[f"{split}_dir"], split)
         istrain = split == "train"
+        if not batch_size:
+            batch_size = self.loaderrc["train_batchsize"] if istrain else self.loaderrc["eval_batchsize"]
         return DataLoader(
             self.datasets[split],
-            batch_size=self.loaderrc["train_batchsize"] if istrain else self.loaderrc["eval_batchsize"],
+            batch_size=batch_size,
             shuffle=istrain,
             num_workers=self.loaderrc["num_workers"],
             pin_memory=True,

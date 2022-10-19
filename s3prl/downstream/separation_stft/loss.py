@@ -67,20 +67,20 @@ class MSELoss(object):
         return torch.sum(min_perutt) / (self.num_srcs * num_utts)
 
 class SISDRLoss(object):
-    def __init__(self, num_srcs, n_fft, hop_length, win_length, window, center):
+    def __init__(self, num_srcs, n_fft, hop_length, win_length, window, center, **kwargs):
         self.num_srcs = num_srcs
         self.n_fft = n_fft
         self.hop_length = hop_length
         self.win_length = win_length
         if window == 'hann':
-            self.window = torch.hann_window(win_length).cuda()
+            self.window = torch.hann_window(win_length).to(device)
         self.center = center
         self.loss = PITLossWrapper(PairwiseNegSDR("sisdr"), pit_from="pw_mtx")
 
     def compute_loss(self, masks, feat_length, source_attr, wav_length, target_wav_list):
         mixture_stft = source_attr["stft"].to(device)
         bs = mixture_stft.size(0)
-        est_targets = torch.zeros(bs, self.num_srcs, max(wav_length)).to(device)
+        est_targets = torch.zeros(bs, self.num_srcs, max(wav_length), device=device)
         targets = torch.stack(target_wav_list, dim=1).to(device)
         for i in range(bs):
             mix_stft_utt = mixture_stft[i, :feat_length[i], :]
