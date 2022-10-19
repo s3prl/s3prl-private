@@ -22,15 +22,10 @@ else
 fi
 
 if [ -z "$*" ]; then
-    tmpdir=$(mktemp -d)
+    layer_info=$(mktemp)
 
-    python3 run_downstream.py \
-    -m train \
-    $args \
-    -s QbE -d example \
-    -o config.runner.total_steps=1 \
-    -p $tmpdir &> $tmpdir/log
-    layer_num=$(cat $tmpdir/log | grep "Take a list of" | cut -d " " -f 7)
+    python3 downstream/lxt_dtw/get_layer_num.py --upstream $upstream --key QbE --output $layer_info
+    layer_num=$(cat $layer_info)
     echo [LAYER INFO] $upstream has $layer_num layers.
 
     rm $layer_info
