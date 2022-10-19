@@ -32,6 +32,11 @@ def distilhubert(refresh=False, *args, **kwargs):
     """
     return distilhubert_base(refresh=refresh, *args, **kwargs)
 
+def distilhubert_nopred(refresh=False, *args, **kwargs):
+    """
+    DistilHuBERT
+    """
+    return distilhubert_base(refresh=refresh, no_pred=True, *args, **kwargs)
 
 def distilhubert_base(refresh=False, *args, **kwargs):
     """
@@ -130,6 +135,18 @@ def distilhubertwavlmb_plus_300k(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
+def distilhubertwavlmb_plus_400k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+/dev-dis-best-400000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
+def distilwavlmb_plus_all400k_200k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilwavlmb+_all400k/dev-dis-best-200000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
 def distilhubertwavlmb_plus_300k_with_head(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+/dev-dis-best-300000.ckpt")
@@ -148,6 +165,12 @@ def distilhubert_hubertmgwhamrbp_multi_pred_300k(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
+def distilhubert_hubertmgwhamrbp_multi_pred_400k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubert_hubertmgwhamrbp_multi_pred/dev-dis-best-400000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
 def distilhubert_hubertmgwhamrbp_multi_pred_300k_with_head(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubert_hubertmgwhamrbp_multi_pred/dev-dis-best-300000.ckpt")
@@ -163,6 +186,24 @@ def distilhubertwavlmb_plus_multi_pred(*args, **kwargs):
 def distilhubertwavlmb_plus_multi_pred_260k(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred/dev-dis-best-260000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
+def distilhubertwavlmb_plus_multi_pred_340k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred/dev-dis-best-340000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
+def distilhubertwavlmb_plus_multi_pred_400k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred/dev-dis-best-400000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
+def distilhubertwavlmb_plus_multi_pred_all200k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_multi_pred_all200k/dev-dis-best.ckpt")
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
@@ -196,8 +237,21 @@ def distilhubertwavlmb_plus_concat_300k(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
+def distilhubertwavlmb_plus_concat_395k(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+_concat/dev-dis-best-395000.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
 def distilhubertmgwhamrbp(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertmgwhamrbp/dev-dis-best.ckpt")
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
+def distilhubertmgwhamrbp_new(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertmgwhamrbp/dev-dis-best-new.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
