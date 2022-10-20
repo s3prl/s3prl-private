@@ -117,6 +117,12 @@ def distilwavlm_base_plus_init_enc_f_student_hubert(*args, **kwargs):
     assert os.path.isfile(kwargs["ckpt"])
     return _UpstreamExpert(*args, **kwargs, no_pred=True)
 
+def distilwavlm_base_plus_3L_one(*args, **kwargs):
+
+    kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilwavlm_base_plus_3L-one/dev-dis-best.ckpt")
+    assert os.path.isfile(kwargs["ckpt"])
+    return _UpstreamExpert(*args, **kwargs, no_pred=True)
+
 def distilhubertwavlmb_plus(*args, **kwargs):
 
     kwargs["ckpt"] = os.path.join(os.path.expanduser('~'), ".cache/torch/hub/s3prl_cache/distilhubertwavlmb+/dev-dis-best.ckpt")
