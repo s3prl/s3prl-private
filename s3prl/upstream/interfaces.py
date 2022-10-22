@@ -122,8 +122,11 @@ class UpstreamBase(nn.Module, metaclass=initHook):
             if callable(self.hook_postprocess):
                 hook_hiddens = self.hook_postprocess(hook_hiddens)
 
-            result["_hidden_states_info"], result["hidden_states"] = zip(*hook_hiddens)
-            result["last_hidden_state"] = result["hidden_states"][-1]
+            try:
+                result["_hidden_states_info"], result["hidden_states"] = zip(*hook_hiddens)
+                result["last_hidden_state"] = result["hidden_states"][-1]
+            except:
+                result["sum"],result["mean"],result['concate'],result['hidden_states']=hook_hiddens['sum'],hook_hiddens['mean'],hook_hiddens['concate'],hook_hiddens['hidden_states']
 
             for layer_id, hidden_state in enumerate(result["hidden_states"]):
                 result[f"hidden_state_{layer_id}"] = hidden_state

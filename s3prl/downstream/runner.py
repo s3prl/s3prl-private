@@ -186,6 +186,7 @@ class Runner():
             upstream_feature_selection = self.args.upstream_feature_selection,
             model_config = self.args.upstream_model_config,
             refresh = upstream_refresh,
+            trainable = self.args.upstream_trainable
         ).to(self.args.device)
 
         if is_initialized() and get_rank() == 0:
