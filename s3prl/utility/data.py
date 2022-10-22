@@ -40,7 +40,7 @@ def get_extracted_dataset(dataset_cls, extract_to_single_file=False, feature_onl
                 if self._feature_only:
                     return torch.load(path, "cpu"), others
                 else:
-                    torch.load(path, "cpu")
+                    return torch.load(path, "cpu")
     
     return ExtractedDataset
 
