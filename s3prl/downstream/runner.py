@@ -289,6 +289,8 @@ class Runner():
                 all_data = {}
                 print(f"[Runner] - Extract features from {split} split.")
                 for i, (ori_wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
+                    if os.path.exists(self.args.extracted_path / f"extracted_feats/{split}/{i}.ckpt"):
+                        continue
                     retry = True
                     while True:
                         try:
@@ -305,7 +307,9 @@ class Runner():
                                 raise e
                             continue
                                 
-                    selected_features = features.get(self.args.upstream_feature_selection, features["hidden_states"])
+                    selected_features = features.pop(self.args.upstream_feature_selection, features.pop("hidden_states"))
+                    # for key in list(features.keys()):
+                    #     del features[key]
 
                     # to cpu
                     time_axis_mean = lambda f: f.mean(dim=1, keepdim=True)
@@ -329,9 +333,9 @@ class Runner():
                         if self.args.extract_to_single_file:
                             all_data[i] = data
                         else:
-                            torch.save(data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"{i}.ckpt"))
+                            torch.save(data, self.args.extracted_path / f"extracted_feats/{split}/{i}.ckpt")
             if self.args.extract_to_single_file:
-                torch.save(all_data, os.path.join(self.args.extracted_path, "extracted_feats/", split, f"all_data.ckpt"))
+                torch.save(all_data, self.args.extracted_path / f"extracted_feats/{split}/all_data.ckpt")
 
     def train(self):
         # trainable parameters and train/eval mode

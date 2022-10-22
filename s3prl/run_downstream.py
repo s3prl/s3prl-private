@@ -8,6 +8,7 @@ import time
 import argparse
 import torchaudio
 import numpy as np
+from pathlib import Path
 from argparse import Namespace
 from torch.distributed import is_initialized, get_world_size
 
@@ -172,6 +173,8 @@ def get_downstream_args():
     
     if args.extracted_path is None:
         args.extracted_path = args.expdir
+    args.expdir = Path(args.expdir)
+    args.extracted_path = Path(args.extracted_path)
     
     args.disable_wandb = True
     return args, config, backup_files
