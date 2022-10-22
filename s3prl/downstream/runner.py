@@ -288,9 +288,23 @@ class Runner():
             with torch.no_grad():
                 all_data = {}
                 print(f"[Runner] - Extract features from {split} split.")
-                for i, (wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
-                    wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in wavs]
-                    features = self.upstream.model(wavs)
+                for i, (ori_wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
+                    retry = True
+                    while True:
+                        try:
+                            wavs = [torch.tensor(wav, dtype=torch.float, device=self.args.device) for wav in ori_wavs]
+                            features = self.upstream.model(wavs)
+                            break
+                        except RuntimeError as e:
+                            if 'CUDA out of memory' in str(e) and retry:
+                                print(f'[Runner] - CUDA out of memory at sample {i}')
+                                with torch.cuda.device(self.args.device):
+                                    torch.cuda.empty_cache()
+                                retry = False
+                            else:
+                                raise e
+                            continue
+                                
                     selected_features = features.get(self.args.upstream_feature_selection, features["hidden_states"])
 
                     # to cpu
