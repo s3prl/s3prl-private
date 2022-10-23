@@ -270,6 +270,8 @@ class Runner():
         
         # iter all splits
         for split in self.args.evaluate_split:
+            if os.path.exists(self.args.extracted_path / f"extracted_feats/{split}/all_data.ckpt"):
+                continue
             # create dir
             os.makedirs(os.path.join(self.args.extracted_path, "extracted_feats/", split), exist_ok=True)
             # create dataloader
