@@ -159,10 +159,11 @@ class Runner():
             print(f'[Runner] - Downloading upstream model {self.args.upstream} from the Hugging Face Hub')
             filepath = snapshot_download(self.args.upstream, self.args.upstream_revision, use_auth_token=True)
             sys.path.append(filepath)
+            filepath = Path(filepath)
 
-            dependencies = (Path(filepath) / 'requirements.txt').resolve()
+            dependencies = (filepath / 'requirements.txt').resolve()
             print("[Dependency] - The downloaded upstream model requires the following dependencies. Please make sure they are installed:")
-            for idx, line in enumerate((Path(filepath) / "requirements.txt").open().readlines()):
+            for idx, line in enumerate((filepath / "requirements.txt").open().readlines()):
                 print(f"{idx}. {line.strip()}")
             print(f"You can install them by:")
             print()
@@ -171,7 +172,7 @@ class Runner():
 
             from expert import UpstreamExpert
             Upstream = UpstreamExpert
-            ckpt_path = os.path.join(filepath, self.args.upstream_model_name)
+            ckpt_path = filepath / self.args.upstream_model_name
         else:
             Upstream = getattr(hub, self.args.upstream)
             ckpt_path = self.args.upstream_ckpt
@@ -270,10 +271,10 @@ class Runner():
         
         # iter all splits
         for split in self.args.evaluate_split:
-            if os.path.exists(self.args.extracted_path / f"extracted_feats/{split}/all_data.ckpt"):
+            if (self.args.extracted_path / f"{split}/all_data.ckpt").exists():
                 continue
             # create dir
-            os.makedirs(os.path.join(self.args.extracted_path, "extracted_feats/", split), exist_ok=True)
+            (self.args.extracted_path / split).mkdir(exist_ok=True)
             # create dataloader
             try:
                 dataloader = self.downstream.model.get_dataloader(split, epoch=epoch, batch_size=1)
@@ -291,7 +292,7 @@ class Runner():
                 all_data = {}
                 print(f"[Runner] - Extract features from {split} split.")
                 for i, (ori_wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
-                    if os.path.exists(self.args.extracted_path / f"extracted_feats/{split}/{i}.ckpt"):
+                    if (self.args.extracted_path / f"{split}/{i}.ckpt").exists():
                         continue
                     retry = True
                     while True:
@@ -335,9 +336,9 @@ class Runner():
                         if self.args.extract_to_single_file:
                             all_data[i] = data
                         else:
-                            torch.save(data, self.args.extracted_path / f"extracted_feats/{split}/{i}.ckpt")
+                            torch.save(data, self.args.extracted_path / f"{split}/{i}.ckpt")
             if self.args.extract_to_single_file:
-                torch.save(all_data, self.args.extracted_path / f"extracted_feats/{split}/all_data.ckpt")
+                torch.save(all_data, self.args.extracted_path / f"{split}/all_data.ckpt")
 
     def train(self):
         # trainable parameters and train/eval mode
@@ -530,7 +531,7 @@ class Runner():
                     if is_initialized():
                         all_states['WorldSize'] = get_world_size()
 
-                    save_paths = [os.path.join(self.args.expdir, name) for name in save_names]
+                    save_paths = [self.args.expdir / name for name in save_names]
                     tqdm.write(f'[Runner] - Save the checkpoint to:')
                     for i, path in enumerate(save_paths):
                         tqdm.write(f'{i + 1}. {path}')
@@ -695,8 +696,7 @@ class Runner():
 
         # Download repo
         HF_HUB_DIR = "hf_hub"
-        REPO_ROOT_DIR = os.path.join(self.args.expdir, HF_HUB_DIR, repo_name)
-        REPO_TASK_DIR = os.path.join(REPO_ROOT_DIR, self.args.downstream, self.args.expname)
+        REPO_ROOT_DIR = self.args.expdir / f"{HF_HUB_DIR}/{repo_name}/{self.args.downstream}/{self.args.expname}"
         print(f"[Runner] - Cloning Hub repo to {REPO_ROOT_DIR}")
         model_repo = Repository(
             local_dir=REPO_ROOT_DIR, clone_from=repo_url, use_auth_token=huggingface_token

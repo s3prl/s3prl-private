@@ -104,16 +104,18 @@ def get_downstream_args():
 
     if args.expdir is None:
         args.expdir = f'result/downstream/{args.expname}'
+    args.expdir = Path(args.expdir)
 
-    if args.auto_resume and os.path.isdir(args.expdir):
-        ckpt_pths = glob.glob(f'{args.expdir}/states-*.ckpt')
+    if args.auto_resume and args.expdir.is_dir():
+        ckpt_pths = args.expdir.glob('states-*.ckpt')
         if len(ckpt_pths) > 0:
             args.past_exp = args.expdir
 
     if args.past_exp:
+        args.past_exp = Path(args.past_exp)
         # determine checkpoint path
-        if os.path.isdir(args.past_exp):
-            ckpt_pths = glob.glob(f'{args.past_exp}/states-*.ckpt')
+        if args.past_exp.is_dir():
+            ckpt_pths = args.expdir.glob('states-*.ckpt')
             assert len(ckpt_pths) > 0
             ckpt_pths = sorted(ckpt_pths, key=lambda pth: int(pth.split('-')[-1].split('.')[0]))
             ckpt_pth = ckpt_pths[-1]
@@ -173,8 +175,7 @@ def get_downstream_args():
     
     if args.extracted_path is None:
         args.extracted_path = args.expdir
-    args.expdir = Path(args.expdir)
-    args.extracted_path = Path(args.extracted_path)
+    args.extracted_path = Path(args.extracted_path) / "extracted_feats"
     
     args.disable_wandb = True
     return args, config, backup_files
@@ -220,10 +221,10 @@ def main():
     
     # Save command
     if is_leader_process() and args.mode == "train":
-        with open(os.path.join(args.expdir, f'args_{get_time_tag()}.yaml'), 'w') as file:
+        with open(args.expdir / f'args_{get_time_tag()}.yaml', 'w') as file:
             yaml.dump(vars(args), file)
 
-        with open(os.path.join(args.expdir, f'config_{get_time_tag()}.yaml'), 'w') as file:
+        with open(args.expdir / f'config_{get_time_tag()}.yaml', 'w') as file:
             yaml.dump(config, file)
 
         for file in backup_files:

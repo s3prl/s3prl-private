@@ -260,7 +260,7 @@ class Runner():
                     
                     name = f'states-epoch-{n_epochs}.ckpt' if pbar.n == pbar.total -1 and n_epochs > 0 else \
                            f'states-{global_step}.ckpt'
-                    save_path = os.path.join(self.args.expdir, name)
+                    save_path = self.args.expdir / name
                     tqdm.write(f'[Runner] - Save the checkpoint to: {save_path}')
                     torch.save(all_states, save_path)
                 

@@ -1,5 +1,4 @@
 import math
-from pathlib import Path
 from typing import Optional, Iterator, TypeVar
 
 import torch
@@ -14,7 +13,7 @@ def get_extracted_dataset(dataset_cls, extract_to_single_file=False, feature_onl
     class ExtractedDataset(dataset_cls):
         def __init__(self, *args, **kwargs):
             self._split = kwargs.pop("split_name")
-            self._extracted_path = Path(kwargs["extracted_path"]) / f"extracted_feats/{self._split}"
+            self._extracted_path = kwargs["extracted_path"] / f"{self._split}"
             self._use_single_file = extract_to_single_file
             self._feature_only = feature_only
 
