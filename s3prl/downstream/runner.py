@@ -274,7 +274,7 @@ class Runner():
             if (self.args.extracted_path / f"{split}/all_data.ckpt").exists():
                 continue
             # create dir
-            (self.args.extracted_path / split).mkdir(exist_ok=True)
+            os.makedirs(self.args.extracted_path / split, exist_ok=True)
             # create dataloader
             try:
                 dataloader = self.downstream.model.get_dataloader(split, epoch=epoch, batch_size=1)
@@ -292,7 +292,7 @@ class Runner():
                 all_data = {}
                 print(f"[Runner] - Extract features from {split} split.")
                 for i, (ori_wavs, *others) in enumerate(tqdm(dataloader, dynamic_ncols=True, desc=split, file=tqdm_file)):
-                    if (self.args.extracted_path / f"{split}/{i}.ckpt").exists():
+                    if (self.args.extracted_path / f"{split}/{i}.ckpt").exists() and not self.args.extract_to_single_file:
                         continue
                     retry = True
                     while True:

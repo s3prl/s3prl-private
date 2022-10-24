@@ -6,8 +6,6 @@
 """
 
 from collections import defaultdict
-import pandas
-import torchaudio
 from pathlib import Path
 from torch.utils.data import Dataset
 from torchaudio.sox_effects import apply_effects_file

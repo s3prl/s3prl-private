@@ -105,9 +105,15 @@ def get_downstream_args():
     if args.expdir is None:
         args.expdir = f'result/downstream/{args.expname}'
     args.expdir = Path(args.expdir)
+    
+    if args.extracted_path is None:
+        args.extracted_path = args.expdir
+    else:
+        args.extracted_path = Path(args.extracted_path)
+    args.extracted_path = args.extracted_path / "extracted_feats"
 
     if args.auto_resume and args.expdir.is_dir():
-        ckpt_pths = args.expdir.glob('states-*.ckpt')
+        ckpt_pths = list(args.expdir.glob('states-*.ckpt'))
         if len(ckpt_pths) > 0:
             args.past_exp = args.expdir
 
@@ -173,9 +179,6 @@ def get_downstream_args():
     else:
         args.evaluate_split = re.split(r"[, ]+", args.evaluate_split)
     
-    if args.extracted_path is None:
-        args.extracted_path = args.expdir
-    args.extracted_path = Path(args.extracted_path) / "extracted_feats"
     
     args.disable_wandb = True
     return args, config, backup_files
