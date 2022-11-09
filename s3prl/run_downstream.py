@@ -1,7 +1,6 @@
 import os
 import re
 import yaml
-import glob
 import torch
 import random
 import time
@@ -121,9 +120,9 @@ def get_downstream_args():
         args.past_exp = Path(args.past_exp)
         # determine checkpoint path
         if args.past_exp.is_dir():
-            ckpt_pths = args.expdir.glob('states-*.ckpt')
+            ckpt_pths = list(args.expdir.glob('states-*.ckpt'))
             assert len(ckpt_pths) > 0
-            ckpt_pths = sorted(ckpt_pths, key=lambda pth: int(pth.split('-')[-1].split('.')[0]))
+            ckpt_pths = sorted(ckpt_pths, key=lambda pth: int(str(pth).split('-')[-1].split('.')[0]))
             ckpt_pth = ckpt_pths[-1]
         else:
             ckpt_pth = args.past_exp
@@ -170,9 +169,9 @@ def get_downstream_args():
     # extract mode
     assert (
         # TODO (Joseph Feng): could only apply on SID and ASV (SID, ASV is not supported yet)
-        (not args.extract_scene_feature or args.downstream in []) and
+        (not args.extract_scene_feature or args.downstream in ["lxt_sid4", "lxt_emotion"]) and
         # TODO (Joseph Feng): hidden set only implement PR, ASR
-        (not args.use_extracted_feature or args.downstream in ("lxt_pr", "lxt_asr"))
+        (not args.use_extracted_feature or args.downstream in ("lxt_pr", "lxt_asr", "lxt_sid4", "lxt_emotion"))
     )
     if args.mode == "extract" and args.evaluate_split == "all":
         args.evaluate_split = (config['runner'].get("train_dataloader", "train"), *config['runner']['eval_dataloaders'])

@@ -37,7 +37,7 @@ def get_extracted_dataset(dataset_cls, extract_to_single_file=False, feature_onl
             else:
                 path = self._extracted_path / f"{index}.ckpt"
                 if self._feature_only:
-                    return torch.load(path, "cpu"), others
+                    return torch.load(path, "cpu"), *others
                 else:
                     return torch.load(path, "cpu")
     
