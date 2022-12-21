@@ -318,6 +318,7 @@ class Runner():
                     time_axis_mean = lambda f: f.mean(dim=1, keepdim=True)
                     to_cpu = lambda f: f.cpu()
                     if self.args.extract_scene_feature:
+                        assert len(wavs) == 1, "only support batch size=1"
                         if isinstance(selected_features, (tuple, list)):
                             selected_features = map(time_axis_mean, selected_features)
                             selected_features = map(to_cpu, selected_features)

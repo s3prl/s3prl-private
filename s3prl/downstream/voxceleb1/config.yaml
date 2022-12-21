@@ -1,13 +1,13 @@
 
 # this voxceleb1 is doing speaker classification task!
 runner:
-  total_steps: 1000
+  total_steps: 200000
   gradient_clipping: 1
-  gradient_accumulate_steps: 4
+  gradient_accumulate_steps: 1
 
-  log_step: 100
-  eval_step: 100
-  save_step: 100
+  log_step: 500
+  eval_step: 5000
+  save_step: 10000
   max_keep: 1
   eval_dataloaders: 
     - dev
@@ -16,7 +16,7 @@ runner:
 optimizer:
   name: TorchOptim
   torch_optim_name: Adam
-  lr: 1.0e-4
+  lr: 1.0e-2
 
 # # comment the whole scheduler config block to disable learning rate scheduling
 # scheduler:
@@ -25,15 +25,16 @@ optimizer:
 
 downstream_expert: 
   datarc:
-    file_path: /livingrooms/leo1994122701/VoxCeleb1
+    file_path: /mnt/diskb/corpora/VoxCeleb1
     meta_data: ./downstream/voxceleb1/veri_test_class.txt
-    num_workers: 12
-    train_batch_size: 8
+    num_workers: 8
+    train_batch_size: 32
+    prefetch_factor: 4
     eval_batch_size: 1
     max_timestep: 128000
-    train_utt: 1
-    seed: 0
 
   modelrc:
-    projector_dim: 0
+    projector_dim: 256
     select: UtteranceLevel
+    UtteranceLevel:
+      pooling: MeanPooling

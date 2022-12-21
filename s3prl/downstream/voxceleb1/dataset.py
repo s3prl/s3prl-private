@@ -1,40 +1,25 @@
-import torch
-from torch._C import set_anomaly_enabled
-from torch.utils.data import DataLoader, Dataset
-import numpy as np 
-from librosa.util import find_files
-from torchaudio import load
-from torch import nn
+from torch.utils.data import Dataset
 import os 
-import re
 import random
 import pickle
 import torchaudio
-import sys
-import time
-import glob
 import tqdm
 from pathlib import Path
-from torchaudio.sox_effects import apply_effects_file
-from collections import defaultdict
-from shutil import copyfile
 
 CACHE_PATH = os.path.join(os.path.dirname(__file__), '.cache/')
 
 
 # Voxceleb 1 Speaker Identification
 class SpeakerClassifiDataset(Dataset):
-    def __init__(self, mode, file_path, meta_data, max_timestep=None, train_utt=1, seed=0, **kwargs):
+    def __init__(self, mode, file_path, meta_data, max_timestep=None, **kwargs):
 
-        self.mode = mode
-        self.seed = seed
         self.root = file_path
-        self.meta_data = meta_data
+        self.speaker_num = 1251
+        self.meta_data =meta_data
         self.max_timestep = max_timestep
-        self.train_utt = train_utt
         self.usage_list = open(self.meta_data, "r").readlines()
 
-        cache_path = os.path.join(CACHE_PATH, f'{mode}-{"all" if train_utt is None else train_utt}.pkl')
+        cache_path = os.path.join(CACHE_PATH, f'{mode}.pkl')
         if os.path.isfile(cache_path):
             print(f'[SpeakerClassifiDataset] - Loading file paths from {cache_path}')
             with open(cache_path, 'rb') as cache:
@@ -46,44 +31,35 @@ class SpeakerClassifiDataset(Dataset):
                 pickle.dump(dataset, cache)
         print(f'[SpeakerClassifiDataset] - there are {len(dataset)} files found')
 
-        random.seed(self.seed)
-        all_spks = sorted(list(set([Path(path).parts[-3] for path in dataset])))
-        self.chosen_spks = random.sample(all_spks, k=60)
-        print(f"Chosen {len(self.chosen_spks)} speakers: {self.chosen_spks}")
-        self.dataset = [path for path in dataset if Path(path).parts[-3] in self.chosen_spks]
-        self.label = [self.chosen_spks.index(Path(path).parts[-3]) for path in self.dataset]
+        self.dataset = dataset
+        self.label = self.build_label(self.dataset)
 
-        audio_dir = Path(f"result/voxceleb1/{mode}")
-        os.makedirs(audio_dir, exist_ok=True)
-        for path in self.dataset:
-            copyfile(path, audio_dir / "-".join(Path(path).parts[-3:]))
+    # file_path/id0001/asfsafs/xxx.wav
+    def build_label(self, train_path_list):
 
-    @property
-    def speaker_num(self):
-        return len(self.chosen_spks)
+        y = []
+        for path in train_path_list:
+            id_string = path.split("/")[-3]
+            y.append(int(id_string[2:]) - 10001)
 
+        return y
+    
+    @classmethod
     def label2speaker(self, labels):
-        return [self.chosen_spks[label] for label in labels]
-
+        return [f"id{label + 10001}" for label in labels]
+    
     def train(self):
 
-        spk2paths = defaultdict(list)
+        dataset = []
         print("search specified wav name for training set")
         for string in tqdm.tqdm(self.usage_list):
             pair = string.split()
             index = pair[0]
             if int(index) == 1:
                 x = list(self.root.glob("*/wav/" + pair[1]))
-                spk = Path(pair[1]).parts[0]
-                spk2paths[spk].append(str(x[0]))
+                dataset.append(str(x[0]))
         print("finish searching training set wav")
-
-        random.seed(self.seed)
-        dataset = []
-        for spk, paths in spk2paths.items():
-            if self.train_utt is not None:
-                paths = random.sample(paths, k=self.train_utt)
-            dataset.extend(paths)
+                
         return dataset
         
     def dev(self):
@@ -118,12 +94,7 @@ class SpeakerClassifiDataset(Dataset):
         return len(self.dataset)
     
     def __getitem__(self, idx):
-        effects = [
-            ["channels", "1"],
-            ["gain", "-3.0"],
-            ["silence", "1", "0.1", "0.2%", "-1", "0.1", "0.2%"],
-        ]
-        wav, _ = apply_effects_file(self.dataset[idx], effects)
+        wav, sr = torchaudio.load(self.dataset[idx])
         wav = wav.squeeze(0)
         length = wav.shape[0]
 
