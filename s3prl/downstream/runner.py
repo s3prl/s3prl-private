@@ -428,6 +428,11 @@ class Runner():
 
                     feature_lengths = features.get("feature_lengths", feature_lengths)
                     features = self.featurizer.model(wavs, features, feature_lengths)
+                    if self.args.upstream == "audio_mae":
+                        # input(features[0].shape)
+                        features = [torch.nn.functional.interpolate(f.unsqueeze(0).unsqueeze(0), scale_factor=(2, 1), mode="bilinear").squeeze(0).squeeze(0) for f in features]
+                        # input(features[0].shape)
+                        
                     del wavs
 
                     if specaug:
@@ -612,6 +617,10 @@ class Runner():
                     
                 feature_lengths = features.get("feature_lengths", feature_lengths)
                 features = self.featurizer.model(wavs, features, feature_lengths)
+                if self.args.upstream == "audio_mae":
+                    # input(features[0].shape)
+                    features = [torch.nn.functional.interpolate(f.unsqueeze(0).unsqueeze(0), scale_factor=(2, 1), mode="bilinear").squeeze(0).squeeze(0) for f in features]
+                    # input(features[0].shape)
                 self.downstream.model(
                     split,
                     features, *others,
