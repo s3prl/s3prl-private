@@ -32,7 +32,8 @@ class UpstreamExpert(UpstreamBase):
         spam_spec = importlib.util.find_spec("whisper")
         assert spam_spec, "Please install the whisper package first: pip install git+https://github.com/openai/whisper.git"
 
-        self.model = whisper.load_model(name)
+        self.model = whisper.load_model(name, device="cpu")
+        del self.model.decoder
 
         if len(self.hooks) == 0:
             for module_id in range(len(self.model.encoder.blocks)):
